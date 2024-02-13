@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
-const Signin = () => {
+const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
@@ -33,7 +33,7 @@ const Signin = () => {
           />
           <Text style={styles.signUpCTA}>
             Don't have an account?{" "}
-            <Text style={styles.signUpCTALink}>Sign up</Text>
+            <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignUp")}>Sign up</Text>
           </Text>
           <View style={styles.signInButtonDiv}>
             <Button

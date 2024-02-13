@@ -2,9 +2,12 @@ import { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 
-const Signin = () => {
+const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   return (
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
@@ -12,9 +15,27 @@ const Signin = () => {
       </View>
       <View style={styles.signInContent}>
         <View style={styles.signInHeadingDiv}>
-          <Text style={styles.signInText}>Sign in</Text>
+          <Text style={styles.signInText}>Sign up</Text>
         </View>
         <View>
+          <View style = {styles.signUpName}>
+            <TextInput
+              label="First Name"
+              value={email}
+              onChangeText={(text) => setFirstName(text)}
+              mode="flat"
+              activeUnderlineColor="black"
+              style={styles.signInInput}
+            />
+            <TextInput
+              label="Last Name"
+              value={email}
+              onChangeText={(text) => setLastName(text)}
+              mode="flat"
+              activeUnderlineColor="black"
+              style={styles.signInInput}
+            />
+          </View>
           <TextInput
             label="Email"
             value={email}
@@ -31,9 +52,17 @@ const Signin = () => {
             mode="flat"
             activeUnderlineColor="black"
           />
+          <TextInput
+            label="Confirm Password"
+            value={password}
+            onChangeText={(text) => setConfirmPassword(text)}
+            style={styles.signInInput}
+            mode="flat"
+            activeUnderlineColor="black"
+          />
           <Text style={styles.signUpCTA}>
-            Don't have an account?{" "}
-            <Text style={styles.signUpCTALink}>Sign up</Text>
+            Already have an account?{" "}
+            <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignIn")} >Sign in</Text>
           </Text>
           <View style={styles.signInButtonDiv}>
             <Button
@@ -41,7 +70,7 @@ const Signin = () => {
               buttonColor="#6B6BE1"
               style={styles.signInButton}
             >
-              Sign In
+              Sign up
             </Button>
           </View>
         </View>
@@ -113,5 +142,10 @@ const styles = StyleSheet.create({
     alignContent: "center",
     fontSize: 50,
   },
+
+  signUpName: {
+    display: 'flex',
+    flexDirection: 'row'
+  }
 });
 export default Signin;
