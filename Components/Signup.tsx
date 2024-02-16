@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
+import UserPool from "../Hooks/UserPool"
+import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -8,6 +10,19 @@ const Signin = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+
+  const signUp = (firstName: string, lastName: string, email: string, password: string) => {
+    let attributeList = [];
+    attributeList.push(new CognitoUserAttribute({Name: 'given_name', Value: firstName}));
+    attributeList.push(new CognitoUserAttribute({Name: 'family_name', Value: lastName}));
+    UserPool.signUp(email, password, attributeList, null, (err, data) => {
+      if (err) {
+        console.log(err)
+      }
+      console.log(data)
+    })
+  }
+  
   return (
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
@@ -21,7 +36,7 @@ const Signin = ({ navigation }) => {
           <View style = {styles.signUpName}>
             <TextInput
               label="First Name"
-              value={email}
+              value={firstName}
               onChangeText={(text) => setFirstName(text)}
               mode="flat"
               activeUnderlineColor="black"
@@ -29,7 +44,7 @@ const Signin = ({ navigation }) => {
             />
             <TextInput
               label="Last Name"
-              value={email}
+              value={lastName}
               onChangeText={(text) => setLastName(text)}
               mode="flat"
               activeUnderlineColor="black"
@@ -54,7 +69,7 @@ const Signin = ({ navigation }) => {
           />
           <TextInput
             label="Confirm Password"
-            value={password}
+            value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
             style={styles.signInInput}
             mode="flat"
@@ -69,6 +84,7 @@ const Signin = ({ navigation }) => {
               mode="contained"
               buttonColor="#6B6BE1"
               style={styles.signInButton}
+              onPress={() => signUp(firstName, lastName, email, password)}
             >
               Sign up
             </Button>
