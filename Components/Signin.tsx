@@ -1,10 +1,37 @@
 import { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
+import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
+import UserPool from "../Hooks/UserPool";
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const signIn = (email: string, password: string) => {
+    const user = new CognitoUser({
+      Username: email,
+      Pool: UserPool
+    })
+
+    const authDetails = new AuthenticationDetails({
+      Username: email,
+      Password: password
+    })
+
+    user.authenticateUser(authDetails, {
+      onSuccess: (data) => {
+        console.log("onSuccess: ", data)
+      },
+      onFailure: (err) => {
+        console.log("onFailure: ", err)
+
+      },
+      newPasswordRequired: (data) => {
+        console.log("newPasswordRequired: ", data)
+      }
+    })
+  }
   return (
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
@@ -40,6 +67,7 @@ const Signin = ({ navigation }) => {
               mode="contained"
               buttonColor="#6B6BE1"
               style={styles.signInButton}
+              onPress={() => signIn(email, password)}
             >
               Sign In
             </Button>
