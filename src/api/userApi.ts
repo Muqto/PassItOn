@@ -1,7 +1,8 @@
 import axios from "axios";
 // require("dotenv").config();
 
-const API = axios.create({ baseURL: "http://localhost:6006/" });
+const LOCALHOST = "http://10.0.0.28:6006/";
+const API = axios.create({ baseURL: LOCALHOST });
 
 export const getUser = (getUserReq: GetUserReq) => API.post("user/getuser", { data : getUserReq });
 export const addUser = (addUserReq: AddUserReq) => API.post("user/adduser", { data : addUserReq });

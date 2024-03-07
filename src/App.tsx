@@ -1,8 +1,8 @@
-import Signin from "./Components/Signin/Signin";
-import Signup from "./Components/Signup/Signup";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TabNavigation from "./Components/Tabs/TabNavigation";
+import Signin from './Components/Signin/Signin';
+import Signup from './Components/Signup/Signup';
+import TabNavigation from './Components/Tabs/TabNavigation';
 const Stack = createNativeStackNavigator();
 
 export default function TabOneScreen() {

@@ -1,6 +1,6 @@
-import UserPool from "../../Hooks/UserPool"
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
-import { addUser, AddUserReq } from "../../api/userApi";
+import UserPool from "../../Hooks/UserPool";
+import { AddUserReq, addUser } from "../../api/userApi";
 
 const useSignUp = () => {
     const signUp = (firstName: string, lastName: string, email: string, password: string) => {
