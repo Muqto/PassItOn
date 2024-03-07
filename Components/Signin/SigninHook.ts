@@ -1,6 +1,8 @@
+import { GetUserReq } from './../../api/userApi';
 import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
 import UserPool from "../../Hooks/UserPool";
 import HomeProps from "../Home/Types";
+import { getUser } from "../../api/userApi";
 
 const useSignIn = () => {
     const signIn = (email: string, password: string, navigation) => {
@@ -15,21 +17,24 @@ const useSignIn = () => {
         })
     
         user.authenticateUser(authDetails, {
-            onSuccess: (data) => {
-            const homeProps : HomeProps = {
-                userId: data.getIdToken().payload["cognito:username"],
-                firstName: data.getIdToken().payload.given_name,
-                lastName: data.getIdToken().payload.family_name
-            }
-            navigation.navigate("TabNavigation", homeProps)
-            console.log("onSuccess: ", data)
+            onSuccess: async (data) => {
+                const userReq: GetUserReq = {
+                    _id: data.getIdToken().payload.sub
+                }
+                console.log(userReq)
+                const res = await getUser(userReq)
+                const user = res.data
+                console.log("onSuccess: ", user)
+
+                navigation.navigate("TabNavigation")
+            
             },
             onFailure: (err) => {
-            console.log("onFailure: ", err)
+                console.log("onFailure: ", err)
     
             },
             newPasswordRequired: (data) => {
-            console.log("newPasswordRequired: ", data)
+                console.log("newPasswordRequired: ", data)
             }
         })
         }

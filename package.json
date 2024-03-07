@@ -19,6 +19,7 @@
     "@react-navigation/bottom-tabs": "^6.5.16",
     "@react-navigation/native-stack": "^6.9.18",
     "amazon-cognito-identity-js": "^6.3.7",
+    "axios": "^1.6.7",
     "expo": "^50.0.6",
     "expo-constants": "~15.4.5",
     "expo-linking": "~6.2.2",
