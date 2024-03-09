@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { colors } from "../../Colors/Colors";
 
 const styles = StyleSheet.create({
     signInPageContainer: {
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     },
     signUpCTALink: {
       fontWeight: "600",
-      color: "#6B6BE1",
+      color: colors.primaryPurple,
     },
   
     signInButtonDiv: {

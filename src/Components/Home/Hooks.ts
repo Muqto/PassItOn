@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { userDonationsSelector, userSelector } from "../../store/selectors"
+import { userDonationsSelector, userSelector } from "../../store/user/selectors"
 import { DonationProps } from "./Types"
 
 export const useHome = () => {

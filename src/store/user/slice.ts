@@ -47,7 +47,7 @@ const initialUserState: UserState = {
     reservations: []
 }
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
   name: 'user',
   initialState: initialUserState,
   reducers: {

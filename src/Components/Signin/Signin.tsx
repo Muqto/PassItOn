@@ -1,14 +1,21 @@
 import { useState } from "react";
 import { View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
-import useSignIn from "./SigninHook";
 import styles from "./Styles";
+import useAuthentication from "../../Hooks/Authetication";
+import { useSelector } from "react-redux";
+import { isSessionLoadingSelector } from "../../store/isLoading/selectors";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {signIn} = useSignIn()
+  const { signIn } = useAuthentication(navigation)
+  const isSessionLoading = useSelector(isSessionLoadingSelector)
+  
   return (
+    <View style = {{width: "100%", height: "100%"}}>
+    { isSessionLoading ?  <LoadingScreen/> :
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
         <Text style={styles.signInLogoText}>PassItOn</Text>
@@ -43,15 +50,17 @@ const Signin = ({ navigation }) => {
               mode="contained"
               buttonColor="#6B6BE1"
               style={styles.signInButton}
-              onPress={() => signIn(email, password, navigation)}
+              onPress={() => signIn(email, password)}
             >
               Sign In
             </Button>
           </View>
         </View>
       </View>
+    </View>}
     </View>
   );
 };
 
 export default Signin;
+

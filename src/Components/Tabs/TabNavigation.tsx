@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faAdd, faHome, faLocationDot, faComments} from '@fortawesome/free-solid-svg-icons/';
 import { faComments as faCommentsOutlined} from '@fortawesome/free-regular-svg-icons/';
 import Profile from '../ProfileScreen/Profile';
-
+import { colors } from '../../Colors/Colors';
 
 const TabNavigation = () => {
     const Tab = createBottomTabNavigator();  
@@ -35,7 +35,7 @@ const TabNavigation = () => {
 
                                     
                                 },
-                                tabBarActiveTintColor: "#6B6BE1",
+                                tabBarActiveTintColor: colors.primaryPurple,
                                 tabBarInactiveTintColor: "#8B8D92",
                                 tabBarLabelStyle: {paddingBottom: 5, fontSize: 13},
                                 tabBarStyle: {padding: 10, height: 100}

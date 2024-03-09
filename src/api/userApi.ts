@@ -1,4 +1,4 @@
-import { Item } from '../store/slice';
+import { Item } from '../store/user/slice';
 import axios from "axios";
 // require("dotenv").config();
 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import DonationCard from './DonationCard'
 import { Button } from 'react-native-paper'
 import styles from './Styles'
 import { useSelector } from 'react-redux'
-import { userSelector } from '../../store/selectors'
+import { firstNameSelector, userSelector } from '../../store/user/selectors'
 import { useHome } from './Hooks'
 
 const Home = () => {
@@ -19,13 +19,13 @@ const Home = () => {
       </View>
       <View style = {styles.switchTab}>
         
-        <TouchableOpacity style = {{...styles.donationsDiv, borderBottomWidth: isDonations ? 4 : 0}} onPress={() => setIsDonations(true)}>
+        <Pressable style = {{...styles.donationsDiv, borderBottomWidth: isDonations ? 4 : 0}} onPress={() => setIsDonations(true)}>
           <Text style = {styles.switchTabText1}>Donations</Text>
-        </TouchableOpacity>
+        </Pressable>
   
-        <TouchableOpacity style = {{...styles.reservationsDiv, borderBottomWidth: isDonations ? 0 : 4}} onPress={() => setIsDonations(false)}>
+        <Pressable style = {{...styles.reservationsDiv, borderBottomWidth: isDonations ? 0 : 4}} onPress={() => setIsDonations(false)}>
           <Text style = {styles.switchTabText2}>Reservations</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style = {styles.activeDonations}>
         <Text style = {styles.activeDonationsText}>Your active 

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
-import useSignUp from "./SignupHook";
 import styles from "./Styles";
 import { NavigationProp } from "@react-navigation/native";
+import useAuthentication from "../../Hooks/Authetication";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -15,7 +15,7 @@ const SignUp = ({ navigation }: RouterProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const { signUp } = useSignUp()
+  const { signUp } = useAuthentication(navigation)
   return (
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
