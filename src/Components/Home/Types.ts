@@ -1,7 +1,11 @@
-type HomeProps = {
+export type HomeProps = {
     userId: string,
     firstName: string,
     lastName: string
 }
 
-export default HomeProps
+export type DonationProps = {
+    itemName: String,
+    expirationTime: String,
+    itemType: String
+}

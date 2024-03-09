@@ -3,10 +3,15 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import DonationCard from './DonationCard'
 import { Button } from 'react-native-paper'
 import styles from './Styles'
+import { useSelector } from 'react-redux'
+import { userSelector } from '../../store/selectors'
+import { useHome } from './Hooks'
 
-const Home = ({route}) => {
+const Home = () => {
   // const {userId, firstName, lastName} = route.params
   const [isDonations, setIsDonations] = useState(true);
+  const userState = useSelector(userSelector)
+  const { donationCardProps } = useHome()
   return (
     <View style = {styles.homePage}>
       <View style = {styles.title}>
@@ -33,16 +38,15 @@ const Home = ({route}) => {
       <View>
         {isDonations ? 
         <View>
-          <DonationCard/>
-          <DonationCard/>
+          {donationCardProps.map((props, idx) => <DonationCard key={idx} {...props}/>)}
         </View> : 
         <View>
-          <DonationCard/>
+          {/* insert reservations */}
         </View>}
         
       </View>
       <View>
-        <Button style = {styles.postButton} mode='contained'>
+        <Button style = {styles.postButton} mode='contained' onPress = {() => console.log(userState)}>
           {isDonations ? 
           <Text style = {styles.postText}>Post a donation</Text> : 
           <Text style = {styles.postText}>Browse available donations</Text>}

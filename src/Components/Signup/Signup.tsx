@@ -3,9 +3,13 @@ import { View, Text } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import useSignUp from "./SignupHook";
 import styles from "./Styles";
+import { NavigationProp } from "@react-navigation/native";
 
+interface RouterProps {
+  navigation: NavigationProp<any, any>;
+}
 
-const SignUp = ({ navigation }) => {
+const SignUp = ({ navigation }: RouterProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -73,7 +77,7 @@ const SignUp = ({ navigation }) => {
               mode="contained"
               buttonColor="#6B6BE1"
               style={styles.signInButton}
-              onPress={() => signUp(firstName, lastName, email, password)}
+              onPress={() => signUp(firstName, lastName, email, password, navigation)}
             >
               Sign up
             </Button>
