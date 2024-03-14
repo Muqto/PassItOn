@@ -2,7 +2,7 @@ import { Item } from '../store/user/slice';
 import axios from "axios";
 // require("dotenv").config();
 
-const LOCALHOST = "http://10.0.0.28:6006/";
+const LOCALHOST = "http://10.0.2.2:6006/";
 const API = axios.create({ baseURL: LOCALHOST });
 
 export const getUser = (getUserReq: GetUserReq): Promise<UserRes> => API.post("user/getuser", { data : getUserReq });
