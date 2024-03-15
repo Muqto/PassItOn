@@ -9,7 +9,7 @@ export default function RootNavigation() {
   const [userExists, setUserExists] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    onAuthStateChanged(firebase_auth, (user) => {
+    onAuthStateChanged(firebase_auth, async (user) => {
       setUserExists(!!user)
       setIsLoading(false)
     })

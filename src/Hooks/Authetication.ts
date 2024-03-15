@@ -3,7 +3,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { useEffect, useState } from "react"
 import { firebase_auth } from "../config/firebase";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import { AddUserReq, addUser, getUser } from "../api/userApi";
+import { AddUserReq, addTokenToAPI, addUser, getUser } from "../api/userApi";
 import { addUserAction } from "../store/user/slice";
 
 const useAuthentication = () => {
@@ -18,8 +18,10 @@ const useAuthentication = () => {
     const signIn = async (email: string, password: string) => {
         try {
             setIsLoading(true)
-            const response = await signInWithEmailAndPassword(auth, email, password)
-            const res = await getUser({ _id: response.user.uid })
+            const info = await signInWithEmailAndPassword(auth, email, password)
+            const token = await info.user.getIdToken()
+            addTokenToAPI(token)
+            const res = await getUser()
             dispatch(addUserAction(res.data))
             
         } 
@@ -34,11 +36,10 @@ const useAuthentication = () => {
     const signUp = async (firstName: string, lastName: string, email: string, password: string, navigation: NavigationProp<any, any>) => {
         try {
             setIsLoading(true)
-            const response = await createUserWithEmailAndPassword(auth, email, password)
-
+            const info = await createUserWithEmailAndPassword(auth, email, password)
+            const token = await info.user.getIdToken()
+            addTokenToAPI(token)
             const addUserReq : AddUserReq = {
-                _id: response.user.uid,
-                email,
                 firstName,
                 lastName
             }
@@ -54,11 +55,7 @@ const useAuthentication = () => {
         setIsLoading(false)
       }
 
-    const getSessionUid = () => {
-        return auth.currentUser?.uid
-    }
-
-    return {signIn, logout, signUp, getSessionUid, isLoading}
+    return {signIn, logout, signUp, isLoading}
 }
 
 export default useAuthentication
