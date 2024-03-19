@@ -1,21 +1,24 @@
 import { useState } from "react";
 import { View, Text } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
 import useAuthentication from "../../Hooks/Authetication";
 import { useSelector } from "react-redux";
 import { isSessionLoadingSelector } from "../../store/isLoading/selectors";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import { firebase_auth } from "../../config/firebase";
+import { colors } from "../../Colors/Colors";
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn } = useAuthentication(navigation)
+  const { signIn, isLoading } = useAuthentication()
   const isSessionLoading = useSelector(isSessionLoadingSelector)
+  const auth = firebase_auth
   
   return (
     <View style = {{width: "100%", height: "100%"}}>
-    { isSessionLoading ?  <LoadingScreen/> :
+    
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
         <Text style={styles.signInLogoText}>PassItOn</Text>
@@ -46,18 +49,18 @@ const Signin = ({ navigation }) => {
             <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignUp")}>Sign up</Text>
           </Text>
           <View style={styles.signInButtonDiv}>
-            <Button
+            {isLoading ? <ActivityIndicator size={30} animating={true} color={colors.primaryPurple}/> : <Button
               mode="contained"
               buttonColor="#6B6BE1"
               style={styles.signInButton}
               onPress={() => signIn(email, password)}
             >
               Sign In
-            </Button>
+            </Button>}
           </View>
         </View>
       </View>
-    </View>}
+    </View>
     </View>
   );
 };

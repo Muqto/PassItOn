@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     },
   
     signInLogoContainer: {
-      height: "40%",
+      height: "20%",
       width: "100%",
       display: "flex",
       alignItems: "center",
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     },
   
     signInContent: {
-      height: "60%",
+      height: "80%",
       width: "100%",
       display: "flex",
       paddingBottom: 0,

@@ -2,21 +2,18 @@ import { Item } from "../store/user/slice";
 import axios from "axios";
 // require("dotenv").config();
 
-// const LOCALHOST = "http://10.0.0.28:6006/";
-const LOCALHOST = "http://192.168.0.123:6006/";
+const LOCALHOST = "http://10.0.2.2:6006/";
 const API = axios.create({ baseURL: LOCALHOST });
 
-export const getUser = (getUserReq: GetUserReq): Promise<UserRes> =>
-  API.post("user/getuser", { data: getUserReq });
-export const addUser = (addUserReq: AddUserReq): Promise<UserRes> =>
-  API.post("user/adduser", { data: addUserReq });
+export const addTokenToAPI = (token: string) => API.defaults.headers.common = {'Authorization': 'Bearer ' + token};
+export const getUser = (): Promise<UserRes> => API.get("user/getuser");
+export const addUser = (addUserReq: AddUserReq): Promise<UserRes> => API.post("user/adduser", { data : addUserReq });
+export const getOrAddUser = (): Promise<UserRes> => API.post("user/getoradduser");
 
 export type AddUserReq = {
-  _id: String | undefined;
-  email: String;
-  firstName: String;
-  lastName: String;
-};
+    firstName: String,
+    lastName: String,
+}
 
 export type GetUserReq = {
   _id: String;

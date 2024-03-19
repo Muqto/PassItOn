@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { addUserReducer } from './reducers'
+import { getOrAddUser } from '../../api/userApi'
 
 export interface LocationState {
     lattitude: Number,

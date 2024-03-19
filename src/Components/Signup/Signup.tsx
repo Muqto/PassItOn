@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { View, Text } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
 import { NavigationProp } from "@react-navigation/native";
 import useAuthentication from "../../Hooks/Authetication";
+import { colors } from "../../Colors/Colors";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -15,7 +16,7 @@ const SignUp = ({ navigation }: RouterProps) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const { signUp } = useAuthentication(navigation)
+  const { signUp, isLoading } = useAuthentication()
   return (
     <View style={styles.signInPageContainer}>
       <View style={styles.signInLogoContainer}>
@@ -73,14 +74,14 @@ const SignUp = ({ navigation }: RouterProps) => {
             <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignIn")} >Sign in</Text>
           </Text>
           <View style={styles.signInButtonDiv}>
-            <Button
+            {isLoading ? <ActivityIndicator size={30} animating={true} color={colors.primaryPurple}/> : <Button
               mode="contained"
-              buttonColor="#6B6BE1"
+              buttonColor= {colors.primaryPurple}
               style={styles.signInButton}
               onPress={() => signUp(firstName, lastName, email, password, navigation)}
             >
               Sign up
-            </Button>
+            </Button>}
           </View>
         </View>
       </View>
