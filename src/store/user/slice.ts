@@ -1,62 +1,63 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { addUserReducer } from './reducers'
-import { getOrAddUser } from '../../api/userApi'
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { addUserReducer, updateUserDonations } from "./reducers";
+import { getOrAddUser } from "../../api/userApi";
 
 export interface LocationState {
-    lattitude: Number,
-    longitude: Number,
-    geoHash: String
+  lattitude: Number;
+  longitude: Number;
+  geoHash: String;
 }
 
 export interface Reservation {
-    userId: String,
-    isReserved: Boolean, 
-    startTime: String,
-    expirationTime: String,
-    pickUpDate: String 
+  userId: String;
+  isReserved: Boolean;
+  startTime: String;
+  expirationTime: String;
+  pickUpDate: String;
 }
 
 export interface Item {
-    itemName: String,
-    itemType: String,
-    description: String,
-    postedTime: String,
-    expirationTime: String,
-    itemStatus: Number,
-    location: LocationState
-    reservationInfo: Reservation
+  itemName: String;
+  itemType: String;
+  description: String;
+  postedTime: String;
+  expirationTime: String;
+  itemStatus: Number;
+  location: LocationState;
+  reservationInfo: Reservation;
 }
 
 export interface UserState {
-  _id: String,
-  email: String,
-  firstName: String,
-  lastName: String,
-  rating: Number,
-  donations: Item[]
-  reservations: Item[]
+  _id: String;
+  email: String;
+  firstName: String;
+  lastName: String;
+  rating: Number;
+  donations: Item[];
+  reservations: Item[];
 }
 
 const initialUserState: UserState = {
-    _id: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    rating: 0,
-    donations: [],
-    reservations: []
-}
+  _id: "",
+  email: "",
+  firstName: "",
+  lastName: "",
+  rating: 0,
+  donations: [],
+  reservations: [],
+};
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: initialUserState,
   reducers: {
-    addUserAction: addUserReducer
+    addUserAction: addUserReducer,
+    updateUserDonationAction: updateUserDonations,
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const { addUserAction } = userSlice.actions
+export const { addUserAction, updateUserDonationAction } = userSlice.actions;
 
-export default userSlice.reducer
+export default userSlice.reducer;

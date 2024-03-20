@@ -3,9 +3,12 @@ import { View, Text } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
 import styles from "./Styles";
+import { userSelector } from "../../store/user/selectors";
+import { useSelector } from "react-redux";
 
 const DonatePage = () => {
   const { donate } = useItem();
+  const userState = useSelector(userSelector);
   const [donationItemName, setDonationItemName] = useState("");
   const [donationItemDescription, setDonationItemDescription] = useState("");
   return (
@@ -32,7 +35,25 @@ const DonatePage = () => {
         mode="contained"
         buttonColor="#6B6BE1"
         style={styles.postDonationButton}
-        // onPress={() => donate()} // TODO: FILL IN DONATION FIELDS
+        onPress={() =>
+          donate(
+            userState._id,
+            donationItemName,
+            "Item Type",
+            donationItemDescription,
+            "posted time here",
+            "expiration time here",
+            0,
+            { lattitude: 0, longitude: 0, geoHash: "geohash location" },
+            {
+              userId: userState._id,
+              isReserved: false,
+              startTime: "N/A",
+              expirationTime: "N/A",
+              pickUpDate: "N/A",
+            }
+          )
+        } 
       >
         Donate
       </Button>

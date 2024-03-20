@@ -1,19 +1,54 @@
-import { Item } from "../store/user/slice";
+import { Item, LocationState, Reservation } from "../store/user/slice";
 import axios from "axios";
 // require("dotenv").config();
 
-const LOCALHOST = "http://10.0.2.2:6006/";
+const LOCALHOST = "http://10.0.0.28:6006/";
 const API = axios.create({ baseURL: LOCALHOST });
 
-export const addTokenToAPI = (token: string) => API.defaults.headers.common = {'Authorization': 'Bearer ' + token};
+export const addTokenToAPI = (token: string) =>
+  (API.defaults.headers.common = { Authorization: "Bearer " + token });
 export const getUser = (): Promise<UserRes> => API.get("user/getuser");
-export const addUser = (addUserReq: AddUserReq): Promise<UserRes> => API.post("user/adduser", { data : addUserReq });
-export const getOrAddUser = (): Promise<UserRes> => API.post("user/getoradduser");
+export const addUser = (addUserReq: AddUserReq): Promise<UserRes> =>
+  API.post("user/adduser", { data: addUserReq });
+export const getOrAddUser = (): Promise<UserRes> =>
+  API.post("user/getoradduser");
+
+export const uploadDonation = (
+  uploadDonationReq: UploadDonationReq
+): Promise<ItemRes> =>
+  API.post("item/uploadDonation", { data: uploadDonationReq });
+
+export type UploadDonationReq = {
+  userId: String;
+  itemName: String;
+  itemType: String;
+  description: String;
+  postedTime: String;
+  expirationTime: String;
+  itemStatus: Number;
+  location: LocationState;
+  reservationInfo: Reservation;
+};
+
+export type ItemRes = {
+  data: {
+    _id: String;
+    userId: String;
+    itemName: String;
+    itemType: String;
+    description: String;
+    postedTime: String;
+    expirationTime: String;
+    itemStatus: Number;
+    location: LocationState;
+    reservationInfo: Reservation;
+  };
+};
 
 export type AddUserReq = {
-    firstName: String,
-    lastName: String,
-}
+  firstName: String;
+  lastName: String;
+};
 
 export type GetUserReq = {
   _id: String;

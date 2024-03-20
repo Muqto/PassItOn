@@ -1,7 +1,13 @@
-import { uploadDonation } from "../api/donationApi";
-import { LocationState, Reservation } from "../store/user/slice";
+import { useDispatch } from "react-redux";
+import { uploadDonation } from "../api/userApi";
+import {
+  LocationState,
+  Reservation,
+  updateUserDonationAction,
+} from "../store/user/slice";
 
 const useItem = () => {
+  const dispatch = useDispatch();
   const donate = async (
     userId: String,
     itemName: String,
@@ -26,8 +32,7 @@ const useItem = () => {
         reservationInfo: reservationInfo,
       };
       const res = await uploadDonation(userReq);
-      //   const user = res.data;
-      //   dispatch(addUserAction(user));
+      dispatch(updateUserDonationAction(res.data));
     } catch (error) {
       console.log("error uploading donation", error);
     }
