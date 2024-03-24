@@ -1,13 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { addUserReducer } from './reducers'
+import { addUserLocationReducer, addUserReducer } from './reducers'
 import { getOrAddUser } from '../../api/userApi'
+import { LatLng, Region } from 'react-native-maps'
 
-export interface LocationState {
-    lattitude: Number,
-    longitude: Number,
-    geoHash: String
-}
 
 export interface Reservation {
     userId: String,
@@ -18,13 +14,16 @@ export interface Reservation {
 }
 
 export interface Item {
-    itemName: String,
-    itemType: String,
-    description: String,
-    postedTime: String,
-    expirationTime: String,
-    itemStatus: Number,
-    location: LocationState
+    _id: string,
+    itemName: string,
+    itemType: string,
+    distance: number,
+    description: string,
+    postedTime: string,
+    expirationTime: string,
+    itemStatus: number,
+    isRequest?: boolean,
+    location: Region
     reservationInfo: Reservation
 }
 
@@ -34,29 +33,38 @@ export interface UserState {
   firstName: String,
   lastName: String,
   rating: Number,
-  donations: Item[]
-  reservations: Item[]
+  donations: Item[],
+  reservations: Item[],
+  location?: Region
 }
 
-const initialUserState: UserState = {
+export const mtlRegionCoord: Region = {
+    latitude: 45.5019,
+    longitude: 73.5674,
+    longitudeDelta: 0.01,
+    latitudeDelta: 0.01
+}
+export const initialUserState: UserState = {
     _id: "",
     email: "",
     firstName: "",
     lastName: "",
     rating: 0,
     donations: [],
-    reservations: []
+    reservations: [],
+    location: mtlRegionCoord
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState: initialUserState,
   reducers: {
-    addUserAction: addUserReducer
+    addUserAction: addUserReducer,
+    addUserLocationAction: addUserLocationReducer
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addUserAction } = userSlice.actions
+export const { addUserAction, addUserLocationAction } = userSlice.actions
 
 export default userSlice.reducer
