@@ -3,5 +3,6 @@ export const colors = {
     lightPurple: "#d0d0fa",
     ultraLightPurple: "#F6F6FF",
     darkUnselected: "#9A9A9A",
-    lightUnselected: "#FAFAFA"
+    lightUnselected: "#FAFAFA",
+    selectedMarker: "#E9AFA3"
 }

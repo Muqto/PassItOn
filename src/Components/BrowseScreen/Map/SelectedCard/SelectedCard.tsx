@@ -55,8 +55,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: colors.ultraLightPurple,
       borderRadius: 15,
-      borderWidth: 0.8,
-      borderColor: colors.primaryPurple
   },
   image: {
     width: 60,

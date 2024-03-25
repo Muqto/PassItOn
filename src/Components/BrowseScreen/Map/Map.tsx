@@ -1,23 +1,20 @@
-import MapView, {BoundingBox, LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import { StyleSheet, View } from 'react-native';
+import { Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import { Animated, StyleSheet, View } from 'react-native';
 import ClusterMapView from 'react-native-map-clustering';
 import { colors } from '../../../Colors/Colors';
 import { useSelector } from 'react-redux';
 import { locationSelector } from '../../../store/user/selectors';
-import { itemCoordsSelector, itemsSelector } from '../../../store/Items/selectors';
-import { faBell, faGift, faLocationDot} from '@fortawesome/free-solid-svg-icons';
-import { faBell as regBell } from '@fortawesome/free-regular-svg-icons';
+import { itemCoordsSelector } from '../../../store/Items/selectors';
+import { faBell, faGift} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { SelectedCard } from './SelectedCard/SelectedCard';
-import { useState } from 'react';
-import { Item } from '../../../store/user/slice';
 import { useMap } from './Hooks';
 
 
 export default function MapComponent() {
     const location = useSelector(locationSelector)
     const itemsCoords = useSelector(itemCoordsSelector)
-    const {fetchItemData, selectedItem} = useMap()
+    const {onMarkerPress, selectedItem, markerScales} = useMap()
 
     const randomCoords = (n: number) => {
       const loc =  {latitude: 37.4219983, latitudeDelta: 0.01, longitude: -122.084, longitudeDelta: 0.01}
@@ -28,6 +25,7 @@ export default function MapComponent() {
           }
       ));
     }
+ 
 
     return (
         <View style={styles.container}>
@@ -37,6 +35,7 @@ export default function MapComponent() {
               distance={selectedItem.distance} 
             />}
             <ClusterMapView 
+                moveOnMarkerPress={false}
                 style={styles.map} 
                 provider={PROVIDER_GOOGLE} 
                 region={location}
@@ -48,13 +47,28 @@ export default function MapComponent() {
                 radius={25}
             >
             {itemsCoords.map((item, i) => {
+              markerScales.current[item._id] = new Animated.Value(1);
               return  <Marker 
                         key={`${item.location.latitude}_${item.location.longitude}`} 
                         coordinate={item.location}
-                        tracksViewChanges={false} 
-                        onPress={() => fetchItemData(item._id, item.distance)}
+                        tracksViewChanges={true} 
+                        onPress={() => onMarkerPress(item._id, item.distance)}
                         >
-                          <FontAwesomeIcon  icon={ item.isRequest ? faBell : faGift } size={20} color={item.isRequest ? '#EE6B6B' : colors.primaryPurple}></FontAwesomeIcon>
+                        <Animated.View
+                          style={{
+                          padding: 10,
+                          transform: [{ scale: markerScales.current[item._id],  }],
+                        }}>
+                          
+                          <FontAwesomeIcon  
+                              icon={ item.isRequest ? faBell : faGift } 
+                              size={20} 
+                              color={item._id === selectedItem?._id ? 
+                                colors.selectedMarker:
+                                item.isRequest ? '#EE6B6B' : colors.primaryPurple}>
+                              
+                            </FontAwesomeIcon> 
+                        </Animated.View>
                       </Marker>
             })}
             </ClusterMapView>
