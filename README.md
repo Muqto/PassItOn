@@ -30,3 +30,7 @@
    ```sh
    npm run android
    ```
+### Testing
+
+Email: Test@gmail.com\
+Password: Test123@
