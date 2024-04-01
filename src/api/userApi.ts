@@ -1,6 +1,9 @@
-import { Item, LocationState, Reservation } from "../store/user/slice";
+import { LatLng, Region } from 'react-native-maps';
+import { LOCALHOST_IP } from '../../env';
+import { Item } from '../store/user/slice';
 import axios from "axios";
-import { LOCALHOST_IP } from "../../env";
+import { ItemCoord } from '../store/Items/slice';
+
 // require("dotenv").config();
 
 const LOCALHOST = LOCALHOST_IP;
@@ -46,23 +49,37 @@ export type ItemRes = {
   };
 };
 
+export const getItemsCoord = (currentLocation: LatLng): Promise<getItemsCoordRes> => API.post("item/getitemscoord", { data : currentLocation });
+export const getItemsByIds = (itemIds: string[]): Promise<GetItemsByIdsRes> => API.post("item/itemsbyids", { data : itemIds })
 export type AddUserReq = {
   firstName: String;
   lastName: String;
 };
 
 export type GetUserReq = {
-  _id: String;
-};
+    _id: String
+}
 
-export type UserRes = {
+export type GetItemsByIdsRes = {
   data: {
-    _id: String;
-    email: String;
-    firstName: String;
-    lastName: String;
-    rating: Number;
-    reservations: Item[];
-    donations: Item[];
-  };
-};
+      items: Item[]
+  }
+}
+
+export type getItemsCoordRes = {
+  data: {
+      itemsCoords: ItemCoord[]
+  }
+}
+export type UserRes = {
+    data:
+        {
+        _id: String,
+        email: String,
+        firstName: String,
+        lastName: String,
+        rating: Number
+        reservations: Item[],
+        donations: Item[]
+        }
+}

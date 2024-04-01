@@ -1,13 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { addUserReducer, updateUserDonations } from "./reducers";
-import { getOrAddUser } from "../../api/userApi";
-
-export interface LocationState {
-  lattitude: Number;
-  longitude: Number;
-  geoHash: String;
-}
+import { createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { addUserLocationReducer, addUserReducer, updateUserDonations } from './reducers'
+import { getOrAddUser } from '../../api/userApi'
+import { LatLng, Region } from 'react-native-maps'
 
 export interface Reservation {
   userId: String;
@@ -18,27 +13,37 @@ export interface Reservation {
 }
 
 export interface Item {
-  itemName: String;
-  itemType: String;
-  description: String;
-  postedTime: String;
-  expirationTime: String;
-  itemStatus: Number;
-  location: LocationState;
-  reservationInfo: Reservation;
+  _id: string,
+  itemName: string,
+  itemType: string,
+  distance: number,
+  description: string,
+  postedTime: string,
+  expirationTime: string,
+  itemStatus: number,
+  isRequest?: boolean,
+  location: Region
+  reservationInfo: Reservation
 }
 
 export interface UserState {
-  _id: String;
-  email: String;
-  firstName: String;
-  lastName: String;
-  rating: Number;
-  donations: Item[];
-  reservations: Item[];
+  _id: String,
+  email: String,
+  firstName: String,
+  lastName: String,
+  rating: Number,
+  donations: Item[],
+  reservations: Item[],
+  location?: Region
 }
 
-const initialUserState: UserState = {
+export const mtlRegionCoord: Region = {
+  latitude: 45.5019,
+  longitude: 73.5674,
+  longitudeDelta: 0.01,
+  latitudeDelta: 0.01
+}
+export const initialUserState: UserState = {
   _id: "",
   email: "",
   firstName: "",
@@ -46,18 +51,18 @@ const initialUserState: UserState = {
   rating: 0,
   donations: [],
   reservations: [],
-};
+  location: mtlRegionCoord
+}
 
 const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
-    addUserAction: addUserReducer,
-    updateUserDonationAction: updateUserDonations,
+    addUserAction: addUserReducer
+    addUserLocationAction: addUserLocationReducer
+    updateUserDonationAction: updateUserDonations
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addUserAction, updateUserDonationAction } = userSlice.actions;
-
-export default userSlice.reducer;
+export const { addUserAction, addUserLocationAction, updateUserDonationAction } = userSlice.actions

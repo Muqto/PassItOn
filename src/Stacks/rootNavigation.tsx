@@ -17,6 +17,6 @@ export default function RootNavigation() {
   }, [])
 
   return (
-    isLoading ? <LoadingScreen/> : userExists ? <UserStack/> : <AuthStack/>
+    isLoading ? <LoadingScreen size={80}/> : userExists ? <UserStack/> : <AuthStack/>
   );
 }

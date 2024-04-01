@@ -2,9 +2,12 @@
 # environment variables
 env.js
 
+# env vars
+env.js
+
 # dependencies
 node_modules/
-
+env.js
 # Expo
 .expo/
 dist/
