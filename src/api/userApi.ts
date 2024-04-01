@@ -1,8 +1,9 @@
 import { Item, LocationState, Reservation } from "../store/user/slice";
 import axios from "axios";
+import { LOCALHOST_IP } from "../../env";
 // require("dotenv").config();
 
-const LOCALHOST = "http://10.0.0.28:6006/";
+const LOCALHOST = LOCALHOST_IP;
 const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) =>
