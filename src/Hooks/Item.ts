@@ -1,7 +1,8 @@
+import { Region } from "react-native-maps";
 import { useDispatch } from "react-redux";
 import { uploadDonation } from "../api/userApi";
+import { LatLng } from "react-native-maps";
 import {
-  LocationState,
   Reservation,
   updateUserDonationAction,
 } from "../store/user/slice";
@@ -9,14 +10,15 @@ import {
 const useItem = () => {
   const dispatch = useDispatch();
   const donate = async (
-    userId: String,
-    itemName: String,
-    itemType: String,
-    description: String,
-    postedTime: String,
-    expirationTime: String,
-    itemStatus: Number,
-    location: LocationState,
+    userId: string,
+    itemName: string,
+    itemType: string,
+    description: string,
+    postedTime: string,
+    expirationTime: string,
+    itemStatus: number,
+    isRequest: boolean,
+    location: Region | LatLng,
     reservationInfo: Reservation
   ) => {
     try {
@@ -28,11 +30,12 @@ const useItem = () => {
         postedTime: postedTime,
         expirationTime: expirationTime,
         itemStatus: itemStatus,
+        isRequest: isRequest,
         location: location,
         reservationInfo: reservationInfo,
       };
       const res = await uploadDonation(userReq);
-      dispatch(updateUserDonationAction(res.data));
+      dispatch(updateUserDonationAction({...res.data, distance: 0}));
     } catch (error) {
       console.log("error uploading donation", error);
     }

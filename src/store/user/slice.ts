@@ -27,11 +27,11 @@ export interface Item {
 }
 
 export interface UserState {
-  _id: String,
-  email: String,
-  firstName: String,
-  lastName: String,
-  rating: Number,
+  _id: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  rating: number,
   donations: Item[],
   reservations: Item[],
   location?: Region
@@ -58,11 +58,13 @@ const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
-    addUserAction: addUserReducer
-    addUserLocationAction: addUserLocationReducer
+    addUserAction: addUserReducer,
+    addUserLocationAction: addUserLocationReducer,
     updateUserDonationAction: updateUserDonations
   },
 });
 
 // Action creators are generated for each case reducer function
 export const { addUserAction, addUserLocationAction, updateUserDonationAction } = userSlice.actions
+
+export default userSlice.reducer

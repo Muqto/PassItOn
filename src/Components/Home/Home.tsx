@@ -6,11 +6,13 @@ import styles from './Styles'
 import { useSelector } from 'react-redux'
 import { firstNameSelector, userSelector } from '../../store/user/selectors'
 import { useHome } from './Hooks'
+import { itemCoordsSelector } from '../../store/Items/selectors'
 
 const Home = () => {
   // const {userId, firstName, lastName} = route.params
   const [isDonations, setIsDonations] = useState(true);
-  const userState = useSelector(userSelector)
+  const userState = useSelector(userSelector);
+  const itemsState = useSelector(itemCoordsSelector);
   const { donationCardProps } = useHome()
   return (
     <View style = {styles.homePage}>
@@ -46,7 +48,7 @@ const Home = () => {
         
       </View>
       <View>
-        <Button style = {styles.postButton} mode='contained' onPress = {() => console.log(userState)}>
+        <Button style = {styles.postButton} mode='contained' onPress = {() => console.log(itemsState)}>
           {isDonations ? 
           <Text style = {styles.postText}>Post a donation</Text> : 
           <Text style = {styles.postText}>Browse available donations</Text>}

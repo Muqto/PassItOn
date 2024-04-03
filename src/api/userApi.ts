@@ -1,6 +1,6 @@
 import { LatLng, Region } from 'react-native-maps';
 import { LOCALHOST_IP } from '../../env';
-import { Item } from '../store/user/slice';
+import { Item, Reservation } from '../store/user/slice';
 import axios from "axios";
 import { ItemCoord } from '../store/Items/slice';
 
@@ -23,28 +23,29 @@ export const uploadDonation = (
   API.post("item/uploadDonation", { data: uploadDonationReq });
 
 export type UploadDonationReq = {
-  userId: String;
-  itemName: String;
-  itemType: String;
-  description: String;
-  postedTime: String;
-  expirationTime: String;
-  itemStatus: Number;
-  location: LocationState;
+  userId: string;
+  itemName: string;
+  itemType: string;
+  description: string;
+  postedTime: string;
+  expirationTime: string;
+  itemStatus: number;
+  isRequest: boolean;
+  location: Region | LatLng;
   reservationInfo: Reservation;
 };
 
 export type ItemRes = {
   data: {
-    _id: String;
-    userId: String;
-    itemName: String;
-    itemType: String;
-    description: String;
-    postedTime: String;
-    expirationTime: String;
-    itemStatus: Number;
-    location: LocationState;
+    _id: string;
+    userId: string;
+    itemName: string;
+    itemType: string;
+    description: string;
+    postedTime: string;
+    expirationTime: string;
+    itemStatus: number;
+    location: Region;
     reservationInfo: Reservation;
   };
 };

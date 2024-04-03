@@ -18,25 +18,49 @@ const DonatePage = () => {
   const categoryList = [
     {
       label: "Food",
-      value: "food",
+      value: "Food",
     },
     {
       label: "Clothes",
-      value: "clothes",
+      value: "Clothes",
     },
     {
       label: "Furniture",
-      value: "furniture",
+      value: "Furniture",
     },
     {
       label: "Book",
-      value: "book",
+      value: "Book",
     },
     {
       label: "Stationery",
-      value: "stationery",
+      value: "Stationery",
     },
   ];
+  const postDonation = () => {
+    donate(
+      userState._id,
+      donationItemName,
+      category,
+      donationItemDescription,
+      "posted time here",
+      "expiration time here",
+      0,
+      false,
+      {latitude: 45.5048, longitude: 73.5772},
+      {
+        userId: userState._id,
+        isReserved: false,
+        startTime: "N/A",
+        expirationTime: "N/A",
+        pickUpDate: "N/A",
+      }
+    )
+    setDonationItemName("");
+    setDonationItemDescription("");
+    setDonationItemLocation("");
+    setCategory("");
+  }
   return (
     <View style={styles.donatePageContainer}>
       <Text style={styles.donatePageHeader}>Donate an item</Text>
@@ -92,25 +116,7 @@ const DonatePage = () => {
         mode="contained"
         buttonColor="#6B6BE1"
         style={styles.postDonationButton}
-        onPress={() =>
-          donate(
-            userState._id,
-            donationItemName,
-            category,
-            donationItemDescription,
-            "posted time here",
-            "expiration time here",
-            0,
-            { lattitude: 0, longitude: 0, geoHash: "geohash location" },
-            {
-              userId: userState._id,
-              isReserved: false,
-              startTime: "N/A",
-              expirationTime: "N/A",
-              pickUpDate: "N/A",
-            }
-          )
-        } 
+        onPress={postDonation} 
       >
         Donate
       </Button>

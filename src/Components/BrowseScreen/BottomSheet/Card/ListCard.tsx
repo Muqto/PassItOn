@@ -22,7 +22,7 @@ export const ListCard = (props: ListCardProps) => {
         </View>
         <View style = {styles.end}>
           <View style = {styles.kmView}>
-            <Text  style={styles.kmText}>{`${props.distance.toFixed(1)}km`}</Text>
+            <Text  style={styles.kmText}>{`${props.distance?.toFixed(1)}km`}</Text>
           </View>
           <View>
             <FontAwesomeIcon size={20} icon={faLocationDot} color={colors.primaryPurple}/>
