@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { Button, Portal, Snackbar, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
 import styles from "./Styles";
 import { userSelector } from "../../store/user/selectors";
 import { useSelector } from "react-redux";
-import DropDown from "react-native-paper-dropdown";
+import {Dropdown} from 'react-native-element-dropdown';
 
 const DonatePage = () => {
   const { donate } = useItem();
@@ -13,29 +13,13 @@ const DonatePage = () => {
   const [donationItemName, setDonationItemName] = useState("");
   const [donationItemDescription, setDonationItemDescription] = useState("");
   const [donationItemLocation, setDonationItemLocation] = useState("");
-  const [showDropDown, setShowDropDown] = useState(false);
   const [category, setCategory] = useState("");
   const categoryList = [
-    {
-      label: "Food",
-      value: "Food",
-    },
-    {
-      label: "Clothes",
-      value: "Clothes",
-    },
-    {
-      label: "Furniture",
-      value: "Furniture",
-    },
-    {
-      label: "Book",
-      value: "Book",
-    },
-    {
-      label: "Stationery",
-      value: "Stationery",
-    },
+    { label: "Food", value: "Food",},
+    { label: "Clothes", value: "Clothes",},
+    { label: "Furniture", value: "Furniture",},
+    { label: "Book", value: "Book",},
+    { label: "Stationery",value: "Stationery",},
   ];
   const postDonation = () => {
     donate(
@@ -92,22 +76,16 @@ const DonatePage = () => {
         activeUnderlineColor="black"
       />
       <SafeAreaView style={styles.donationDropdownContainer}>
-        <DropDown
-        inputProps={{
-          style:{
-            backgroundColor: '#EEEEEE',
-          },
-          right: <TextInput.Icon icon={showDropDown ? "menu-up" : "menu-down"} />
-        }}
-        dropDownItemStyle={styles.donationDropdownItems}
-        label={"Category *"}
-        mode={"flat"}
-        visible={showDropDown}
-        showDropDown={() => setShowDropDown(true)}
-        onDismiss={() => setShowDropDown(false)}
-        value={category}
-        setValue={setCategory}
-        list={categoryList}
+        <Dropdown 
+          style={styles.donationDropdown}
+          placeholderStyle={styles.donationDropdownPlaceholder}
+          selectedTextStyle={styles.donationDropdownSelectedText}
+          data={categoryList}
+          labelField="label"
+          valueField="value"
+          placeholder="Category *"
+          value={category}
+          onChange={(category) => setCategory(category.value)}
         />
       </SafeAreaView>
       <Text> TODO: ADD PICKUP TIME DATETIME PICKER HERE</Text>

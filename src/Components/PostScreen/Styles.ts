@@ -43,9 +43,19 @@ const styles = StyleSheet.create({
   donationDropdownContainer: {
     width: "90%",
     marginTop: 20,
+    marginBottom: 20,
   },
-  donationDropdownItems: {
-    backgroundColor: "#EEEEEE",
+  donationDropdown: {
+    height: 60,
+    backgroundColor: '#EEEEEE',
+  },
+  donationDropdownPlaceholder: {
+    marginLeft: 15,
+    color: "rgb(74, 69, 78)"
+  },
+  donationDropdownSelectedText:{
+    marginLeft: 15,
+    color: "rgb(29, 27, 30)"
   },
   donateOrRequestButton: {
     width: "90%",
