@@ -2,7 +2,7 @@ import { Item } from '../store/user/slice';
 import axios from "axios";
 // require("dotenv").config();
 
-const LOCALHOST = "http://10.0.2.2:6006/";
+const LOCALHOST = "http://192.168.2.15:6006/";
 const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) => API.defaults.headers.common = {'Authorization': 'Bearer ' + token};

@@ -18,49 +18,49 @@ const Signin = ({ navigation }) => {
   
   return (
     <View style = {{width: "100%", height: "100%"}}>
-    
-    <View style={styles.signInPageContainer}>
-      <View style={styles.signInLogoContainer}>
-        <Text style={styles.signInLogoText}>PassItOn</Text>
-      </View>
-      <View style={styles.signInContent}>
-        <View style={styles.signInHeadingDiv}>
-          <Text style={styles.signInText}>Sign in</Text>
+      <View style={styles.signInPageContainer}>
+        <View style={styles.signInLogoContainer}>
+          <Text style={styles.signInLogoText}>PassItOn</Text>
         </View>
-        <View>
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            mode="flat"
-            activeUnderlineColor="black"
-            style={styles.signInInput}
-          />
-          <TextInput
-            label="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            style={styles.signInInput}
-            mode="flat"
-            activeUnderlineColor="black"
-          />
-          <Text style={styles.signUpCTA}>
-            Don't have an account?{" "}
-            <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignUp")}>Sign up</Text>
-          </Text>
-          <View style={styles.signInButtonDiv}>
-            {isLoading ? <ActivityIndicator size={30} animating={true} color={colors.primaryPurple}/> : <Button
-              mode="contained"
-              buttonColor="#6B6BE1"
-              style={styles.signInButton}
-              onPress={() => signIn(email, password)}
-            >
-              Sign In
-            </Button>}
+        <View style={styles.signInContent}>
+          <View style={styles.signInHeadingDiv}>
+            <Text style={styles.signInText}>Sign in</Text>
+          </View>
+          <View>
+            <TextInput
+              label="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              mode="flat"
+              activeUnderlineColor="black"
+              style={styles.signInInput}
+            />
+            <TextInput
+              label="Password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry={true}
+              style={styles.signInInput}
+              mode="flat"
+              activeUnderlineColor="black"
+            />
+            <Text style={styles.signUpCTA}>
+              Don't have an account?{" "}
+              <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignUp")}>Sign up</Text>
+            </Text>
+            <View style={styles.signInButtonDiv}>
+              {isLoading ? <ActivityIndicator size={30} animating={true} color={colors.primaryPurple}/> : <Button
+                mode="contained"
+                buttonColor="#6B6BE1"
+                style={styles.signInButton}
+                onPress={() => signIn(email, password)}
+              >
+                Sign In
+              </Button>}
+            </View>
           </View>
         </View>
       </View>
-    </View>
     </View>
   );
 };

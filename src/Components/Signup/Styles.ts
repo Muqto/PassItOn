@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { colors } from "../../Colors/Colors";
 
 const styles = StyleSheet.create({
-    signInPageContainer: {
+    signUpPageContainer: {
       height: "100%",
       display: "flex",
       flexDirection: "column",
@@ -10,20 +10,17 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
   
-    signInLogoContainer: {
-      height: "20%",
+    signUpLogoContainer: {
       width: "100%",
-      display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      paddingBottom: 60,
-    },
-    signInLogoText: {
+    },       
+    signUpLogoText: {
       fontSize: 50,
       fontWeight: "bold",
     },
   
-    signInContent: {
+    signUpContent: {
       height: "80%",
       width: "100%",
       display: "flex",
@@ -33,15 +30,16 @@ const styles = StyleSheet.create({
       paddingRight: 20,
     },
   
-    signInHeadingDiv: {
+    signUpHeadingDiv: {
       width: "100%",
       marginBottom: 30,
     },
-    signInText: {
+    signUpText: {
       fontSize: 30,
       fontWeight: "600",
+      paddingTop: 10,
     },
-    signInInput: {
+    signUpInput: {
       marginBottom: 20,
       height: 56,
       backgroundColor: "#EEEEEE",
@@ -54,12 +52,12 @@ const styles = StyleSheet.create({
       color: colors.primaryPurple,
     },
   
-    signInButtonDiv: {
+    signUpButtonDiv: {
       height: 56,
       marginTop: 80,
     },
   
-    signInButton: {
+    signUpButton: {
       width: "100%",
       borderRadius: 5,
       alignContent: "center",
@@ -69,6 +67,10 @@ const styles = StyleSheet.create({
     signUpName: {
       display: 'flex',
       flexDirection: 'row'
+    },
+    nameInput: {
+      flex: 1,
+      marginRight: 4,
     }
   });
 
