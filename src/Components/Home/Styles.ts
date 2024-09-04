@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     homePage: {
         marginLeft: 20,
-        marginRight: 20
+        marginRight: 20,
+        flex: 1
       },
 
     title:{
@@ -141,7 +142,8 @@ const styles = StyleSheet.create({
       
       postButton: {
         backgroundColor: "#6B6BE1",
-        borderRadius: 5
+        borderRadius: 5,
+        marginBottom: 50,
       },
 
       postText: {

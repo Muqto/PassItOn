@@ -12,7 +12,6 @@ const DonatePage = () => {
   const userState = useSelector(userSelector);
   const [donationItemName, setDonationItemName] = useState("");
   const [donationItemDescription, setDonationItemDescription] = useState("");
-  const [donationItemLocation, setDonationItemLocation] = useState("");
   const [category, setCategory] = useState("");
   const categoryList = [
     { label: "Food", value: "Food",},
@@ -31,7 +30,7 @@ const DonatePage = () => {
       "expiration time here",
       0,
       false,
-      {latitude: 45.5048, longitude: 73.5772},
+      {latitude: 45.5048, longitude: -73.5772},
       {
         userId: userState._id,
         isReserved: false,
@@ -42,7 +41,6 @@ const DonatePage = () => {
     )
     setDonationItemName("");
     setDonationItemDescription("");
-    setDonationItemLocation("");
     setCategory("");
   }
   return (
@@ -63,15 +61,6 @@ const DonatePage = () => {
         value={donationItemDescription}
         onChangeText={(text) => setDonationItemDescription(text)}
         style={styles.donationItemDescription}
-        mode="flat"
-        activeUnderlineColor="black"
-      />
-      <TextInput
-        label="Location *"
-        multiline
-        value={donationItemLocation}
-        onChangeText={(text) => setDonationItemLocation(text)}
-        style={styles.donationItemLocation}
         mode="flat"
         activeUnderlineColor="black"
       />
