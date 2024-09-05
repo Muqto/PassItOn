@@ -67,6 +67,10 @@ const styles = StyleSheet.create({
     alignContent: "center",
     fontSize: 50,
   },
+  locationInputContainer: {
+    width: "90%",
+    height: "20%",
+  }
 });
 
 export default styles;

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView } from "react-native";
-import { Button, Portal, Snackbar, TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
 import styles from "./Styles";
 import { userSelector } from "../../store/user/selectors";
 import { useSelector } from "react-redux";
 import {Dropdown} from 'react-native-element-dropdown';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { GOOGLE_PLACES_API_KEY } from '../../../env';
 
 const DonatePage = () => {
   const { donate } = useItem();
@@ -19,7 +21,9 @@ const DonatePage = () => {
     { label: "Furniture", value: "Furniture",},
     { label: "Book", value: "Book",},
     { label: "Stationery",value: "Stationery",},
+    { label: "Other",value: "Other",},
   ];
+  const [location, setLocation] = useState({latitude: 0, longitude: 0})
   const postDonation = () => {
     donate(
       userState._id,
@@ -30,7 +34,7 @@ const DonatePage = () => {
       "expiration time here",
       0,
       false,
-      {latitude: 45.5048, longitude: -73.5772},
+      location,
       {
         userId: userState._id,
         isReserved: false,
@@ -77,6 +81,19 @@ const DonatePage = () => {
           onChange={(category) => setCategory(category.value)}
         />
       </SafeAreaView>
+      <View style={styles.locationInputContainer}>
+        <GooglePlacesAutocomplete 
+          placeholder="Location *" 
+          query={{
+            key: GOOGLE_PLACES_API_KEY,
+            language:'en'
+          }}
+          fetchDetails={true}
+          onPress={(data, details = null) => {
+            setLocation({latitude:details?.geometry?.location?.lat || 0, longitude:details?.geometry?.location?.lng || 0})
+          }}
+        />
+      </View>
       <Text> TODO: ADD PICKUP TIME DATETIME PICKER HERE</Text>
       <Text> TODO: ADD IMAGE UPLOAD OPTION HERE</Text>
       <Button
