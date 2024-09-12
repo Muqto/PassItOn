@@ -6,6 +6,9 @@ import {
   Reservation,
   updateUserDonationAction,
 } from "../store/user/slice";
+import { ItemCoord } from "../store/Items/slice";
+import { addItemsCoordsAction } from '../store/Items/slice';
+import { DateType } from "react-native-ui-datepicker";
 
 const useItem = () => {
   const dispatch = useDispatch();
@@ -19,6 +22,8 @@ const useItem = () => {
     itemStatus: number,
     isRequest: boolean,
     location: Region | LatLng,
+    pickupLocationText: string,
+    pickupTimes: DateType[],
     reservationInfo: Reservation
   ) => {
     try {
@@ -32,10 +37,14 @@ const useItem = () => {
         itemStatus: itemStatus,
         isRequest: isRequest,
         location: location,
+        pickupLocationText: pickupLocationText,
+        pickupTimes: pickupTimes,
         reservationInfo: reservationInfo,
       };
       const res = await uploadDonation(userReq);
       dispatch(updateUserDonationAction({...res.data, distance: 0}));
+      const newItemCoord:ItemCoord = {_id: res.data._id, location: res.data.location, distance: 0, isRequest: isRequest, isSelected: false}
+      dispatch(addItemsCoordsAction([newItemCoord]))
     } catch (error) {
       console.log("error uploading donation", error);
     }

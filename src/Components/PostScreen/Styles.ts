@@ -22,26 +22,31 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  donatePageInfoContainer: {
+    width: "100%",
+    padding: 10,
+    margin: 0,
+  },
   donationItemTitle: {
     marginTop: 20,
     height: 50,
     backgroundColor: "#EEEEEE",
-    width: "90%",
+    width: "100%",
   },
   donationItemDescription: {
     marginTop: 20,
     height: 90,
     backgroundColor: "#EEEEEE",
-    width: "90%",
+    width: "100%",
   },
   donationItemLocation: {
     marginTop: 20,
     height: 60,
     backgroundColor: "#EEEEEE",
-    width: "90%",
+    width: "100%",
   },
   donationDropdownContainer: {
-    width: "90%",
+    width: "100%",
     marginTop: 20,
     marginBottom: 20,
   },
@@ -62,15 +67,46 @@ const styles = StyleSheet.create({
   },
   postDonationButton: {
     marginTop: 20,
-    width: "90%",
+    width: "100%",
     borderRadius: 5,
     alignContent: "center",
     fontSize: 50,
   },
   locationInputContainer: {
-    width: "90%",
-    height: "20%",
-  }
+    width: "100%",
+    marginBottom: 20,
+  },
+  closePickupTimeModalButton: {
+    marginBottom: 30,
+  },
+  pickupTimesContainer: {
+    width: "100%",
+    height: 35,
+    borderRadius: 3,
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  pickupTimesPreview: {
+    width: "80%",
+    height: "100%",
+  },
+  openDateTimePickerButtonContainer: {
+    width: "20%",
+    height: "100%",
+    flex: 1,
+    justifyContent: "center"
+  },
+  openDateTimePickerButton: {
+    width: "100%",
+    height: "100%",
+  },
+  addPickupTimeButton: {
+    width: "100%",
+  },
 });
 
 export default styles;

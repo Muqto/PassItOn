@@ -3,6 +3,7 @@ import { LOCALHOST_IP } from '../../env';
 import { Item, Reservation } from '../store/user/slice';
 import axios from "axios";
 import { ItemCoord } from '../store/Items/slice';
+import { DateType } from 'react-native-ui-datepicker';
 
 // require("dotenv").config();
 
@@ -32,6 +33,8 @@ export type UploadDonationReq = {
   itemStatus: number;
   isRequest: boolean;
   location: Region | LatLng;
+  pickupLocationText: string;
+  pickupTimes: DateType[];
   reservationInfo: Reservation;
 };
 
