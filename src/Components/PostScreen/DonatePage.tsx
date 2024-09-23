@@ -44,7 +44,29 @@ const DonatePage = () => {
     setIsDateTimePickerVisible(false);
     setPickupTimes([...pickupTimes, date])
   }
+
+  const getDistance = (lat1:number, lon1:number, lat2:number, lon2:number) => {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  const deg2rad = (deg:number) => {
+    return deg * (Math.PI/180)
+  }
+
   const postDonation = () => {
+    // calculate distance from user to new donation
+    const distance = getDistance(userState.location?.latitude || 0, userState.location?.longitude || 0, location.latitude || 0, location.longitude || 0)
+
     donate(
       userState._id,
       donationItemName,
@@ -63,7 +85,8 @@ const DonatePage = () => {
         startTime: "N/A",
         expirationTime: "N/A",
         pickUpDate: "N/A",
-      }
+      },
+      distance,
     )
     setDonationItemName("");
     setDonationItemDescription("");
@@ -124,7 +147,7 @@ const DonatePage = () => {
       </View>
       <SafeAreaView style={styles.pickupTimesContainer}>
         <Text numberOfLines={1} style={styles.pickupTimesPreview}>
-          {pickupTimes.length != 0 ? pickupTimes.map((pickupTime) => <Text>{pickupTime?.toString()}, </Text>) : <Text>Pickup times *</Text>}
+          {pickupTimes.length != 0 ? pickupTimes.map((pickupTime, i) => <Text key={`${pickupTime}_${i}`}>{pickupTime?.toString()}, </Text>) : <Text>Pickup times *</Text>}
         </Text>
         <View style={styles.openDateTimePickerButtonContainer}>
         <Button 

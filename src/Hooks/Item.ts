@@ -24,7 +24,8 @@ const useItem = () => {
     location: Region | LatLng,
     pickupLocationText: string,
     pickupTimes: DateType[],
-    reservationInfo: Reservation
+    reservationInfo: Reservation,
+    distance: number,
   ) => {
     try {
       const userReq = {
@@ -42,9 +43,12 @@ const useItem = () => {
         reservationInfo: reservationInfo,
       };
       const res = await uploadDonation(userReq);
-      dispatch(updateUserDonationAction({...res.data, distance: 0}));
-      const newItemCoord:ItemCoord = {_id: res.data._id, location: res.data.location, distance: 0, isRequest: isRequest, isSelected: false}
+      const newItemCoord:ItemCoord = {_id: res.data._id, location: res.data.location, distance: distance, isRequest: isRequest, isSelected: false}
       dispatch(addItemsCoordsAction([newItemCoord]))
+      
+      // update distance param in new item (for front end)
+      dispatch(updateUserDonationAction({...res.data, distance: distance}));
+      
     } catch (error) {
       console.log("error uploading donation", error);
     }

@@ -49,7 +49,7 @@ export default function MapComponent() {
             {itemsCoords.map((item, i) => {
               markerScales.current[item._id] = new Animated.Value(1);
               return  <Marker 
-                        key={`${item.location.latitude}_${item.location.longitude}`} 
+                        key={`${item.location.latitude}_${item.location.longitude}_${i}`} 
                         coordinate={item.location}
                         tracksViewChanges={true} 
                         onPress={() => onMarkerPress(item._id, item.distance)}
