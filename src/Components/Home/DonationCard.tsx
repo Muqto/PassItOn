@@ -1,15 +1,19 @@
-import React from 'react'
-import { View } from 'react-native';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import { View, Image } from 'react-native';
+import { Text } from 'react-native-paper';
 import styles from './Styles';
 import { DonationProps } from './Types';
 
-const DonationCard = ({itemName, expirationTime, itemType}: DonationProps) => {
+const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl}: DonationProps) => {
+
   return (
     <View style = {styles.cardContainer}>
         <View style = {styles.bodyContainer}>
-            <View style = {styles.cardImage}>
-
+            <View>
+            {
+                imageDownloadUrl !== undefined ? 
+                    <Image source={{uri: imageDownloadUrl}} style={styles.cardImage}/> :
+                <View style = {styles.cardImagePlaceholder}></View>
+            }
             </View>
             <View style = {styles.cardDesc}>
                 <View>

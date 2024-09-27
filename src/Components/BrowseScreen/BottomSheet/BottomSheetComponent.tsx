@@ -5,7 +5,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { ListCard } from './Card/ListCard';
 import { colors } from '../../../Colors/Colors';
 import { styles } from './Style';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import { useBottomSheet } from './Hooks';
 
 export const BottomSheetComponent = () => {
@@ -22,7 +22,7 @@ export const BottomSheetComponent = () => {
           } = useBottomSheet()
   const renderItem = useCallback(
     ({ item }) => (
-      <ListCard itemName={item.itemName} itemType={item.itemType} distance={item.distance}/>
+      <ListCard itemName={item.itemName} itemType={item.itemType} distance={item.distance} imageDownloadUrl={item.imageDownloadUrl}/>
     ),
     []
   );

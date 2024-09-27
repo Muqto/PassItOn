@@ -29,6 +29,7 @@ export const useBottomSheet = () => {
     let pageOfItemIds =  donCoords.slice(startIndexDon, startIndexDon + 10)
     let itemIds = pageOfItemIds.map((item) => item._id)
     let res = await getItemsByIds(itemIds)
+    console.log(res, res.data, res.data.items)
     let data = res.data.items.map((item, i) => {
       return {...item, distance: donCoords[startIndexDon + i].distance}
       

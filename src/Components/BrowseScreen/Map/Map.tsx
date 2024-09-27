@@ -26,7 +26,6 @@ export default function MapComponent() {
       ));
     }
  
-
     return (
         <View style={styles.container}>
             { selectedItem && <SelectedCard 
@@ -49,7 +48,7 @@ export default function MapComponent() {
             {itemsCoords.map((item, i) => {
               markerScales.current[item._id] = new Animated.Value(1);
               return  <Marker 
-                        key={`${item.location.latitude}_${item.location.longitude}`} 
+                        key={`${item.location.latitude}_${item.location.longitude}_${i}`} 
                         coordinate={item.location}
                         tracksViewChanges={true} 
                         onPress={() => onMarkerPress(item._id, item.distance)}
@@ -59,7 +58,6 @@ export default function MapComponent() {
                           padding: 10,
                           transform: [{ scale: markerScales.current[item._id],  }],
                         }}>
-                          
                           <FontAwesomeIcon  
                               icon={ item.isRequest ? faBell : faGift } 
                               size={20} 

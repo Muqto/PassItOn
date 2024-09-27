@@ -7,5 +7,6 @@ export type HomeProps = {
 export type DonationProps = {
     itemName: String,
     expirationTime: String,
-    itemType: String
+    itemType: String,
+    imageDownloadUrl: string | undefined,
 }
