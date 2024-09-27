@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { View, Text, SafeAreaView, ScrollView, Modal } from "react-native";
+import { useState, useRef, useEffect } from "react";
+import { View, Text, SafeAreaView, ScrollView, Modal, Image } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
 import styles from "./Styles";
@@ -10,6 +10,9 @@ import {GooglePlacesAutocomplete, GooglePlacesAutocompleteRef} from 'react-nativ
 import { GOOGLE_PLACES_API_KEY } from '../../../env';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
+import * as ImagePicker from 'expo-image-picker';
+import {ref as firebaseStorageRef, getDownloadURL, uploadBytes} from "firebase/storage";
+import { storage } from "../../config/firebase";
 
 const DonatePage = () => {
   const { donate } = useItem();
@@ -30,7 +33,9 @@ const DonatePage = () => {
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false)
   const [pickupTimes, setPickupTimes] = useState<DateType[]>([])
   const [pickupLocationText, setPickupLocationText] = useState("")
-  const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
+  const placesRef = useRef<GooglePlacesAutocompleteRef | null>(null);
+  const [imageuri, setImageUri] = useState<string | undefined>(undefined);
+
   const openDateTimePicker = () => {
     setIsDateTimePickerVisible(true);
   }
@@ -63,10 +68,25 @@ const DonatePage = () => {
     return deg * (Math.PI/180)
   }
 
-  const postDonation = () => {
+  const postDonation = async () => {
     // calculate distance from user to new donation
     const distance = getDistance(userState.location?.latitude || 0, userState.location?.longitude || 0, location.latitude || 0, location.longitude || 0)
+    const storageRef = firebaseStorageRef(storage, "image");
 
+    // upload image blob to firebase storage
+    const fileName = `${userState._id}_${Date.now()}`
+    const donationImageStorageRef = firebaseStorageRef(storageRef, `${fileName}`);
+    // get blob for imageuri 
+    const blobRes = await fetch(imageuri!);
+    const blob = await blobRes.blob();
+
+    // upload image to firebase, store uri in mongoDB
+    await uploadBytes(donationImageStorageRef, blob).then((snapshot) => {
+      console.log('Uploaded a blob or file!');
+    }).catch(e => console.log(e));
+
+    const imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
+    
     donate(
       userState._id,
       donationItemName,
@@ -87,6 +107,7 @@ const DonatePage = () => {
         pickUpDate: "N/A",
       },
       distance,
+      imageDownloadUrl,
     )
     setDonationItemName("");
     setDonationItemDescription("");
@@ -94,8 +115,23 @@ const DonatePage = () => {
     setPickupTimes([])
     setDate(dayjs())
     setLocation({latitude: 0, longitude: 0})
-    ref.current?.setAddressText("")
+    placesRef.current?.setAddressText("")
+    setImageUri(undefined);
   }
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  }
+
   return (
     <View style={styles.donatePageContainer}>
       <Text style={styles.donatePageHeader}>Donate an item</Text>
@@ -132,7 +168,7 @@ const DonatePage = () => {
       </SafeAreaView>
       <View style={styles.locationInputContainer}>
         <GooglePlacesAutocomplete 
-          ref = {ref}
+          ref = {placesRef}
           placeholder="Location *" 
           query={{
             key: GOOGLE_PLACES_API_KEY,
@@ -141,7 +177,7 @@ const DonatePage = () => {
           fetchDetails={true}
           onPress={(data, details = null) => {
             setLocation({latitude:details?.geometry?.location?.lat || 0, longitude:details?.geometry?.location?.lng || 0});
-            setPickupLocationText(ref.current?.getAddressText() || "");
+            setPickupLocationText(placesRef.current?.getAddressText() || "");
           }}
         />
       </View>
@@ -187,6 +223,22 @@ const DonatePage = () => {
           </View>
         </View>
       </Modal>
+      {
+      imageuri !== undefined ? 
+      <View style={styles.uploadedImagePreviewContainer}>
+        <Image source={{uri: imageuri}} style={styles.uploadedImagePreview} />
+      </View> : 
+      <View></View>
+      }
+      <View style={styles.imageUploadButtonContainer}>
+        <Button
+          icon="camera"
+          mode="outlined"
+          onPress={pickImage}
+        >
+          Upload a picture of your donation
+        </Button>
+      </View>
       <Button
         mode="contained"
         buttonColor="#6B6BE1"

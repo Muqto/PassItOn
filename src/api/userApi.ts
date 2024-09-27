@@ -12,16 +12,38 @@ const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) =>
   (API.defaults.headers.common = { Authorization: "Bearer " + token });
-export const getUser = (): Promise<UserRes> => API.get("user/getuser");
-export const addUser = (addUserReq: AddUserReq): Promise<UserRes> =>
-  API.post("user/adduser", { data: addUserReq });
+export const getUser = (): Promise<UserRes> => API.get("user/getuser")
+  .then(res => 
+    {console.log('Response from user/getuser', res);
+      return res
+    })
+  .catch(e => {return e});
+export const addUser = (addUserReq: AddUserReq): Promise<UserRes | void> =>
+  API.post("user/adduser", { data: addUserReq })
+    .then(res => {console.log('Response from user/adduser', res)})
+    .catch(e => console.error(e));
 export const getOrAddUser = (): Promise<UserRes> =>
-  API.post("user/getoradduser");
+  API.post("user/getoradduser")
+    .then(res => 
+      {
+        console.log('Response from user/getoradduser', res);
+        return res
+      })
+    .catch(e => {return e});
 
 export const uploadDonation = (
   uploadDonationReq: UploadDonationReq
 ): Promise<ItemRes> =>
-  API.post("item/uploadDonation", { data: uploadDonationReq });
+  API.post("item/uploadDonation", { data: uploadDonationReq })
+    .then(res => 
+      {
+        console.log('Response from item/uploadDonation', res);
+        return res
+      })
+    .catch(e => 
+      {
+        return e;
+    });
 
 export type UploadDonationReq = {
   userId: string;
@@ -36,6 +58,7 @@ export type UploadDonationReq = {
   pickupLocationText: string;
   pickupTimes: DateType[];
   reservationInfo: Reservation;
+  imageDownloadUrl: string;
 };
 
 export type ItemRes = {

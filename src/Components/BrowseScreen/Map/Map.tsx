@@ -26,7 +26,6 @@ export default function MapComponent() {
       ));
     }
  
-
     return (
         <View style={styles.container}>
             { selectedItem && <SelectedCard 

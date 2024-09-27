@@ -24,6 +24,9 @@ export interface Item {
   isRequest?: boolean,
   location: Region
   reservationInfo: Reservation
+  imageDownloadUrl?: string,
+  pickupTimes?: string[], 
+  pickupLocationText?: string,
 }
 
 export interface UserState {

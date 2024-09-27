@@ -24,8 +24,9 @@ const styles = StyleSheet.create({
   },
   donatePageInfoContainer: {
     width: "100%",
-    padding: 10,
-    margin: 0,
+    margin: 10,
+    paddingRight: 10,
+    paddingLeft: 10,
   },
   donationItemTitle: {
     marginTop: 20,
@@ -107,6 +108,19 @@ const styles = StyleSheet.create({
   addPickupTimeButton: {
     width: "100%",
   },
+  imageUploadButtonContainer: {
+    marginTop: 10,
+  },
+  uploadedImagePreviewContainer: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10
+  },
+  uploadedImagePreview: {
+    height: 100,
+    width: 130
+  }
 });
 
 export default styles;
