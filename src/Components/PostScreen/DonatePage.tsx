@@ -7,12 +7,12 @@ import { userSelector } from "../../store/user/selectors";
 import { useSelector } from "react-redux";
 import {Dropdown} from 'react-native-element-dropdown';
 import {GooglePlacesAutocomplete, GooglePlacesAutocompleteRef} from 'react-native-google-places-autocomplete';
-import { GOOGLE_PLACES_API_KEY } from '../../../env';
 import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 import * as ImagePicker from 'expo-image-picker';
 import {ref as firebaseStorageRef, getDownloadURL, uploadBytes} from "firebase/storage";
 import { storage } from "../../config/firebase";
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 const DonatePage = () => {
   const { donate } = useItem();
@@ -69,55 +69,80 @@ const DonatePage = () => {
   }
 
   const postDonation = async () => {
-    // calculate distance from user to new donation
-    const distance = getDistance(userState.location?.latitude || 0, userState.location?.longitude || 0, location.latitude || 0, location.longitude || 0)
-    const storageRef = firebaseStorageRef(storage, "image");
-
-    // upload image blob to firebase storage
-    const fileName = `${userState._id}_${Date.now()}`
-    const donationImageStorageRef = firebaseStorageRef(storageRef, `${fileName}`);
-    // get blob for imageuri 
-    const blobRes = await fetch(imageuri!);
-    const blob = await blobRes.blob();
-
-    // upload image to firebase, store uri in mongoDB
-    await uploadBytes(donationImageStorageRef, blob).then((snapshot) => {
-      console.log('Uploaded a blob or file!');
-    }).catch(e => console.log(e));
-
-    const imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
-    
-    donate(
-      userState._id,
-      donationItemName,
-      category,
-      donationItemDescription,
-      dayjs().toString(),
-      dayjs().add(7, 'day').toString(),
-      0,
-      false,
-      location,
-      pickupLocationText,
-      pickupTimes,
-      {
-        userId: userState._id,
-        isReserved: false,
-        startTime: "N/A",
-        expirationTime: "N/A",
-        pickUpDate: "N/A",
-      },
-      distance,
-      imageDownloadUrl,
-    )
-    setDonationItemName("");
-    setDonationItemDescription("");
-    setCategory("");
-    setPickupTimes([])
-    setDate(dayjs())
-    setLocation({latitude: 0, longitude: 0})
-    placesRef.current?.setAddressText("")
-    setImageUri(undefined);
-  }
+    try {
+      // calculate distance from user to new donation
+      const distance = getDistance(
+        userState.location?.latitude || 0,
+        userState.location?.longitude || 0,
+        location.latitude || 0,
+        location.longitude || 0
+      );
+  
+      let imageDownloadUrl = "";
+  
+      // If an image is provided, upload it to Firebase
+      if (imageuri) {
+        const storageRef = firebaseStorageRef(storage, "image");
+  
+        // Create unique filename for the uploaded image
+        const fileName = `${userState._id}_${Date.now()}`;
+        const donationImageStorageRef = firebaseStorageRef(storageRef, `${fileName}`);
+  
+        try {
+          // Fetch image blob
+          const blobRes = await fetch(imageuri);
+          const blob = await blobRes.blob();
+  
+          // Upload image blob to Firebase
+          await uploadBytes(donationImageStorageRef, blob);
+          console.log("Uploaded a blob or file!");
+  
+          // Get download URL for the image
+          imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
+        } catch (error) {
+          console.log("Error uploading image:", error);
+          // You could add additional handling here if needed, e.g., notifying the user that the image upload failed.
+        }
+      }
+  
+      // Proceed with the donation creation, with or without an image
+      donate(
+        userState._id,
+        donationItemName,
+        category,
+        donationItemDescription,
+        dayjs().toString(),
+        dayjs().add(7, "day").toString(),
+        0,
+        false,
+        location,
+        pickupLocationText,
+        pickupTimes,
+        {
+          userId: userState._id,
+          isReserved: false,
+          startTime: "N/A",
+          expirationTime: "N/A",
+          pickUpDate: "N/A",
+        },
+        distance,
+        imageDownloadUrl // This will be empty if no image was uploaded
+      );
+  
+      // Reset form states
+      setDonationItemName("");
+      setDonationItemDescription("");
+      setCategory("");
+      setPickupTimes([]);
+      setDate(dayjs());
+      setLocation({ latitude: 0, longitude: 0 });
+      placesRef.current?.setAddressText("");
+      setImageUri(undefined);
+    } catch (error) {
+      console.log("Error in postDonation function:", error);
+    }
+  };
+  
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -133,9 +158,9 @@ const DonatePage = () => {
   }
 
   return (
-    <View style={styles.donatePageContainer}>
+    <View style={styles.donatePageContainer} >
       <Text style={styles.donatePageHeader}>Donate an item</Text>
-      <ScrollView style={styles.donatePageInfoContainer} >
+      <ScrollView style={styles.donatePageInfoContainer} keyboardShouldPersistTaps={'handled'}>
       <TextInput
         label="Item name *"
         value={donationItemName}
@@ -171,7 +196,7 @@ const DonatePage = () => {
           ref = {placesRef}
           placeholder="Location *" 
           query={{
-            key: GOOGLE_PLACES_API_KEY,
+            key: "AIzaSyA95NKdnduXsF7IoCZ5Je6qAJl7FGQksTQ",
             language:'en'
           }}
           fetchDetails={true}

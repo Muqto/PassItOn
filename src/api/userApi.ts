@@ -1,5 +1,4 @@
 import { LatLng, Region } from 'react-native-maps';
-import { LOCALHOST_IP } from '../../env';
 import { Item, Reservation } from '../store/user/slice';
 import axios from "axios";
 import { ItemCoord } from '../store/Items/slice';
@@ -7,7 +6,7 @@ import { DateType } from 'react-native-ui-datepicker';
 
 // require("dotenv").config();
 
-const LOCALHOST = LOCALHOST_IP;
+const LOCALHOST = "http://10.0.0.28:6006/";
 const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) =>
