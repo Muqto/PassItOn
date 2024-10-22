@@ -1,3 +1,5 @@
+import { LatLng } from "react-native-maps"
+
 export type HomeProps = {
     userId: string,
     firstName: string,
@@ -5,7 +7,12 @@ export type HomeProps = {
 }
 
 export type DonationProps = {
-    itemName: String,
-    expirationTime: String,
-    itemType: String
+    itemName: string,
+    expirationTime: string,
+    itemType: string,
+    description: string,
+    itemStatus: number,
+    location: LatLng,
+    userId: string,
+    fullName: string
 }

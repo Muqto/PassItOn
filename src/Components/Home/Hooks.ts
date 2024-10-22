@@ -7,9 +7,7 @@ export const useHome = () => {
 
     const donationCardProps = donations.map((item) => {
         console.log(item)
-        const {itemName, expirationTime, itemType} = item
-        const prop: DonationProps = {itemName, expirationTime, itemType}
-        return prop
+        return item
     })
 
     return {donationCardProps}
