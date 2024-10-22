@@ -26,7 +26,6 @@ export default function MapComponent() {
       ));
     }
  
-
     return (
         <View style={styles.container}>
             { selectedItem && <SelectedCard 
@@ -59,7 +58,6 @@ export default function MapComponent() {
                           padding: 10,
                           transform: [{ scale: markerScales.current[item._id],  }],
                         }}>
-                          
                           <FontAwesomeIcon  
                               icon={ item.isRequest ? faBell : faGift } 
                               size={20} 

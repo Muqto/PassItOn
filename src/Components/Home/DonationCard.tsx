@@ -1,13 +1,13 @@
-import React from 'react'
-import { TouchableOpacity, View } from 'react-native';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import { TouchableOpacity, View, Image } from 'react-native';
+import { Text } from 'react-native-paper';
 import styles from './Styles';
 import { DonationProps } from './Types';
 import { useNavigation } from '@react-navigation/native';
 import { formatDate } from './DonationDetails';
 import { getUserById } from '../../api/userApi';
 
-const DonationCard = ({itemName, expirationTime, itemType, itemStatus, userId, description}: DonationProps) => {
+const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, itemStatus, userId, description}: DonationProps) => {
+
     const navigation = useNavigation(); // access navigation
     const getUserName = async () => {
         const user = await getUserById({id: userId});
@@ -17,8 +17,12 @@ const DonationCard = ({itemName, expirationTime, itemType, itemStatus, userId, d
   return (
     <View style = {styles.cardContainer}>
         <View style = {styles.bodyContainer}>
-            <View style = {styles.cardImage}>
-
+            <View>
+            {
+                imageDownloadUrl !== undefined ? 
+                    <Image source={{uri: imageDownloadUrl}} style={styles.cardImage}/> :
+                <View style = {styles.cardImagePlaceholder}></View>
+            }
             </View>
             <View style = {styles.cardDesc}>
                 <View>

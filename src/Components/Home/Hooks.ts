@@ -4,10 +4,10 @@ import { DonationProps } from "./Types"
 
 export const useHome = () => {
     const donations = useSelector(userDonationsSelector)
-
     const donationCardProps = donations.map((item) => {
-        console.log(item)
-        return item
+        const {itemName, expirationTime, itemType, imageDownloadUrl} = item
+        const prop: DonationProps = {itemName, expirationTime, itemType, imageDownloadUrl}
+        return prop
     })
 
     return {donationCardProps}

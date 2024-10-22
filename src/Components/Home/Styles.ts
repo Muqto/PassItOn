@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     homePage: {
         marginLeft: 20,
-        marginRight: 20
+        marginRight: 20,
+        flex: 1
       },
 
     title:{
@@ -94,10 +95,14 @@ const styles = StyleSheet.create({
       cardImage: {
         width: 100,
         height: 100,
+        borderRadius: 20
+      },
+      cardImagePlaceholder: {
+        width: 100,
+        height: 100,
         backgroundColor: "black",
         borderRadius: 20
       },
-
       cardDesc: {      
         marginLeft: 15,
         display: "flex",
@@ -141,7 +146,8 @@ const styles = StyleSheet.create({
       
       postButton: {
         backgroundColor: "#6B6BE1",
-        borderRadius: 5
+        borderRadius: 5,
+        marginBottom: 50,
       },
 
       postText: {

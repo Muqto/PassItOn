@@ -14,5 +14,6 @@ export type DonationProps = {
     itemStatus: number,
     location: LatLng,
     userId: string,
-    fullName: string
+    fullName: string,
+    imageDownloadUrl: string | undefined,
 }
