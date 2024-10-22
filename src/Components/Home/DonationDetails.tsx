@@ -31,6 +31,7 @@ const DonationDetails = ({ route }) => {
     userId,
     itemStatus,
   } = route.params;
+  console.log(route)
   const navigation = useNavigation();
   const [fullName, setFullName] = useState("");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -108,7 +109,8 @@ const DonationDetails = ({ route }) => {
           </Text>
           <Text style={styles.sectionTitle}>Donor</Text>
           <Text style={styles.detailText}>
-            {fullName ? fullName : "Loading..."}
+            Jon Doe
+            {/* {fullName ? fullName : "Loading..."} */}
           </Text>
         </View>
 

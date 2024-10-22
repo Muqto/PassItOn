@@ -33,7 +33,7 @@ const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, ite
                 <View style={styles.details}>
             <TouchableOpacity
               style={styles.detailsButton}
-              onPress={() => navigation.navigate('DonationDetails', { itemName, expirationTime, itemType, description, userId, itemStatus })}
+              onPress={() => navigation.navigate('DonationDetails', { itemName, expirationTime, itemType, description, userId, itemStatus, description })}
             >
               <Text style={styles.detailsText}>Details</Text>
             </TouchableOpacity>
