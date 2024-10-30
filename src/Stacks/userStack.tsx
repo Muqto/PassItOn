@@ -12,6 +12,7 @@ import { LatLng, Region } from 'react-native-maps';
 import * as Location from 'expo-location' 
 import { addItemsCoordsAction } from '../store/Items/slice';
 import FeedbackScreen from '../Components/Support/FeedbackScreen';
+import ReportScreen from '../Components/Support/ReportScreen';
 
 const Stack = createNativeStackNavigator();
 export default function UserStack() { 
@@ -75,6 +76,7 @@ export default function UserStack() {
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name="TabNavigation" component={TabNavigation} />
                 <Stack.Screen name="SendFeedback" component={FeedbackScreen} />
+                <Stack.Screen name="ReportListing" component={ReportScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

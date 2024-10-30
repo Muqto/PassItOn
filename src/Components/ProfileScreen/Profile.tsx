@@ -12,6 +12,9 @@ const Profile = ({navigation}) => {
       <Pressable onPress={() => navigation.navigate('SendFeedback')}>
           <Text style={styles.userActionTitle}>Send Feedback</Text>
       </Pressable>
+      <Pressable onPress={() => navigation.navigate('ReportListing')}>
+          <Text style={styles.userActionTitle}>Report an Item</Text>
+      </Pressable>
     </View>
   )
 }
