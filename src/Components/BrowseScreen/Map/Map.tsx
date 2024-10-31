@@ -29,6 +29,7 @@ export default function MapComponent() {
     return (
         <View style={styles.container}>
             { selectedItem && <SelectedCard 
+              itemId={selectedItem._id} 
               itemName={selectedItem.itemName} 
               itemType={selectedItem.itemType} 
               distance={selectedItem.distance} 
@@ -46,11 +47,14 @@ export default function MapComponent() {
                 radius={25}
             >
             {itemsCoords.map((item, i) => {
-              markerScales.current[item._id] = new Animated.Value(1);
+              if (!markerScales.current[item._id]) {
+                markerScales.current[item._id] = new Animated.Value(1);
+              }
+              
               return  <Marker 
                         key={`${item.location.latitude}_${item.location.longitude}_${i}`} 
                         coordinate={item.location}
-                        tracksViewChanges={true} 
+                        tracksViewChanges={false} 
                         onPress={() => onMarkerPress(item._id, item.distance)}
                         >
                         <Animated.View

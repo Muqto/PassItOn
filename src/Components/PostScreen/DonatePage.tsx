@@ -158,123 +158,128 @@ const DonatePage = () => {
   }
 
   return (
-    <View style={styles.donatePageContainer} >
-      <Text style={styles.donatePageHeader}>Donate an item</Text>
-      <ScrollView style={styles.donatePageInfoContainer} keyboardShouldPersistTaps={'handled'}>
-      <TextInput
-        label="Item name *"
-        value={donationItemName}
-        onChangeText={(text) => setDonationItemName(text)}
-        style={styles.donationItemTitle}
-        mode="flat"
-        activeUnderlineColor="black"
-      />
-      <TextInput
-        label="Description *"
-        multiline
-        value={donationItemDescription}
-        onChangeText={(text) => setDonationItemDescription(text)}
-        style={styles.donationItemDescription}
-        mode="flat"
-        activeUnderlineColor="black"
-      />
-      <SafeAreaView style={styles.donationDropdownContainer}>
-        <Dropdown 
-          style={styles.donationDropdown}
-          placeholderStyle={styles.donationDropdownPlaceholder}
-          selectedTextStyle={styles.donationDropdownSelectedText}
-          data={categoryList}
-          labelField="label"
-          valueField="value"
-          placeholder="Category *"
-          value={category}
-          onChange={(category) => setCategory(category.value)}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.donatePageContainer} >
+        <Text style={styles.donatePageHeader}>Donate an item</Text>
+        <ScrollView style={styles.donatePageInfoContainer} keyboardShouldPersistTaps={'handled'}>
+        <TextInput
+          label="Item name *"
+          value={donationItemName}
+          onChangeText={(text) => setDonationItemName(text)}
+          style={styles.donationItemTitle}
+          mode="flat"
+          activeUnderlineColor="black"
         />
-      </SafeAreaView>
-      <View style={styles.locationInputContainer}>
-        <GooglePlacesAutocomplete 
-          ref = {placesRef}
-          placeholder="Location *" 
-          query={{
-            key: "AIzaSyA95NKdnduXsF7IoCZ5Je6qAJl7FGQksTQ",
-            language:'en'
-          }}
-          fetchDetails={true}
-          onPress={(data, details = null) => {
-            setLocation({latitude:details?.geometry?.location?.lat || 0, longitude:details?.geometry?.location?.lng || 0});
-            setPickupLocationText(placesRef.current?.getAddressText() || "");
-          }}
+        <TextInput
+          label="Description *"
+          multiline
+          value={donationItemDescription}
+          onChangeText={(text) => setDonationItemDescription(text)}
+          style={styles.donationItemDescription}
+          mode="flat"
+          activeUnderlineColor="black"
         />
-      </View>
-      <SafeAreaView style={styles.pickupTimesContainer}>
-        <Text numberOfLines={1} style={styles.pickupTimesPreview}>
-          {pickupTimes.length != 0 ? pickupTimes.map((pickupTime, i) => <Text key={`${pickupTime}_${i}`}>{pickupTime?.toString()}, </Text>) : <Text>Pickup times *</Text>}
-        </Text>
-        <View style={styles.openDateTimePickerButtonContainer}>
-        <Button 
+        <SafeAreaView style={styles.donationDropdownContainer}>
+          <Dropdown 
+            style={styles.donationDropdown}
+            placeholderStyle={styles.donationDropdownPlaceholder}
+            selectedTextStyle={styles.donationDropdownSelectedText}
+            data={categoryList}
+            labelField="label"
+            valueField="value"
+            placeholder="Category *"
+            value={category}
+            onChange={(category) => setCategory(category.value)}
+          />
+        </SafeAreaView>
+        <View style={styles.locationInputContainer}>
+          <GooglePlacesAutocomplete 
+            ref = {placesRef}
+            placeholder="Location *" 
+            query={{
+              key: "AIzaSyA95NKdnduXsF7IoCZ5Je6qAJl7FGQksTQ",
+              language:'en'
+            }}
+            fetchDetails={true}
+            onPress={(data, details = null) => {
+              setLocation({latitude:details?.geometry?.location?.lat || 0, longitude:details?.geometry?.location?.lng || 0});
+              setPickupLocationText(placesRef.current?.getAddressText() || "");
+            }}
+          />
+        </View>
+        <SafeAreaView style={styles.pickupTimesContainer}>
+          <Text numberOfLines={1} style={styles.pickupTimesPreview}>
+            {pickupTimes.length != 0 ? pickupTimes.map((pickupTime, i) => <Text key={`${pickupTime}_${i}`}>{pickupTime?.toString()}, </Text>) : <Text>Pickup times *</Text>}
+          </Text>
+          <View style={styles.openDateTimePickerButtonContainer}>
+          <Button 
+            mode="contained"
+            buttonColor="#6B6BE1"
+            style={styles.openDateTimePickerButton}
+            onPress={openDateTimePicker}>
+          +
+          </Button>
+          </View>
+        </SafeAreaView>
+        <Modal animationType="slide" visible={isDateTimePickerVisible}>
+          <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{flex:1, alignItems: 'center', justifyContent: 'center', padding: 20,}}>  
+              <Button 
+                mode="contained-tonal"
+                style={styles.closePickupTimeModalButton}
+                onPress={handleClosePickupTimeModal}>
+              Close Modal
+              </Button>
+              <Text style={{paddingBottom: 40, fontSize: 18, textAlign: "center"}}>Please select a pickup time during which you are available for 15 minutes</Text>
+              <DateTimePicker 
+                mode="single" 
+                timePicker 
+                date={date} 
+                minDate={dayjs()}
+                maxDate={dayjs().add(7, 'day')}
+                onChange={handleDateChange}
+              />
+              <Button 
+                mode="contained"
+                buttonColor="#6B6BE1"
+                style={styles.addPickupTimeButton}
+                onPress={addPickupTime}>
+              Add Availability
+              </Button>
+            </View>
+          </View>
+        </Modal>
+        {
+        imageuri !== undefined ? 
+        <View style={styles.uploadedImagePreviewContainer}>
+          <Image source={{uri: imageuri}} style={styles.uploadedImagePreview} />
+        </View> : 
+        <View></View>
+        }
+        <View style={styles.imageUploadButtonContainer}>
+          <Button
+            icon="camera"
+            mode="outlined"
+            onPress={pickImage}
+          >
+            Upload a picture of your donation
+          </Button>
+        </View>
+        <Button
           mode="contained"
           buttonColor="#6B6BE1"
-          style={styles.openDateTimePickerButton}
-          onPress={openDateTimePicker}>
-        +
-        </Button>
-        </View>
-      </SafeAreaView>
-      <Modal animationType="slide" visible={isDateTimePickerVisible}>
-        <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-          <View style={{flex:1, alignItems: 'center', justifyContent: 'center', padding: 20,}}>  
-            <Button 
-              mode="contained-tonal"
-              style={styles.closePickupTimeModalButton}
-              onPress={handleClosePickupTimeModal}>
-            Close Modal
-            </Button>
-            <Text style={{paddingBottom: 40, fontSize: 18, textAlign: "center"}}>Please select a pickup time during which you are available for 15 minutes</Text>
-            <DateTimePicker 
-              mode="single" 
-              timePicker 
-              date={date} 
-              minDate={dayjs()}
-              maxDate={dayjs().add(7, 'day')}
-              onChange={handleDateChange}
-            />
-            <Button 
-              mode="contained"
-              buttonColor="#6B6BE1"
-              style={styles.addPickupTimeButton}
-              onPress={addPickupTime}>
-            Add Availability
-            </Button>
-          </View>
-        </View>
-      </Modal>
-      {
-      imageuri !== undefined ? 
-      <View style={styles.uploadedImagePreviewContainer}>
-        <Image source={{uri: imageuri}} style={styles.uploadedImagePreview} />
-      </View> : 
-      <View></View>
-      }
-      <View style={styles.imageUploadButtonContainer}>
-        <Button
-          icon="camera"
-          mode="outlined"
-          onPress={pickImage}
+          style={styles.postDonationButton}
+          onPress={postDonation} 
         >
-          Upload a picture of your donation
+          Donate
         </Button>
+        <Text> Please note that your donation posting will expire in 1 week. </Text>
+        </ScrollView>
       </View>
-      <Button
-        mode="contained"
-        buttonColor="#6B6BE1"
-        style={styles.postDonationButton}
-        onPress={postDonation} 
-      >
-        Donate
-      </Button>
-      <Text> Please note that your donation posting will expire in 1 week. </Text>
-      </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
