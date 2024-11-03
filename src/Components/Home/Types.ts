@@ -13,6 +13,7 @@ export type DonationProps = {
     description: string,
     itemStatus: number,
     location: LatLng,
+    pickupLocationText: string | undefined,
     userId: string,
     fullName: string,
     imageDownloadUrl: string | undefined,

@@ -175,6 +175,7 @@ const DonatePage = () => {
             language:'en'
           }}
           fetchDetails={true}
+          keepResultsAfterBlur={true}
           onPress={(data, details = null) => {
             setLocation({latitude:details?.geometry?.location?.lat || 0, longitude:details?.geometry?.location?.lng || 0});
             setPickupLocationText(placesRef.current?.getAddressText() || "");

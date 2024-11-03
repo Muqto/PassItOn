@@ -13,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getUserById } from "../../api/userApi";
 import { Divider } from "react-native-paper";
+import { Image } from 'expo-image';
+
 
 export const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -30,13 +32,18 @@ const DonationDetails = ({ route }) => {
     description,
     userId,
     itemStatus,
+    imageDownloadUrl,
+    pickupLocationText
   } = route.params;
-  console.log(route)
+  console.log(route);
   const navigation = useNavigation();
   const [fullName, setFullName] = useState("");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [isImageModalVisible, setImageModalVisible] = useState(false);
 
+  const openImageModal = () => setImageModalVisible(true);
+  const closeImageModal = () => setImageModalVisible(false);
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -67,11 +74,33 @@ const DonationDetails = ({ route }) => {
       </View>
 
       {/* Image Placeholder */}
-      <View style={styles.imageContainer}>
-        <Text style={styles.imagePlaceholder}>
-          image of the item here if provided, else placeholder
-        </Text>
-      </View>
+      <View>
+      {/* Main Image Container */}
+      <TouchableOpacity onPress={openImageModal}>
+        <View style={styles.imageContainer}>
+          {imageDownloadUrl ? (
+            <Image
+              source={{ uri: imageDownloadUrl}}
+              style={styles.cardImage}
+            />
+          ) : (
+            <Text style={styles.imagePlaceholder}>
+              image of the item here if provided, else placeholder
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
+
+      {/* Modal for Full-Size Image */}
+      <Modal visible={isImageModalVisible} transparent={true}>
+        <TouchableOpacity style={styles.modalBackground} onPress={closeImageModal}>
+          <Image
+            source={{ uri: imageDownloadUrl }}
+            style={styles.fullSizeImage}
+          />
+        </TouchableOpacity>
+      </Modal>
+    </View>
 
       {/* Donation Details */}
       <View style={styles.detailsContainer}>
@@ -105,7 +134,7 @@ const DonationDetails = ({ route }) => {
           </Text>
           <Text style={styles.sectionTitle}>Pickup location</Text>
           <Text style={styles.detailText}>
-            845 Sherbrooke St W, Montreal, Quebec
+            {pickupLocationText ? pickupLocationText : "Not specified"}
           </Text>
           <Text style={styles.sectionTitle}>Donor</Text>
           <Text style={styles.detailText}>
@@ -147,7 +176,7 @@ const DonationDetails = ({ route }) => {
                 {/* This prevents the modal content from closing when pressed */}
                 <View style={styles.modalContent}>
                   <Text style={styles.modalTitle}>Complete transaction</Text>
-                  <Divider style={{marginBottom: 20}}/>
+                  <Divider style={{ marginBottom: 20 }} />
                   <Text style={styles.modalText}>
                     Complete transaction for item:{" "}
                     <Text style={styles.modalItemName}>{itemName}</Text>?
@@ -179,6 +208,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
   },
   headerContainer: {
     flexDirection: "row",
@@ -262,6 +295,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#808080",
   },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullSizeImage: {
+    width: '90%',
+    height: '90%',
+    resizeMode: 'contain',
+  },
   completeButton: {
     backgroundColor: "#6B6BE1",
     paddingVertical: 12,
@@ -303,7 +347,6 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     fontSize: 20,
     color: "#6B6BE1",
-
   },
   modalDescription: {
     fontSize: 14,
@@ -319,13 +362,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginLeft: 30,
     marginRight: 30,
-    marginBottom: 50
+    marginBottom: 50,
   },
   confirmButtonText: {
     color: "#fff",
     fontSize: 15,
     fontWeight: "400",
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 

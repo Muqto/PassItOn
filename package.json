@@ -25,6 +25,7 @@
     "axios": "^1.6.7",
     "expo": "^51.0.32",
     "expo-constants": "~16.0.2",
+    "expo-image-picker": "~14.7.1",
     "expo-linking": "~6.3.1",
     "expo-location": "~17.0.1",
     "expo-router": "~3.5.23",
@@ -49,7 +50,7 @@
     "react-native-ui-datepicker": "^2.0.3",
     "react-native-web": "~0.19.6",
     "react-redux": "^9.1.0",
-    "expo-image-picker": "~14.7.1"
+    "expo-image": "~1.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

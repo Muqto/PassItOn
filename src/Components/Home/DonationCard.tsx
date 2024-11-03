@@ -1,4 +1,6 @@
-import { TouchableOpacity, View, Image } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+
 import { Text } from 'react-native-paper';
 import styles from './Styles';
 import { DonationProps } from './Types';
@@ -6,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { formatDate } from './DonationDetails';
 import { getUserById } from '../../api/userApi';
 
-const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, itemStatus, userId, description}: DonationProps) => {
+const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, itemStatus, userId, description, pickupLocationText}: DonationProps) => {
 
     const navigation = useNavigation(); // access navigation
     const getUserName = async () => {
@@ -33,7 +35,7 @@ const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, ite
                 <View style={styles.details}>
             <TouchableOpacity
               style={styles.detailsButton}
-              onPress={() => navigation.navigate('DonationDetails', { itemName, expirationTime, itemType, description, userId, itemStatus, description })}
+              onPress={() => navigation.navigate('DonationDetails', { itemName, expirationTime, itemType, description, userId, itemStatus, imageDownloadUrl, pickupLocationText })}
             >
               <Text style={styles.detailsText}>Details</Text>
             </TouchableOpacity>
