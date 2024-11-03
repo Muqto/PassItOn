@@ -5,16 +5,28 @@ import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { colors } from '../../../../Colors/Colors';
 import {styles as listCardStyle} from '../../BottomSheet/Card/Styles'
+import { Image } from 'expo-image';
 type SelectedCardProps = {
   itemName: string,
   itemType: string,
+  imageDownloadUrl: string | undefined,
   distance: number,
 }
 export const SelectedCard = (props: SelectedCardProps) => {
   return (
     <View style = {styles.container}>
         <View style={styles.subContainer}>
-        <View style = {styles.image}></View>
+        <View style = {styles.image}>
+        {props.imageDownloadUrl ? (
+            <Image
+              source={{ uri: props.imageDownloadUrl}}
+              style={styles.cardImage}
+            />
+          ) : (
+            <View >
+            </View>
+          )}
+        </View>
         <View style = {listCardStyle.textContainer}>
           <Text style={listCardStyle.itemText}>{props.itemName}</Text>
           <Text style={listCardStyle.categText}>{props.itemType}</Text>
@@ -44,6 +56,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  imagePlaceholder: {
+    color: "#808080",
+    fontSize: 14,
+  },
   subContainer: {
       height: 80,
       padding: 6,
@@ -59,7 +75,11 @@ const styles = StyleSheet.create({
   image: {
     width: 60,
     height: 60,
-    backgroundColor: colors.primaryPurple,
+    borderRadius: 10
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
     borderRadius: 10
   },
 

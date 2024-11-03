@@ -27,8 +27,9 @@ export default function MapComponent() {
     }
  
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
             { selectedItem && <SelectedCard 
+              imageDownloadUrl={selectedItem.imageDownloadUrl}
               itemName={selectedItem.itemName} 
               itemType={selectedItem.itemType} 
               distance={selectedItem.distance} 
