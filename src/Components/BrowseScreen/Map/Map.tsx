@@ -1,5 +1,5 @@
-import { Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE} from 'react-native-maps';
+import { Animated, Platform, StyleSheet, View } from 'react-native';
 import ClusterMapView from 'react-native-map-clustering';
 import { colors } from '../../../Colors/Colors';
 import { useSelector } from 'react-redux';
@@ -36,7 +36,7 @@ export default function MapComponent() {
             <ClusterMapView 
                 moveOnMarkerPress={false}
                 style={styles.map} 
-                provider={PROVIDER_GOOGLE} 
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
                 region={location}
                 showsUserLocation
                 showsMyLocationButton

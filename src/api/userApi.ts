@@ -1,5 +1,5 @@
 import { LatLng, Region } from 'react-native-maps';
-import { LOCALHOST_IP } from '../../env';
+import {LOCALHOST_IP} from '../../env.js'
 import { Item, Reservation } from '../store/user/slice';
 import axios from "axios";
 import { ItemCoord } from '../store/Items/slice';
