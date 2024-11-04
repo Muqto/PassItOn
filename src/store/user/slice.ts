@@ -10,6 +10,7 @@ export interface Reservation {
   startTime: String;
   expirationTime: String;
   pickUpDate: String;
+  itemId: any;
 }
 
 export interface Item {

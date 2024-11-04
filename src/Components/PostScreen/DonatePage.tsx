@@ -83,7 +83,7 @@ const DonatePage = () => {
     // upload image to firebase, store uri in mongoDB
     await uploadBytes(donationImageStorageRef, blob).then((snapshot) => {
       console.log('Uploaded a blob or file!');
-    }).catch(e => console.log(e));
+    }).catch(e => console.log('error uploading image:', e));
 
     const imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
     
@@ -105,6 +105,7 @@ const DonatePage = () => {
         startTime: "N/A",
         expirationTime: "N/A",
         pickUpDate: "N/A",
+        itemId: 0,
       },
       distance,
       imageDownloadUrl,
