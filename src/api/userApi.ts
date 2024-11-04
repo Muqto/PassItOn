@@ -7,21 +7,26 @@ import { DateType } from 'react-native-ui-datepicker';
 
 // require("dotenv").config();
 
+// const LOCALHOST = "http://10.0.0.28:6006/"; // iOS Emulator
+// const LOCALHOST = "http://10.0.2.2:6006"; // Android Emulator
 const LOCALHOST = LOCALHOST_IP;
 const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) =>
   (API.defaults.headers.common = { Authorization: "Bearer " + token });
+
 export const getUser = (): Promise<UserRes> => API.get("user/getuser")
   .then(res => 
     {console.log('Response from user/getuser', res);
       return res
     })
   .catch(e => {return e});
+
 export const addUser = (addUserReq: AddUserReq): Promise<UserRes | void> =>
   API.post("user/adduser", { data: addUserReq })
     .then(res => {console.log('Response from user/adduser', res)})
     .catch(e => console.error(e));
+    
 export const getOrAddUser = (): Promise<UserRes> =>
   API.post("user/getoradduser")
     .then(res => 
@@ -99,14 +104,14 @@ export type getItemsCoordRes = {
   }
 }
 export type UserRes = {
-    data:
-        {
-        _id: String,
-        email: String,
-        firstName: String,
-        lastName: String,
-        rating: Number
-        reservations: Item[],
-        donations: Item[]
-        }
+  data:
+  {
+    _id: String,
+    email: String,
+    firstName: String,
+    lastName: String,
+    rating: Number
+    reservations: Item[],
+    donations: Item[]
+  }
 }
