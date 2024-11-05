@@ -145,8 +145,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 15,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#e0e0e0',
     marginBottom: 20,
   },
   modalHeaderText: {
@@ -159,7 +157,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 15,
     backgroundColor: '#6B6BE1',
-    // backgroundColor: '#fff',
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -168,7 +165,6 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: '#fff',
-    // color: '#6B6BE1',
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -266,6 +262,38 @@ const styles = StyleSheet.create({
   },
   selectedDateText: {
     color: '#fff',
+  },
+
+  // =========================================================
+  // Time Options Styles
+  // =========================================================
+  timesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  timeOption: {
+    width: 90,
+    height: 30,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5,
+  },
+  selectedTimeOption: {
+    backgroundColor: '#6B6BE1',
+  },
+  timeOptionText: {
+    color: '#333',
+    fontSize: 16,
+  },
+  selectedTimeOptionText: {
+    color: '#fff',
+  },
+  noTimesText: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
   },
 
   // =========================================================

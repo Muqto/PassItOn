@@ -14,6 +14,9 @@ import { createReservation } from '../../../api/reservationApi';
 import { getItemsByIds } from '../../../api/userApi';
 import styles from './Styles';
 import { NavigationProp, RouteProp } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { userSelector } from "../../../store/user/selectors";
+
 
 interface Item {
   _id: string;
@@ -43,7 +46,6 @@ interface DonationFocusProps {
   route: RouteProp<any, any>;
 }
 
-// New interface for day and date with full date info
 interface DayAndDate {
   day: string;
   date: number;
@@ -55,12 +57,17 @@ interface DayAndDate {
 const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   const { itemId } = route.params || {};
   const [item, setItem] = useState<Item | null>(null);
+  const userState = useSelector(userSelector);
+  const userId = userState._id;
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalStep, setModalStep] = useState<'selection' | 'confirmation'>('selection');
   const [selectedPickupDate, setSelectedPickupDate] = useState<DayAndDate | null>(null);
+  const [selectedPickupTime, setSelectedPickupTime] = useState<string | null>(null);
+
+  const [pickupTimesByDate, setPickupTimesByDate] = useState<{ [dateString: string]: string[] }>({});
 
   const getStatusText = (status: number) => {
     switch (status) {
@@ -113,11 +120,11 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
 
       try {
         setLoading(true);
-        let res = await getItemsByIds([itemId])
-        const items = res.data.items
-        console.log("items: ", items)
-        if (items[0] && items.length == 1) {
+        let res = await getItemsByIds([itemId]);
+        const items = res.data.items;
+        if (items[0] && items.length === 1) {
           setItem(items[0]);
+          // console.log("Item: ", item)
         } else {
           setError('Item not found.');
         }
@@ -137,6 +144,29 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
     setDaysAndDates(generatedDaysAndDates);
   }, []);
 
+  const processPickupTimes = () => {
+    const timesByDate: { [dateString: string]: string[] } = {};
+
+    if (item && item.pickupTimes) {
+      item.pickupTimes.forEach((dateTimeString) => {
+        const dateTime = new Date(dateTimeString);
+        const dateString = dateTime.toDateString(); // e.g., 'Fri Nov 01 2024'
+        const timeString = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }); // e.g., '01:04 AM'
+
+        if (!timesByDate[dateString]) {
+          timesByDate[dateString] = [];
+        }
+        timesByDate[dateString].push(timeString);
+      });
+    }
+
+    setPickupTimesByDate(timesByDate);
+  };
+
+  useEffect(() => {
+    processPickupTimes();
+  }, [item]);
+
   const openModal = () => {
     setModalStep('selection');
     setModalVisible(true);
@@ -146,7 +176,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
     setModalVisible(false);
     setModalStep('selection');
     setSelectedPickupDate(null);
-    // Optionally, navigate back or perform other actions
+    setSelectedPickupTime(null);
   };
 
   // Utility function to get ordinal suffix
@@ -166,49 +196,65 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   };
 
   const confirmReservation = async () => {
-    if (selectedPickupDate) {
-      if (!userId) {
-        alert('User not authenticated. Please log in.');
-        return;
-      }
-
-      const today = new Date();
-      const pickupDate = selectedPickupDate.fullDate;
-      const expirationDate = new Date(pickupDate);
-      expirationDate.setDate(pickupDate.getDate() + 1); // Day after pickup date
-
-      const reservationData: ReservationData = {
-        userId: userId,
-        isReserved: true,
-        startTime: today.toISOString(),
-        expirationTime: expirationDate.toISOString(),
-        pickUpDate: pickupDate.toISOString(),
-      };
-
-      try {
-        await createReservation(item._id, reservationData);
-        console.log(`Reservation confirmed for date: ${formatSelectedDate(selectedPickupDate)}`);
-        setModalStep('confirmation');
-        // Optionally, refetch item details to reflect reservation status
-        const updatedItem = await getItemsByIds([item._id]);
-        if (updatedItem.data.items.length === 1) {
-          setItem(updatedItem.data.items[0]);
+    console.log("item: ", item)
+    if (selectedPickupDate && selectedPickupTime) {
+        if (!userId) {
+            alert('User not authenticated. Please log in.')
+            return
         }
-      } catch (error: any) {
-        console.error("Failed to confirm reservation:", error);
-        alert("Failed to reserve donation. Please try again.");
-      }
+
+        const today = new Date()
+        const pickupDateTime = new Date(selectedPickupDate.fullDate)
+        // Parse selectedPickupTime to get hours and minutes
+        const [time, modifier] = selectedPickupTime.split(' ')
+        let [hours, minutes] = time.split(':')
+        let hour = parseInt(hours)
+
+        if (modifier === 'PM' && hour !== 12) {
+            hour += 12
+        } else if (modifier === 'AM' && hour === 12) {
+            hour = 0
+        }
+
+        pickupDateTime.setHours(hour)
+        pickupDateTime.setMinutes(parseInt(minutes))
+
+        const expirationDate = new Date(pickupDateTime)
+        expirationDate.setDate(pickupDateTime.getDate() + 1) // Day after pickup date
+
+        const reservationData = {
+            userId: userId,
+            isReserved: true,
+            startTime: today.toISOString(),
+            expirationTime: expirationDate.toISOString(),
+            pickUpDate: pickupDateTime.toISOString(),
+        }
+
+        try {
+            await createReservation(item._id, reservationData)
+            console.log(`Reservation confirmed for date: ${formatSelectedDate(selectedPickupDate)} at ${selectedPickupTime}`)
+            setModalStep('confirmation')
+            // Optionally, refetch item details to reflect reservation status
+            const updatedItem = await getItemsByIds([item._id])
+            console.log("updatedItem: ", updatedItem)
+            if (updatedItem.data.items.length === 1) {
+              setItem(updatedItem.data.items[0])
+            }
+        } catch (error: any) {
+            console.error("Failed to confirm reservation:", error)
+            alert("Failed to reserve donation. Please try again.")
+        }
     } else {
-      alert('Please select a pickup date before confirming.');
+        alert('Please select a pickup date and time before confirming.')
     }
-  };
+  }
 
   const flagPost = () => {
     // Implement flagging logic here
     console.log("Flag post clicked");
   };
 
-  {/* Utility function to format date */}
+  // Utility function to format date
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Unknown'; // Check for empty or null string
 
@@ -389,7 +435,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                   {/* Description Section */}
                   <View style={styles.modalSection}>
                     <View style={styles.modalSubSection}>
-                      <Text style={styles.modalSectionHeader}>Description</Text>
+                      <Text style={styles.modalSubSectionHeader}>Description</Text>
                       <Text style={styles.description}>
                         {item.description || 'No description provided.'}
                       </Text>
@@ -406,9 +452,11 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                         {item.reservationInfo.userId || 'Unknown Donor'}{' '}
                       </Text>
                     </View>
-                    <Text style={[styles.dateText, { flex: 1 }]}>
-                      <Text style={{ fontWeight: 'bold' }}>Expires</Text> {formatDate(item.expirationTime) || 'Unknown'}
-                    </Text>
+                    <View style={styles.modalSubSection}>
+                      <Text style={[styles.dateText, { flex: 1 }]}>
+                        <Text style={styles.modalSubSectionHeader}>Expires</Text> {formatDate(item.expirationTime) || 'Unknown'}
+                      </Text>
+                      </View>
                   </View>
 
                   {/* Pickup Time Section */}
@@ -435,7 +483,10 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                               styles.dateCircle,
                               selectedPickupDate?.fullDate.toDateString() === dayItem.fullDate.toDateString() && styles.selectedDateCircle,
                             ]}
-                            onPress={() => setSelectedPickupDate(dayItem)}
+                            onPress={() => {
+                              setSelectedPickupDate(dayItem);
+                              setSelectedPickupTime(null); // Reset selected time when date changes
+                            }}
                           >
                             <Text
                               style={[
@@ -449,6 +500,41 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                         ))}
                       </View>
                     </View>
+                    {/* Times for selected date */}
+                    {selectedPickupDate && (
+                      <View style={styles.modalSubSection}>
+                        {pickupTimesByDate[selectedPickupDate.fullDate.toDateString()] ? (
+                          <View>
+                            <View>
+                              <Text style={styles.text}>Please note that each time slot is 15 minutes.</Text>
+                            </View>
+                            <View style={styles.timesContainer}>
+                              {pickupTimesByDate[selectedPickupDate.fullDate.toDateString()].map((time, index) => (
+                                <TouchableOpacity
+                                  key={index}
+                                  style={[
+                                    styles.timeOption,
+                                    selectedPickupTime === time && styles.selectedTimeOption,
+                                  ]}
+                                  onPress={() => setSelectedPickupTime(time)}
+                                >
+                                  <Text
+                                    style={[
+                                      styles.timeOptionText,
+                                      selectedPickupTime === time && styles.selectedTimeOptionText,
+                                    ]}
+                                  >
+                                    {time}
+                                  </Text>
+                                </TouchableOpacity>
+                              ))}
+                            </View>
+                          </View>
+                        ) : (
+                          <Text style={styles.text}>No available times for this date.</Text>
+                        )}
+                      </View>
+                    )}
                   </View>
                 </View>
               </ScrollView>
@@ -456,8 +542,8 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
               {/* Confirm Reservation Button */}
               <Button
                 mode="contained"
-                style={styles.button} // Updated to use shared 'button' style
-                labelStyle={styles.buttonText} // Updated to use shared 'buttonText' style
+                style={styles.button}
+                labelStyle={styles.buttonText}
                 onPress={confirmReservation}
               >
                 Confirm Reservation
@@ -477,13 +563,13 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
               {/* Confirmation Content */}
               <ScrollView>
                 {/* Reservation Date */}
-                {selectedPickupDate && (
+                {selectedPickupDate && selectedPickupTime && (
                   <View style={styles.modalSection}>
                     <Text style={styles.confirmationText}>
                       Your reservation is{'\n'}confirmed for:
                     </Text>
                     <Text style={styles.confirmationTextDate}>
-                      {formatSelectedDate(selectedPickupDate)}
+                      {formatSelectedDate(selectedPickupDate)} at {selectedPickupTime}
                     </Text>
                   </View>
                 )}

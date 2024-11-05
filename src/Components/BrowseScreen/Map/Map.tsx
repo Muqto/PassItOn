@@ -54,7 +54,7 @@ export default function MapComponent() {
               return  <Marker 
                         key={`${item.location.latitude}_${item.location.longitude}_${i}`} 
                         coordinate={item.location}
-                        tracksViewChanges={false} 
+                        tracksViewChanges={true} 
                         onPress={() => onMarkerPress(item._id, item.distance)}
                         >
                         <Animated.View

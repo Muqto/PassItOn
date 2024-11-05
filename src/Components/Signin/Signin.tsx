@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text } from "react-native";
 import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
-import useAuthentication from "../../Hooks/Authetication";
+import useAuthentication from "../../Hooks/Authentication";
 import { useSelector } from "react-redux";
 import { isSessionLoadingSelector } from "../../store/isLoading/selectors";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";

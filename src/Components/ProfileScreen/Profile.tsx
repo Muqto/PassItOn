@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Button } from 'react-native-paper'
-import useAuthentication from '../../Hooks/Authetication'
+import useAuthentication from '../../Hooks/Authentication'
 const Profile = ({ navigation }) => {
   const { logout } = useAuthentication()
   return (

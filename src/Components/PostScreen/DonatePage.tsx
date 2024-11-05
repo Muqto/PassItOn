@@ -112,7 +112,7 @@ const DonatePage = () => {
         category,
         donationItemDescription,
         dayjs().toString(),
-        dayjs().add(7, "day").toString(),
+        dayjs().add(7, 'day').toString(),
         0,
         false,
         location,
@@ -127,8 +127,8 @@ const DonatePage = () => {
           itemId: 0,
         },
         distance,
-        imageDownloadUrl // This will be empty if no image was uploaded
-      );
+        imageDownloadUrl,
+      )
   
       // Reset form states
       setDonationItemName("");

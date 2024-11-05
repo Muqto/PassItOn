@@ -7,13 +7,25 @@ import {
     Modal,
     Pressable,
     TouchableWithoutFeedback,
+    Image
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Divider, TextInput } from "react-native-paper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from 'react-native-star-rating-widget';
+import { getReservationsById, ReservationDetails } from "../../api/reservationApi";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import { DonorDetails, getUser, getUserInfoById } from "../../api/userApi";
+// import { Image } from 'expo-image';
 
+export const formatDate = (isoString) => {
+  const date = new Date(isoString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 const MyReservationDetails = () => {
     const navigation = useNavigation();
@@ -21,6 +33,44 @@ const MyReservationDetails = () => {
     const [reviewTitle, setReviewTitle] = useState("");
     const [reviewContent, setReviewContent] = useState("");
     const [userRating, setUserRating] = useState(0);
+    const [reservation, setReservation] = useState<ReservationDetails | null>(null);
+    const [donorInfo, setDonorInfo] = useState<DonorDetails | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+      const fetchReservationDetails = async () => {
+        // if (!itemId) {
+        //   setError('No item ID provided.');
+        //   setLoading(false);
+        //   return;
+        // }
+  
+        try {
+          setLoading(true);
+          let res = await getReservationsById('672a339bf55e8e9bf34657a2'); // HARDCODED RESERVATION ID FOR NOW
+          const reservation = res.data;
+          setReservation(reservation);
+
+          // get item donor information
+          const donorRes = await getUserInfoById(reservation.itemDonor)
+          const donorInfo = donorRes.data
+          setDonorInfo(donorInfo)
+        } catch (err: any) {
+          console.error('Error fetching reservation details:', err);
+        } finally {
+          setLoading(false); 
+        }
+      };
+  
+      fetchReservationDetails();
+    }, []);
+
+    if (loading) {
+      return (
+        <LoadingScreen size={1}/>
+      );
+    }
+    
     return (
         <ScrollView style={styles.container}>
         {/* Header */}
@@ -37,20 +87,29 @@ const MyReservationDetails = () => {
         {/* Image Placeholder */}
         <View style={styles.imageContainer}>
             <Text style={styles.imagePlaceholder}>
-            image of the item here if provided, else placeholder
+            {reservation?.imageDownloadUrl ? (
+              <Image
+                source={{ uri: reservation?.imageDownloadUrl}}
+                style={styles.cardImage}
+              />
+          ) : (
+            <Text style={styles.imagePlaceholder}>
+              image of the item here if provided, else placeholder
+            </Text>
+          )}
             </Text>
         </View>
 
         {/* My Reservation Details */}
         <View style={styles.detailsContainer}>
-            <Text style={styles.itemName}>Item Name</Text>
-            <Text style={styles.itemCategory}>Category</Text>
+            <Text style={styles.itemName}>{reservation?.itemName}</Text>
+            <Text style={styles.itemCategory}>{reservation?.category}</Text>
             <Divider />
 
             {/* Description Section */}
             <View style={styles.section}>
             <Text style={styles.sectionTitle}>Description</Text>
-            <Text style={styles.sectionText}>Good food.</Text>
+            <Text style={styles.sectionText}>{reservation?.description}</Text>
             {/* {isDescriptionExpanded || description.length <= 50 ? (
                 <Text style={styles.sectionText}>{description}</Text>
             ) : (
@@ -70,17 +129,15 @@ const MyReservationDetails = () => {
             <Divider />
             <Text style={styles.sectionTitle}>Pickup at:</Text>
             <Text style={styles.detailText}>
-                pickupTime
-                {/* {itemStatus ? "Available" : "Unavailable"} */}
+                {formatDate(reservation?.pickupTime)}
             </Text>
             <Text style={styles.sectionTitle}>Pickup location</Text>
             <Text style={styles.detailText}>
-                845 Sherbrooke St W, Montreal, Quebec
+                {reservation?.pickupLocationText}
             </Text>
             <Text style={styles.sectionTitle}>Donor</Text>
             <Text style={styles.detailText}>
-                ...
-                {/* {fullName ? fullName : "Loading..."} */}
+                {`${donorInfo?.firstName} ${donorInfo?.lastName}`}
             </Text>
             </View>
 
@@ -88,16 +145,15 @@ const MyReservationDetails = () => {
             <View style={styles.footer}>
             <Text>
                 <Text style={styles.footerTextBold}>Reserved</Text>{" "}
-                <Text style={styles.footerText}>03/06/2024</Text>
+                <Text style={styles.footerText}>{formatDate(reservation?.startTime)}</Text>
             </Text>
             <Text>
                 <Text style={styles.footerTextBold}>Expires</Text>{" "}
-                ...
-                {/* <Text style={styles.footerText}>{formatDate(expirationTime)}</Text> */}
+                <Text style={styles.footerText}>{formatDate(reservation?.expirationTime)}</Text>
             </Text>
         </View>
 
-        {/* Complete Transaction Button */}
+        {/* Review Transaction Button */}
         <TouchableOpacity
           style={styles.completeButton}
           onPress={() => setModalVisible(true)} // Show modal on press
@@ -121,7 +177,7 @@ const MyReservationDetails = () => {
                   <Divider style={{marginBottom: 20}}/>
                   <Text style={styles.modalText}>
                     Tell us about your experience with{" "}
-                    <Text style={styles.modalItemName}>Ashley</Text>.
+                    <Text style={styles.modalItemName}>{donorInfo?.firstName}</Text>.
                   </Text>
                   <StarRating
                     rating={userRating}
@@ -167,6 +223,10 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: "#F8F8F8",
+    },
+    cardImage: {
+      width: '100%',
+      height: '100%',
     },
     headerContainer: {
       flexDirection: "row",
