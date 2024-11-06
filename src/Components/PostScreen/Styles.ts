@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   donatePageContainer: {
-    height: "75%",
+    height: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",

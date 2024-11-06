@@ -46,11 +46,16 @@ const Home = ({navigation}) => {
           </View>}
         </View>
         <View>
+          {isDonations ? 
           <Button style = {styles.postButton} mode='contained' onPress = {() => navigation.navigate('Post')}>
-            {isDonations ? 
-            <Text style = {styles.postText}>Post a donation</Text> : 
-            <Text style = {styles.postText}>Browse available donations</Text>}
+            <Text style = {styles.postText}>Post a donation</Text> 
           </Button>
+          :
+          <Button style = {styles.postButton} mode='contained' onPress = {() => navigation.navigate('MyReservationDetails')}>
+            <Text style = {styles.postText}>Browse Available Donations</Text> 
+          </Button>
+          }
+          
         </View>
       </ScrollView>
     </View>
