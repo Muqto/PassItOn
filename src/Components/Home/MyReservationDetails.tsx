@@ -84,12 +84,11 @@ const MyReservationDetails = () => {
             </TouchableOpacity>
         </View>
 
-        {/* Image Placeholder */}
+        {/* Image */}
         <View style={styles.imageContainer}>
-            <Text style={styles.imagePlaceholder}>
             {reservation?.imageDownloadUrl ? (
-              <Image
-                source={{ uri: reservation?.imageDownloadUrl}}
+              <Image 
+                source={{uri: reservation?.imageDownloadUrl}} 
                 style={styles.cardImage}
               />
           ) : (
@@ -97,7 +96,6 @@ const MyReservationDetails = () => {
               image of the item here if provided, else placeholder
             </Text>
           )}
-            </Text>
         </View>
 
         {/* My Reservation Details */}
