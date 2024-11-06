@@ -11,7 +11,10 @@ import { firebase_auth } from '../config/firebase';
 import { LatLng, Region } from 'react-native-maps';
 import * as Location from 'expo-location' 
 import { addItemsCoordsAction } from '../store/Items/slice';
+import DonationDetails from '../Components/Home/DonationDetails';
+import FeedbackScreen from '../Components/Support/FeedbackScreen';
 import MyReservationDetails from '../Components/Home/MyReservationDetails';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -72,10 +75,12 @@ export default function UserStack() {
     }, [])
 
     return (
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="TabNavigation" component={TabNavigation} />
-            <Stack.Screen name="DonationFocus" component={DonationFocus} />
-            <Stack.Screen name="MyReservationDetails" component={MyReservationDetails} />
-        </Stack.Navigator>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Screen name="TabNavigation" component={TabNavigation} />
+                <Stack.Screen name="DonationFocus" component={DonationFocus} />
+                <Stack.Screen name="MyReservationDetails" component={MyReservationDetails} />
+                <Stack.Screen name="DonationDetails" component={DonationDetails} />
+                <Stack.Screen name="SendFeedback" component={FeedbackScreen} />
+            </Stack.Navigator>
     );
 }

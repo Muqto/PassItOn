@@ -56,7 +56,7 @@ export const uploadDonation = (
       {
         return e;
     });
-
+export const getUserById = (userId: string): Promise<UserRes> => API.get(`user/getuserbyid/${userId}`);
 export type UploadDonationReq = {
   userId: string;
   itemName: string;
@@ -96,7 +96,7 @@ export type AddUserReq = {
 };
 
 export type GetUserReq = {
-    _id: String
+    id: string
 }
 
 export type DonorDetails = {

@@ -1,5 +1,5 @@
 import { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE} from 'react-native-maps';
-import { Animated, Platform, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View, Platform } from 'react-native';
 import ClusterMapView from 'react-native-map-clustering';
 import { colors } from '../../../Colors/Colors';
 import { useSelector } from 'react-redux';
@@ -27,8 +27,9 @@ export default function MapComponent() {
     }
  
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
             { selectedItem && <SelectedCard 
+              imageDownloadUrl={selectedItem.imageDownloadUrl}
               itemId={selectedItem._id} 
               itemName={selectedItem.itemName} 
               itemType={selectedItem.itemType} 
@@ -37,7 +38,7 @@ export default function MapComponent() {
             <ClusterMapView 
                 moveOnMarkerPress={false}
                 style={styles.map} 
-                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT} 
                 region={location}
                 showsUserLocation
                 showsMyLocationButton
