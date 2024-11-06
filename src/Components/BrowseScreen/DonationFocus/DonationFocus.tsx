@@ -250,8 +250,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   }
 
   const flagPost = () => {
-    // Implement flagging logic here
-    console.log("Flag post clicked");
+    navigation.navigate('ReportListing')
   };
 
   // Utility function to format date

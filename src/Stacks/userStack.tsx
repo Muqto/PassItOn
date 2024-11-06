@@ -14,6 +14,7 @@ import { addItemsCoordsAction } from '../store/Items/slice';
 import DonationDetails from '../Components/Home/DonationDetails';
 import FeedbackScreen from '../Components/Support/FeedbackScreen';
 import MyReservationDetails from '../Components/Home/MyReservationDetails';
+import ReportScreen from '../Components/Support/ReportScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -81,6 +82,7 @@ export default function UserStack() {
                 <Stack.Screen name="MyReservationDetails" component={MyReservationDetails} />
                 <Stack.Screen name="DonationDetails" component={DonationDetails} />
                 <Stack.Screen name="SendFeedback" component={FeedbackScreen} />
+                <Stack.Screen name="ReportListing" component={ReportScreen} />
             </Stack.Navigator>
     );
 }
