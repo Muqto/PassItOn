@@ -26,7 +26,7 @@ export const BottomSheetComponent = () => {
     ),
     []
   );
-
+  console.log(donations)
   return (
       <BottomSheet snapPoints={snapPoints}>
         <BottomSheetView style={styles.contentContainer}>

@@ -64,6 +64,7 @@ export default function UserStack() {
             }
             let res = await getItemsCoord(loc)
             const itemCoords = res.data.itemsCoords
+
             dispatch(addItemsCoordsAction(itemCoords))
         }
 

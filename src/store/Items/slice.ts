@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { Item } from "../user/slice"
-import { addItemCoordsReducer } from "./reducers"
+import { addItemCoordsReducer, deleteItemReducer } from "./reducers"
 import { LatLng } from "react-native-maps"
 
 export interface ItemCoord {
@@ -29,10 +29,11 @@ const itemsSlice = createSlice({
     initialState: initialItemsState,
     reducers: {
       addItemsCoordsAction: addItemCoordsReducer,
+      deleteItemAction: deleteItemReducer
     }
   })
   
   // Action creators are generated for each case reducer function
-  export const { addItemsCoordsAction } = itemsSlice.actions
+  export const { addItemsCoordsAction, deleteItemAction } = itemsSlice.actions
   
   export default itemsSlice.reducer

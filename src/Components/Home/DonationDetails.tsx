@@ -11,9 +11,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { getUserById } from "../../api/userApi";
+import { deleteItem, getUserById } from "../../api/userApi";
 import { Divider } from "react-native-paper";
 import { Image } from 'expo-image';
+import { deleteItemAction } from "../../store/Items/slice";
+import { useDispatch } from "react-redux";
+import { deleteUserDonationAction } from "../../store/user/slice";
 
 
 export const formatDate = (isoString) => {
@@ -26,6 +29,7 @@ export const formatDate = (isoString) => {
 
 const DonationDetails = ({ route }) => {
   const {
+    itemId,
     itemName,
     expirationTime,
     itemType,
@@ -35,15 +39,22 @@ const DonationDetails = ({ route }) => {
     imageDownloadUrl,
     pickupLocationText
   } = route.params;
-  console.log(route);
   const navigation = useNavigation();
   const [fullName, setFullName] = useState("");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
   const [isImageModalVisible, setImageModalVisible] = useState(false);
-
+  const dispatch = useDispatch()
   const openImageModal = () => setImageModalVisible(true);
   const closeImageModal = () => setImageModalVisible(false);
+  const confirmCompletion = async () => {
+    setModalVisible(false);
+    navigation.goBack();
+    dispatch(deleteItemAction(itemId))
+    dispatch(deleteUserDonationAction(itemId))
+    const res = await deleteItem(itemId);
+
+  }
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -188,7 +199,7 @@ const DonationDetails = ({ route }) => {
 
                   <Pressable
                     style={styles.confirmButton}
-                    onPress={() => setModalVisible(false)} // Close modal on confirmation
+                    onPress={confirmCompletion} // Close modal on confirmation
                   >
                     <Text style={styles.confirmButtonText}>
                       Confirm completion

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { addUserLocationReducer, addUserReducer, updateUserDonations } from './reducers'
+import { addUserLocationReducer, addUserReducer, deleteUserDonation, updateUserDonations } from './reducers'
 import { getOrAddUser } from '../../api/userApi'
 import { LatLng, Region } from 'react-native-maps'
 
@@ -63,11 +63,12 @@ const userSlice = createSlice({
   reducers: {
     addUserAction: addUserReducer,
     addUserLocationAction: addUserLocationReducer,
-    updateUserDonationAction: updateUserDonations
+    updateUserDonationAction: updateUserDonations,
+    deleteUserDonationAction: deleteUserDonation
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addUserAction, addUserLocationAction, updateUserDonationAction } = userSlice.actions
+export const { addUserAction, addUserLocationAction, updateUserDonationAction, deleteUserDonationAction } = userSlice.actions
 
 export default userSlice.reducer

@@ -18,3 +18,12 @@ export const updateUserDonations = (
 ) => {
   state.donations.push(action.payload);
 };
+
+export const deleteUserDonation = (
+  state: UserState,
+  action: PayloadAction<string>
+) => {
+  state.donations = state.donations.filter(
+    (donation) => donation._id !== action.payload
+  );
+}

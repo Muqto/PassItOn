@@ -13,3 +13,8 @@ export const setStartIndexReducer = (state: ItemsState, action: PayloadAction<nu
 export const addItems = (state: ItemsState, action: PayloadAction<Item[]>) => {
     state.items = [...state.items, ...action.payload]
 }
+
+export const deleteItemReducer = (state: ItemsState, action: PayloadAction<string>) => {
+    state.items = state.items.filter(item => item._id !== action.payload)
+    state.itemsIds = state.itemsIds.filter(item => item._id !== action.payload)
+}
