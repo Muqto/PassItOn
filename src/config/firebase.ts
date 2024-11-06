@@ -2,7 +2,6 @@
 import { initializeApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { FIREBASE_API_KEY } from "../../env";
 import { getStorage, ref } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -10,7 +9,7 @@ import { getStorage, ref } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
+  apiKey: "AIzaSyC7kGZPrlHio1wHaq37slKXRj2sJCCfA5A",
   authDomain: "passiton-f7566.firebaseapp.com",
   projectId: "passiton-f7566",
   storageBucket: "passiton-f7566.appspot.com",

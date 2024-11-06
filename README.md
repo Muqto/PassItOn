@@ -32,5 +32,5 @@
    ```
 ### Testing
 
-Email: Test@gmail.com\
-Password: Test123@
+Email: t@mail.com\
+Password: 123123

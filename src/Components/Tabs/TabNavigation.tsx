@@ -14,39 +14,37 @@ import { colors } from '../../Colors/Colors';
 const TabNavigation = () => {
     const Tab = createBottomTabNavigator();  
     return (
-            <Tab.Navigator initialRouteName="Home" 
-                           screenOptions={ ({route}) => ({
-                                headerShown: false,
-                                tabBarIcon: ({color}) => {
-                                    let rn = route.name;
-                                    const sz = 23;
-                                    switch (rn){
-                                        case "Home":
-                                            return <FontAwesomeIcon color={color} size={sz} icon={ faHome }/>
-                                        case "Post":
-                                            return <FontAwesomeIcon color={color} size={sz} icon={ faAdd }/>
-                                        case "Browse":
-                                            return <FontAwesomeIcon color={color} size={sz} icon={ faLocationDot }/>
-                                        case "Chat":
-                                            return <FontAwesomeIcon color={color} size={sz} icon={ faCommentsOutlined } />
-                                        case "Profile":
-                                            return <FontAwesomeIcon color={color} size={sz} icon={ faUser }/>
-                                    }
-
-                                    
-                                },
-                                tabBarActiveTintColor: colors.primaryPurple,
-                                tabBarInactiveTintColor: "#8B8D92",
-                                tabBarLabelStyle: {paddingBottom: 5, fontSize: 13},
-                                tabBarStyle: {padding: 10, height: 100}
-                           })}
-                           >
-                <Tab.Screen name="Home" component={Home}/>
-                <Tab.Screen name="Post" component={Post}/>
-                <Tab.Screen name="Browse" component={Browse}/>
-                <Tab.Screen name="Chat" component={Chat}/>
-                <Tab.Screen name="Profile" component={Profile}/>
-            </Tab.Navigator>
+        <Tab.Navigator initialRouteName="Home" 
+            screenOptions={ ({route}) => ({
+                headerShown: false,
+                tabBarIcon: ({color}) => {
+                    let rn = route.name;
+                    const sz = 23;
+                    switch (rn){
+                        case "Home":
+                            return <FontAwesomeIcon color={color} size={sz} icon={ faHome }/>
+                        case "Post":
+                            return <FontAwesomeIcon color={color} size={sz} icon={ faAdd }/>
+                        case "Browse":
+                            return <FontAwesomeIcon color={color} size={sz} icon={ faLocationDot }/>
+                        case "Chat":
+                            return <FontAwesomeIcon color={color} size={sz} icon={ faCommentsOutlined } />
+                        case "Profile":
+                            return <FontAwesomeIcon color={color} size={sz} icon={ faUser }/>
+                    }
+                },
+                tabBarActiveTintColor: colors.primaryPurple,
+                tabBarInactiveTintColor: "#8B8D92",
+                tabBarLabelStyle: {paddingBottom: 5, fontSize: 13},
+                tabBarStyle: {padding: 10, height: 100}
+            })}
+        >
+            <Tab.Screen name="Home" component={Home}/>
+            <Tab.Screen name="Post" component={Post}/>
+            <Tab.Screen name="Browse" component={Browse}/>
+            <Tab.Screen name="Chat" component={Chat}/>
+            <Tab.Screen name="Profile" component={Profile}/>
+        </Tab.Navigator>
     )
 }
 

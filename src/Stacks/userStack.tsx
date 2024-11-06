@@ -1,20 +1,24 @@
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigation from '../Components/Tabs/TabNavigation';
+import DonationFocus from '../Components/BrowseScreen/DonationFocus/DonationFocus';
 import { useEffect, useState } from 'react';
 import useAuthentication from '../Hooks/Authetication';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSelector } from '../store/user/selectors';
-import { addTokenToAPI, getItemsByIds, getItemsCoord, getUser } from '../api/userApi';
+import { addTokenToAPI, getItemsCoord, getUser } from '../api/userApi';
 import { addUserAction, addUserLocationAction, initialUserState, mtlRegionCoord } from '../store/user/slice';
 import { firebase_auth } from '../config/firebase';
 import { LatLng, Region } from 'react-native-maps';
 import * as Location from 'expo-location' 
 import { addItemsCoordsAction } from '../store/Items/slice';
+import DonationDetails from '../Components/Home/DonationDetails';
 import FeedbackScreen from '../Components/Support/FeedbackScreen';
+import MyReservationDetails from '../Components/Home/MyReservationDetails';
 import ReportScreen from '../Components/Support/ReportScreen';
 
+
 const Stack = createNativeStackNavigator();
+
 export default function UserStack() { 
     const user = useSelector(userSelector)
     const dispatch = useDispatch()
@@ -72,12 +76,13 @@ export default function UserStack() {
     }, [])
 
     return (
-        <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name="TabNavigation" component={TabNavigation} />
+                <Stack.Screen name="DonationFocus" component={DonationFocus} />
+                <Stack.Screen name="MyReservationDetails" component={MyReservationDetails} />
+                <Stack.Screen name="DonationDetails" component={DonationDetails} />
                 <Stack.Screen name="SendFeedback" component={FeedbackScreen} />
                 <Stack.Screen name="ReportListing" component={ReportScreen} />
             </Stack.Navigator>
-        </NavigationContainer>
     );
 }

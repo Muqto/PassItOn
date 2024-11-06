@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './user/slice'
 import isLoadingReducer from './isLoading/slice'
 import itemsReducer from './Items/slice'
+
 export const store = configureStore({
   reducer: {
     user: userReducer,
