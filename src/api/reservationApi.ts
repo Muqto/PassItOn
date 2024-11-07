@@ -29,7 +29,8 @@ export type ReservationDetails = {
     imageDownloadUrl: string,
     pickupTime: string,
     startTime: string,
-    expirationTime: string
+    expirationTime: string,
+    transactionStatus: Number
   };
   
   export type CreateReservationResponse = {
@@ -37,6 +38,14 @@ export type ReservationDetails = {
     reservation: any; // Replace with actual reservation type
   };
   
+  export type UpdateUserRatingRes = {
+    rating: Number;
+  };
+
+  export type UpdateTransactionStatusRes = {
+    transactionStatus: Number;
+  };
+
   export const createReservation = (
     itemId: string,
     reservationData: ReservationData
@@ -54,6 +63,10 @@ export type ReservationDetails = {
   }
 
   export const getReservationsById = (reservationId: string): Promise<GetReservationDetailsByIdRes> => API.post("reservation/getReservationDetailsById", { data : reservationId })
+  
+  export const submitRating = (userId: String, rating: Number): Promise<UpdateUserRatingRes> => API.post("user/updaterating", { data : {userId, rating} })
+  
+  export const updateTransactionStatus = (reservationId: String, transactionStatus: Number): Promise<UpdateTransactionStatusRes> => API.post("/reservation/updateReservationTransactionStatus", { data : {reservationId, transactionStatus} })
   
   export default {
     createReservation,
