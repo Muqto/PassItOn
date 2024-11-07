@@ -14,10 +14,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Divider, TextInput } from "react-native-paper";
 import { useEffect, useState } from "react";
 import StarRating from 'react-native-star-rating-widget';
-import { getReservationsById, ReservationDetails } from "../../api/reservationApi";
+import { getReservationsById, ReservationDetails, submitRating, updateTransactionStatus } from "../../api/reservationApi";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
-import { DonorDetails, getUser, getUserInfoById } from "../../api/userApi";
-// import { Image } from 'expo-image';
+import { DonorDetails, getUserInfoById } from "../../api/userApi";
 
 export const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -30,12 +29,37 @@ export const formatDate = (isoString) => {
 const MyReservationDetails = () => {
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
-    const [reviewTitle, setReviewTitle] = useState("");
-    const [reviewContent, setReviewContent] = useState("");
+    const [reviewSubmitted, setReviewSubmitted] = useState(false);
     const [userRating, setUserRating] = useState(0);
     const [reservation, setReservation] = useState<ReservationDetails | null>(null);
+    const [reservationTransactionStatus, setReservationTransactionStatus] = useState<Number>(0);
+    const [reservationTransactionStatusString, setReservationTransactionStatusString] = useState<String>('Reserved');
     const [donorInfo, setDonorInfo] = useState<DonorDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+
+    const handleSubmitReview = () => {
+      submitRating(donorInfo?._id!, userRating)
+      setReviewSubmitted(true)
+    }
+
+    const handleReviewModalClose = async () => {
+      // set transaction status of reservation to 3 (review submitted)
+      let res = await updateTransactionStatus('672a339bf55e8e9bf34657a2', 3)
+      setReservationTransactionStatus(res.transactionStatus)
+      setModalVisible(false)
+    }
+
+    useEffect(() => {
+      if (reservationTransactionStatus == 0) {
+        setReservationTransactionStatusString('Not Reserved')
+      } else if (reservationTransactionStatus == 1) {
+        setReservationTransactionStatusString('Reserved')
+      } else if (reservationTransactionStatus == 2) {
+        setReservationTransactionStatusString('Transaction Completed Awaiting Review')
+      } else if (reservationTransactionStatus == 3) {
+        setReservationTransactionStatusString('Review Submitted')
+      }
+    }, [reservationTransactionStatus])
 
     useEffect(() => {
       const fetchReservationDetails = async () => {
@@ -50,6 +74,7 @@ const MyReservationDetails = () => {
           let res = await getReservationsById('672a339bf55e8e9bf34657a2'); // HARDCODED RESERVATION ID FOR NOW
           const reservation = res.data;
           setReservation(reservation);
+          setReservationTransactionStatus(reservation.transactionStatus);
 
           // get item donor information
           const donorRes = await getUserInfoById(reservation.itemDonor)
@@ -137,6 +162,10 @@ const MyReservationDetails = () => {
             <Text style={styles.detailText}>
                 {`${donorInfo?.firstName} ${donorInfo?.lastName}`}
             </Text>
+            <Text style={styles.sectionTitle}>Status</Text>
+            <Text style={styles.detailText}>
+                {reservationTransactionStatusString}
+            </Text>
             </View>
 
             {/* Footer Section */}
@@ -153,10 +182,11 @@ const MyReservationDetails = () => {
 
         {/* Review Transaction Button */}
         <TouchableOpacity
-          style={styles.completeButton}
+          style={reservationTransactionStatus != 2 ? styles.disabledButton : styles.completeButton}
           onPress={() => setModalVisible(true)} // Show modal on press
+          disabled={reservationTransactionStatus != 2}
         >
-          <Text style={styles.completeButtonText}>Review Transaction</Text>
+          <Text style={reservationTransactionStatus != 2 ? styles.disabledButtonText : styles.completeButtonText}>Review Transaction</Text>
         </TouchableOpacity>
 
          {/* Modal for reviewing a transaction */}
@@ -170,44 +200,43 @@ const MyReservationDetails = () => {
             <View style={styles.modalOverlay}>
               <TouchableWithoutFeedback>
                 {/* This prevents the modal content from closing when pressed */}
-                <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>Review transaction</Text>
-                  <Divider style={{marginBottom: 20}}/>
-                  <Text style={styles.modalText}>
-                    Tell us about your experience with{" "}
-                    <Text style={styles.modalItemName}>{donorInfo?.firstName}</Text>.
+              {reviewSubmitted ? (<View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Review transaction</Text>
+                <Divider style={{marginBottom: 20}}/>
+                <Divider style={{marginBottom: 20}}/>
+                <Text style={styles.modalText}>
+                  Thank you for submitting your review!
+                </Text>
+                <Pressable
+                  style={styles.confirmButton}
+                  onPress={handleReviewModalClose} // Close modal on confirmation
+                >
+                  <Text style={styles.confirmButtonText}>
+                    Close
                   </Text>
-                  <StarRating
-                    rating={userRating}
-                    onChange={setUserRating}
-                    color="#6B6BE1"
-                  />
-                  <TextInput
-                    label="Title of Review *"
-                    value={reviewTitle}
-                    onChangeText={(text) => setReviewTitle(text)}
-                    style={styles.reviewTitle}
-                    mode="flat"
-                    activeUnderlineColor="black"
+                </Pressable>
+              </View>)
+              : (<View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Review transaction</Text>
+                <Divider style={{marginBottom: 20}}/>
+                <Text style={styles.modalText}>
+                  Tell us about your experience with{" "}
+                  <Text style={styles.modalItemName}>{donorInfo?.firstName}</Text>.
+                </Text>
+                <StarRating
+                  rating={userRating}
+                  onChange={setUserRating}
+                  color="#6B6BE1"
                 />
-                <TextInput
-                    label="Describe your experience *"
-                    multiline
-                    value={reviewContent}
-                    onChangeText={(text) => setReviewContent(text)}
-                    style={styles.reviewContent}
-                    mode="flat"
-                    activeUnderlineColor="black"
-                />
-                  <Pressable
-                    style={styles.confirmButton}
-                    onPress={() => setModalVisible(false)} // Close modal on confirmation
-                  >
-                    <Text style={styles.confirmButtonText}>
-                      Submit Review
-                    </Text>
-                  </Pressable>
-                </View>
+                <Pressable
+                  style={styles.confirmButton}
+                  onPress={handleSubmitReview} // Close modal on confirmation
+                >
+                  <Text style={styles.confirmButtonText}>
+                    Submit Review
+                  </Text>
+                </Pressable>
+              </View>)}
               </TouchableWithoutFeedback>
             </View>
           </TouchableWithoutFeedback>
@@ -314,10 +343,21 @@ const styles = StyleSheet.create({
       alignItems: "center",
       borderRadius: 8,
     },
+    disabledButton: {
+      backgroundColor: "#EEEEEE",
+      paddingVertical: 12,
+      alignItems: "center",
+      borderRadius: 8,
+    },
     completeButtonText: {
       color: "#fff",
       fontSize: 16,
       fontWeight: "bold",
+    },
+    disabledButtonText: {
+      color: "#3D404A",
+      fontSize: 16,
+      fontWeight: "normal",
     },
     reviewTitle: {
         marginTop: 30,
@@ -342,7 +382,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         width: "90%",
-        height: "65%",
+        height: "45%",
         backgroundColor: "#fff",
         borderRadius: 8,
         alignItems: "center"
