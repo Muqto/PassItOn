@@ -35,7 +35,7 @@ export type ReservationDetails = {
   
   export type CreateReservationResponse = {
     success: boolean;
-    reservation: any; // Replace with actual reservation type
+    reservation: Reservation; 
   };
   
   export type UpdateUserRatingRes = {

@@ -18,3 +18,14 @@ export type DonationProps = {
     fullName: string,
     imageDownloadUrl: string | undefined,
 }
+
+export type ReservationProps = {
+    _id: string;
+    userId: string;
+    isReserved: Boolean;
+    startTime: String;
+    expirationTime: String;
+    pickUpDate: String;
+    itemId: any;
+    transactionStatus?: Number;
+};
