@@ -14,8 +14,9 @@ import { createReservation } from '../../../api/reservationApi';
 import { getItemsByIds } from '../../../api/userApi';
 import styles from './Styles';
 import { NavigationProp, RouteProp } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../../../store/user/selectors";
+import { updateUserReservationAction } from "../../../store/user/slice";
 
 
 interface Item {
@@ -68,7 +69,8 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   const [selectedPickupTime, setSelectedPickupTime] = useState<string | null>(null);
 
   const [pickupTimesByDate, setPickupTimesByDate] = useState<{ [dateString: string]: string[] }>({});
-
+  const dispatch = useDispatch()
+  
   const getStatusText = (status: number) => {
     switch (status) {
       case 0:
@@ -231,7 +233,9 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
         }
 
         try {
-            await createReservation(item._id, reservationData)
+            const res = await createReservation(item!._id, reservationData)
+            // update user reservations
+            dispatch(updateUserReservationAction({...res.reservation}));
             console.log(`Reservation confirmed for date: ${formatSelectedDate(selectedPickupDate)} at ${selectedPickupTime}`)
             setModalStep('confirmation')
             // Optionally, refetch item details to reflect reservation status

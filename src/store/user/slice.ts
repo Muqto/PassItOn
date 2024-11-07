@@ -1,15 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { addUserLocationReducer, addUserReducer, updateUserDonations } from './reducers'
+import { addUserLocationReducer, addUserReducer, updateUserDonations, updateUserReservations } from './reducers'
 import { Region } from 'react-native-maps'
 
 export interface Reservation {
+  _id: string;
   userId: String;
   isReserved: Boolean;
   startTime: String;
   expirationTime: String;
   pickUpDate: String;
   itemId: any;
+  transactionStatus?: Number;
 }
 
 export interface Item {
@@ -36,7 +38,7 @@ export interface UserState {
   lastName: string,
   rating: number,
   donations: Item[],
-  reservations: Item[],
+  reservations: Reservation[],
   location?: Region
 }
 
@@ -64,6 +66,7 @@ const userSlice = createSlice({
     addUserAction: addUserReducer,
     addUserLocationAction: addUserLocationReducer,
     updateUserDonationAction: updateUserDonations,
+    updateUserReservationAction: updateUserReservations,
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
     },
@@ -74,6 +77,6 @@ const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addUserAction, addUserLocationAction, updateUserDonationAction, setToken, clearToken } = userSlice.actions;
+export const { addUserAction, addUserLocationAction, updateUserDonationAction, setToken, clearToken, updateUserReservationAction } = userSlice.actions;
 
 export default userSlice.reducer

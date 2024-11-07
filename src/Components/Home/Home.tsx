@@ -2,11 +2,12 @@ import React, { useState } from 'react'
 import { NavigationProp } from "@react-navigation/native";
 import { View, Text, Pressable, ScrollView } from 'react-native'
 import DonationCard from './DonationCard'
+import ReservationCard from "./ReservationCard"
 import { Button } from 'react-native-paper'
 import styles from './Styles'
 import { useSelector } from 'react-redux'
 import { firstNameSelector, userSelector } from '../../store/user/selectors'
-import { useHome } from './Hooks'
+import { useHome, useHomeReservations } from './Hooks'
 import { itemCoordsSelector } from '../../store/Items/selectors'
 
 const Home = ({navigation}) => {
@@ -15,6 +16,7 @@ const Home = ({navigation}) => {
   const userState = useSelector(userSelector);
   const itemsState = useSelector(itemCoordsSelector);
   const { donationCardProps } = useHome()
+  const { reservationCardProps } = useHomeReservations();
   return (
     <View style = {styles.homePage}>
       <View style = {styles.title}>
@@ -42,7 +44,9 @@ const Home = ({navigation}) => {
             {donationCardProps.map((props, idx) => <DonationCard key={idx} {...props}/>)}
           </View> : 
           <View>
-            {/* insert reservations */}
+            {reservationCardProps.map((props, idx) => (
+                <ReservationCard key={idx} {...props} />
+            ))}
           </View>}
         </View>
         <View>
@@ -51,7 +55,7 @@ const Home = ({navigation}) => {
             <Text style = {styles.postText}>Post a donation</Text> 
           </Button>
           :
-          <Button style = {styles.postButton} mode='contained' onPress = {() => navigation.navigate('MyReservationDetails')}>
+          <Button style = {styles.postButton} mode='contained' onPress = {() => navigation.navigate("Browse")}>
             <Text style = {styles.postText}>Browse Available Donations</Text> 
           </Button>
           }

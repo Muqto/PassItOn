@@ -9,7 +9,7 @@ import {
     TouchableWithoutFeedback,
     Image
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Divider, TextInput } from "react-native-paper";
 import { useEffect, useState } from "react";
@@ -26,7 +26,8 @@ export const formatDate = (isoString) => {
   return `${day}/${month}/${year}`;
 };
 
-const MyReservationDetails = () => {
+const MyReservationDetails = ({route}) => {
+    const { _id } = route.params || {};
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
     const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -44,7 +45,7 @@ const MyReservationDetails = () => {
 
     const handleReviewModalClose = async () => {
       // set transaction status of reservation to 3 (review submitted)
-      let res = await updateTransactionStatus('672a339bf55e8e9bf34657a2', 3)
+      let res = await updateTransactionStatus(_id, 3)
       setReservationTransactionStatus(res.transactionStatus)
       setModalVisible(false)
     }
@@ -71,7 +72,7 @@ const MyReservationDetails = () => {
   
         try {
           setLoading(true);
-          let res = await getReservationsById('672a339bf55e8e9bf34657a2'); // HARDCODED RESERVATION ID FOR NOW
+          let res = await getReservationsById(_id); 
           const reservation = res.data;
           setReservation(reservation);
           setReservationTransactionStatus(reservation.transactionStatus);
