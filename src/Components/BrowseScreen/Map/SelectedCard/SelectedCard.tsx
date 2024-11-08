@@ -1,25 +1,32 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native';
-import { ListCard } from '../../BottomSheet/Card/ListCard';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { colors } from '../../../../Colors/Colors';
 import {styles as listCardStyle} from '../../BottomSheet/Card/Styles'
-import { Image } from 'expo-image';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+
 type SelectedCardProps = {
-  itemName: string,
-  itemType: string,
+  itemId?: string,
+  itemName?: string,
+  itemType?: string,
+  distance?: number,
   imageDownloadUrl: string | undefined,
-  distance: number,
 }
-export const SelectedCard = (props: SelectedCardProps) => {
+
+export const SelectedCard = ({itemId, itemName, itemType, distance, imageDownloadUrl}:SelectedCardProps) => {
+  const navigation = useNavigation<NavigationProp<any, any>>();
+  const handlePress = () => {
+    navigation.navigate('DonationFocus', { itemId });
+  };
+
   return (
-    <View style = {styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
         <View style={styles.subContainer}>
         <View style = {styles.image}>
-        {props.imageDownloadUrl ? (
+        {imageDownloadUrl ? (
             <Image
-              source={{ uri: props.imageDownloadUrl}}
+              source={{ uri: imageDownloadUrl}}
               style={styles.cardImage}
             />
           ) : (
@@ -28,12 +35,12 @@ export const SelectedCard = (props: SelectedCardProps) => {
           )}
         </View>
         <View style = {listCardStyle.textContainer}>
-          <Text style={listCardStyle.itemText}>{props.itemName}</Text>
-          <Text style={listCardStyle.categText}>{props.itemType}</Text>
+          <Text style={listCardStyle.itemText}>{itemName}</Text>
+          <Text style={listCardStyle.categText}>{itemType}</Text>
         </View>
         <View style = {listCardStyle.end}>
           <View style = {listCardStyle.kmView}>
-            <Text  style={listCardStyle.kmText}>{`${props.distance.toFixed(1)}km`}</Text>
+            <Text  style={listCardStyle.kmText}>{`${distance?.toFixed(1)}km`}</Text>
           </View>
           <View>
             <FontAwesomeIcon size={20} icon={faLocationDot} color={colors.primaryPurple}/>
@@ -41,8 +48,7 @@ export const SelectedCard = (props: SelectedCardProps) => {
         </View>
         
       </View>
-    </View>
-
+    </TouchableOpacity>
   )
 }
 
@@ -56,21 +62,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  imagePlaceholder: {
-    color: "#808080",
-    fontSize: 14,
-  },
+  // imagePlaceholder: {
+  //   color: "#808080",
+  //   fontSize: 14,
+  // },
   subContainer: {
-      height: 80,
-      padding: 6,
-      width: "90%",
-      paddingLeft: 15,
-      paddingRight: 15,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: colors.ultraLightPurple,
-      borderRadius: 15,
+    height: 80,
+    padding: 6,
+    width: "90%",
+    paddingLeft: 15,
+    paddingRight: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.ultraLightPurple,
+    borderRadius: 15,
   },
   image: {
     width: 60,
@@ -82,5 +88,14 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 10
   },
-
+  imageContent: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: colors.lightPurple,
+  },
 });

@@ -55,17 +55,6 @@ const DonationDetails = ({ route }) => {
     const res = await deleteItem(itemId);
 
   }
-  useEffect(() => {
-    const fetchUserName = async () => {
-      try {
-        const user = await getUserById(userId);
-        setFullName(`${user.data.firstName} ${user.data.lastName}`);
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }
-    };
-    fetchUserName();
-  }, [userId]);
 
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);

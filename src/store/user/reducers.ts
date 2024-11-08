@@ -1,6 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Region } from "react-native-maps";
-import { Item, UserState } from "./slice";
+import { Item, Reservation, UserState } from "./slice";
 
 export const addUserReducer = (state: UserState, action: PayloadAction<UserState>) => {
     // https://stackoverflow.com/questions/66807172/what-exactly-should-you-return-from-a-redux-slice-reducer
@@ -17,6 +17,13 @@ export const updateUserDonations = (
   action: PayloadAction<Item>
 ) => {
   state.donations.push(action.payload);
+};
+
+export const updateUserReservations = (
+  state: UserState,
+  action: PayloadAction<Reservation>
+) => {
+  state.reservations.push(action.payload);
 };
 
 export const deleteUserDonation = (

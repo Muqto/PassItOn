@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
 import { NavigationProp } from "@react-navigation/native";
-import useAuthentication from "../../Hooks/Authetication";
+import useAuthentication from "../../Hooks/Authentication";
 import { colors } from "../../Colors/Colors";
 
 interface RouterProps {

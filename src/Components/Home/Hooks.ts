@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
 import { userDonationsSelector } from "../../store/user/selectors"
-import { DonationProps } from "./Types"
+import { userReservationsSelector } from "../../store/user/selectors";
+import { DonationProps, ReservationProps } from "./Types"
 
 export const useHome = () => {
     const donations = useSelector(userDonationsSelector)
@@ -12,3 +13,32 @@ export const useHome = () => {
 
     return {donationCardProps}
 }
+
+export const useHomeReservations = () => {
+    const reservations = useSelector(userReservationsSelector);
+    const reservationCardProps = reservations.map((reservation) => {
+      const {
+        _id,
+        userId,
+        isReserved,
+        startTime,
+        expirationTime,
+        pickUpDate,
+        itemId,
+        transactionStatus
+      } = reservation;
+      const prop: ReservationProps = {
+        _id,
+        userId,
+        isReserved,
+        startTime,
+        expirationTime,
+        pickUpDate,
+        itemId,
+        transactionStatus
+      };
+      return prop;
+    });
+  
+    return { reservationCardProps };
+  };

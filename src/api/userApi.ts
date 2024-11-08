@@ -1,32 +1,39 @@
-import { LatLng, Region } from "react-native-maps";
-import { LOCALHOST_IP } from "../../env";
-import { Item, Reservation } from "../store/user/slice";
-import axios from "axios";
-import { ItemCoord } from "../store/Items/slice";
-import { DateType } from "react-native-ui-datepicker";
+import API from "./apiInstance";
+import { LatLng, Region } from 'react-native-maps';
+import {LOCALHOST_IP} from '../../env.js'
+import { Item, Reservation } from '../store/user/slice';
+import { ItemCoord } from '../store/Items/slice';
+import { DateType } from 'react-native-ui-datepicker';
 
 // require("dotenv").config();
 
-const LOCALHOST = LOCALHOST_IP;
-const API = axios.create({ baseURL: LOCALHOST });
+// const LOCALHOST = "http://10.0.0.28:6006/"; // iOS Emulator
+// const LOCALHOST = "http://10.0.2.2:6006"; // Android Emulator
+// const LOCALHOST = LOCALHOST_IP;
+// const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) =>
   (API.defaults.headers.common = { Authorization: "Bearer " + token });
-export const getUser = (): Promise<UserRes> =>
-  API.get("user/getuser")
-    .then((res) => {
-      console.log("Response from user/getuser", res);
-      return res;
+
+export const getUser = (): Promise<UserRes> => API.get("user/getuser")
+  .then(res => 
+    {console.log('Response from user/getuser', res);
+      return res
     })
-    .catch((e) => {
-      return e;
-    });
+  .catch(e => {return e});
+
+export const getUserInfoById = (userId: String): Promise<UserRes> => API.post("user/getUserInfoById", {data: userId})
+.then(res => 
+  {console.log('Response from user/getUserInfoById', res);
+    return res
+  })
+.catch(e => {return e});
+
 export const addUser = (addUserReq: AddUserReq): Promise<UserRes | void> =>
   API.post("user/adduser", { data: addUserReq })
-    .then((res) => {
-      console.log("Response from user/adduser", res);
-    })
-    .catch((e) => console.error(e));
+    .then(res => {console.log('Response from user/adduser', res)})
+    .catch(e => console.error(e));
+    
 export const getOrAddUser = (): Promise<UserRes> =>
   API.post("user/getoradduser")
     .then((res) => {
@@ -101,6 +108,14 @@ export type GetUserReq = {
   id: string;
 };
 
+export type DonorDetails = {
+  _id: String;
+  email: String;
+  firstName: String;
+  lastName: String;
+  rating: Number;
+}
+
 export type GetItemsByIdsRes = {
   data: {
     items: Item[];
@@ -113,13 +128,14 @@ export type getItemsCoordRes = {
   };
 };
 export type UserRes = {
-  data: {
-    _id: String;
-    email: String;
-    firstName: String;
-    lastName: String;
-    rating: Number;
-    reservations: Item[];
-    donations: Item[];
-  };
-};
+  data:
+  {
+    _id: String,
+    email: String,
+    firstName: String,
+    lastName: String,
+    rating: Number
+    reservations: Item[],
+    donations: Item[]
+  }
+}

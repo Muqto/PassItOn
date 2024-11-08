@@ -22,7 +22,13 @@ export const BottomSheetComponent = () => {
           } = useBottomSheet()
   const renderItem = useCallback(
     ({ item }) => (
-      <ListCard itemName={item.itemName} itemType={item.itemType} distance={item.distance} imageDownloadUrl={item.imageDownloadUrl}/>
+      <ListCard 
+        itemId={item._id} 
+        itemName={item.itemName} 
+        itemType={item.itemType} 
+        distance={item.distance} 
+        imageDownloadUrl={item.imageDownloadUrl}
+        />
     ),
     []
   );
@@ -46,7 +52,8 @@ export const BottomSheetComponent = () => {
             data = {donations} 
             renderItem = {renderItem} 
             onEndReached={loadDonations}
-            onEndReachedThreshold={0}
+            keyExtractor={(item) => item._id}
+            onEndReachedThreshold={0.5}
             showsHorizontalScrollIndicator = {false}
             showsVerticalScrollIndicator = {false}
             ListFooterComponent={() => isDonLoading && <ActivityIndicator size={'large'} color={colors.lightPurple}/>}
@@ -55,8 +62,9 @@ export const BottomSheetComponent = () => {
           <FlatList 
           data = {requests} 
           renderItem = {renderItem} 
+          keyExtractor={(item) => item._id}
           onEndReached={loadRequests}
-          onEndReachedThreshold={0}
+          onEndReachedThreshold={0.5}
           showsHorizontalScrollIndicator = {false}
           showsVerticalScrollIndicator = {false}
           ListFooterComponent={() => isReqLoading && <ActivityIndicator size={'large'} color={colors.lightPurple}/>}
