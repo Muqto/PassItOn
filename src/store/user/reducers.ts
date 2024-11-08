@@ -25,3 +25,24 @@ export const updateUserReservations = (
 ) => {
   state.reservations.push(action.payload);
 };
+
+export const deleteUserDonation = (
+  state: UserState,
+  action: PayloadAction<string>
+) => {
+  state.donations = state.donations.filter(
+    (donation) => donation._id !== action.payload
+  );
+}
+
+export const updateUserItemStatusReducer = ( 
+  state: UserState,
+  action: PayloadAction<{ itemId: string, itemStatus: number }>
+) => {
+  state.donations = state.donations.map((donation) => {
+    if (donation._id === action.payload.itemId) {
+      donation.itemStatus = action.payload.itemStatus;
+    }
+    return donation;
+  });
+}

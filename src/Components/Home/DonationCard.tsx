@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { formatDate } from './DonationDetails';
 import { getUserById } from '../../api/userApi';
 
-const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, itemStatus, userId, description, pickupLocationText}: DonationProps) => {
+const DonationCard = ({itemId, itemName, expirationTime, itemType, imageDownloadUrl, itemStatus, userId, description, pickupLocationText}: DonationProps) => {
 
     const navigation = useNavigation(); // access navigation
     const getUserName = async () => {
@@ -35,7 +35,7 @@ const DonationCard = ({itemName, expirationTime, itemType, imageDownloadUrl, ite
                 <View style={styles.details}>
             <TouchableOpacity
               style={styles.detailsButton}
-              onPress={() => navigation.navigate('DonationDetails', { itemName, expirationTime, itemType, description, userId, itemStatus, imageDownloadUrl, pickupLocationText })}
+              onPress={() => navigation.navigate('DonationDetails', {itemId, itemName, expirationTime, itemType, description, userId, itemStatus, imageDownloadUrl, pickupLocationText })}
             >
               <Text style={styles.detailsText}>Details</Text>
             </TouchableOpacity>

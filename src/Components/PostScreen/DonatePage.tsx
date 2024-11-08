@@ -113,7 +113,7 @@ const DonatePage = () => {
         donationItemDescription,
         dayjs().toString(),
         dayjs().add(7, 'day').toString(),
-        0,
+        1,
         false,
         location,
         pickupLocationText,

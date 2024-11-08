@@ -36,27 +36,42 @@ export const addUser = (addUserReq: AddUserReq): Promise<UserRes | void> =>
     
 export const getOrAddUser = (): Promise<UserRes> =>
   API.post("user/getoradduser")
-    .then(res => 
-      {
-        console.log('Response from user/getoradduser', res);
-        return res
-      })
-    .catch(e => {return e});
+    .then((res) => {
+      console.log("Response from user/getoradduser", res);
+      return res;
+    })
+    .catch((e) => {
+      return e;
+    });
 
 export const uploadDonation = (
   uploadDonationReq: UploadDonationReq
 ): Promise<ItemRes> =>
   API.post("item/uploadDonation", { data: uploadDonationReq })
-    .then(res => 
-      {
-        console.log('Response from item/uploadDonation', res);
-        return res
-      })
-    .catch(e => 
-      {
-        return e;
+    .then((res) => {
+      console.log("Response from item/uploadDonation", res);
+      return res;
+    })
+    .catch((e) => {
+      return e;
     });
-export const getUserById = (userId: string): Promise<UserRes> => API.get(`user/getuserbyid/${userId}`);
+export const getUserById = (userId: string): Promise<UserRes> =>
+  API.get(`user/getuserbyid/${userId}`);
+
+export const getItemsCoord = (
+  currentLocation: LatLng
+): Promise<getItemsCoordRes> =>
+  API.post("item/getitemscoord", { data: currentLocation });
+export const getItemsByIds = (itemIds: string[]): Promise<GetItemsByIdsRes> =>
+  API.post("item/itemsbyids", { data: itemIds });
+
+export const deleteItem = (itemId: string): Promise<void> => {
+  return API.delete(`/item/${itemId}`);
+}
+
+export const updateItemStatus = (itemId: string, itemStatus: number): Promise<Item> => {
+  return API.post(`/item/updateStatus`, { itemId, itemStatus });
+}
 export type UploadDonationReq = {
   userId: string;
   itemName: string;
@@ -88,16 +103,14 @@ export type ItemRes = {
   };
 };
 
-export const getItemsCoord = (currentLocation: LatLng): Promise<getItemsCoordRes> => API.post("item/getitemscoord", { data : currentLocation });
-export const getItemsByIds = (itemIds: string[]): Promise<GetItemsByIdsRes> => API.post("item/itemsbyids", { data : itemIds })
 export type AddUserReq = {
   firstName: String;
   lastName: String;
 };
 
 export type GetUserReq = {
-    id: string
-}
+  id: string;
+};
 
 export type DonorDetails = {
   _id: String;
@@ -109,15 +122,15 @@ export type DonorDetails = {
 
 export type GetItemsByIdsRes = {
   data: {
-      items: Item[]
-  }
-}
+    items: Item[];
+  };
+};
 
 export type getItemsCoordRes = {
   data: {
-      itemsCoords: ItemCoord[]
-  }
-}
+    itemsCoords: ItemCoord[];
+  };
+};
 export type UserRes = {
   data:
   {

@@ -7,6 +7,7 @@ export type HomeProps = {
 }
 
 export type DonationProps = {
+    itemId: string,
     itemName: string,
     expirationTime: string,
     itemType: string,
