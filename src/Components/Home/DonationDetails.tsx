@@ -11,12 +11,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { deleteItem, getUserById } from "../../api/userApi";
+import { deleteItem, getUserById, updateItemStatus } from "../../api/userApi";
 import { Divider } from "react-native-paper";
 import { Image } from 'expo-image';
-import { deleteItemAction } from "../../store/Items/slice";
+import { deleteItemAction, updateItemStatusAction } from "../../store/Items/slice";
 import { useDispatch } from "react-redux";
-import { deleteUserDonationAction } from "../../store/user/slice";
+import { deleteUserDonationAction, updateUserItemStatusAction } from "../../store/user/slice";
 
 
 export const formatDate = (isoString) => {
@@ -50,10 +50,9 @@ const DonationDetails = ({ route }) => {
   const confirmCompletion = async () => {
     setModalVisible(false);
     navigation.goBack();
-    dispatch(deleteItemAction(itemId))
-    dispatch(deleteUserDonationAction(itemId))
-    const res = await deleteItem(itemId);
-
+    dispatch(updateItemStatusAction({itemId, itemStatus: 0}))
+    dispatch(updateUserItemStatusAction({itemId, itemStatus: 0}))
+    const res = await updateItemStatus(itemId, 0);
   }
 
   const toggleDescription = () => {

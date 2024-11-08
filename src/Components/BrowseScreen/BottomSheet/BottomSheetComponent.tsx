@@ -7,6 +7,8 @@ import { colors } from '../../../Colors/Colors';
 import { styles } from './Style';
 import { ActivityIndicator } from 'react-native-paper';
 import { useBottomSheet } from './Hooks';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../store/user/selectors';
 
 export const BottomSheetComponent = () => {
   const {  
@@ -32,7 +34,7 @@ export const BottomSheetComponent = () => {
     ),
     []
   );
-  console.log(donations)
+  const user = useSelector(userSelector)
   return (
       <BottomSheet snapPoints={snapPoints}>
         <BottomSheetView style={styles.contentContainer}>
@@ -49,7 +51,9 @@ export const BottomSheetComponent = () => {
           </View>
           {donationsSelected ? 
           <FlatList 
-            data = {donations} 
+            data = {donations && donations.filter(item => 
+              item.itemStatus === 1 && item.userId !== user._id
+            )} 
             renderItem = {renderItem} 
             onEndReached={loadDonations}
             keyExtractor={(item) => item._id}

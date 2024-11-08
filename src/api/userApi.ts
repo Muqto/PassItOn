@@ -68,6 +68,10 @@ export const getItemsByIds = (itemIds: string[]): Promise<GetItemsByIdsRes> =>
 export const deleteItem = (itemId: string): Promise<void> => {
   return API.delete(`/item/${itemId}`);
 }
+
+export const updateItemStatus = (itemId: string, itemStatus: number): Promise<Item> => {
+  return API.post(`/item/updateStatus`, { itemId, itemStatus });
+}
 export type UploadDonationReq = {
   userId: string;
   itemName: string;
