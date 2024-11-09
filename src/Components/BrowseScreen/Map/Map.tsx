@@ -3,7 +3,7 @@ import { Animated, StyleSheet, View, Platform } from 'react-native';
 import ClusterMapView from 'react-native-map-clustering';
 import { colors } from '../../../Colors/Colors';
 import { useSelector } from 'react-redux';
-import { locationSelector } from '../../../store/user/selectors';
+import { locationSelector, userSelector } from '../../../store/user/selectors';
 import { itemCoordsSelector } from '../../../store/Items/selectors';
 import { faBell, faGift} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -13,7 +13,10 @@ import { useMap } from './Hooks';
 
 export default function MapComponent() {
     const location = useSelector(locationSelector)
-    const itemsCoords = useSelector(itemCoordsSelector)
+    const user = useSelector(userSelector)
+    const itemsCoords = useSelector(itemCoordsSelector).filter(item => 
+      item.transactionStatus === 0 && item.userId !== user._id
+    );
     const {onMarkerPress, selectedItem, markerScales} = useMap()
 
     const randomCoords = (n: number) => {

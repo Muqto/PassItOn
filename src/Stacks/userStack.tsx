@@ -67,9 +67,7 @@ export default function UserStack() {
                 longitude: location.longitude
             }
             let res = await getItemsCoord(loc)
-            const itemCoords = res.data.itemsCoords.filter(item => 
-                item.itemStatus === 1 && item.userId !== user._id
-              );
+            const itemCoords = res.data.itemsCoords
             
             dispatch(addItemsCoordsAction(itemCoords))
         }

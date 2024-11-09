@@ -1,3 +1,4 @@
+import { updateTransactionStatus } from './../../api/reservationApi';
 import { PayloadAction } from "@reduxjs/toolkit"
 import { ItemCoord, ItemsState } from "./slice"
 import { Item } from "../user/slice"
@@ -23,6 +24,15 @@ export const updateItemStatusReducer = (state: ItemsState, action: PayloadAction
     state.items = state.items.map(item => {
         if (item._id === action.payload.itemId) {
             item.itemStatus = action.payload.itemStatus
+        }
+        return item
+    })
+}
+
+export const updateTransactionStatusReducer = (state: ItemsState, action: PayloadAction<{ itemId: string, transactionStatus: number }>) => {
+    state.items = state.items.map(item => {
+        if (item._id === action.payload.itemId) {
+            item.reservationInfo.transactionStatus = action.payload.transactionStatus
         }
         return item
     })

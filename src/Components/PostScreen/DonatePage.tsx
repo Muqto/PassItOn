@@ -125,6 +125,7 @@ const DonatePage = () => {
           expirationTime: "N/A",
           pickUpDate: "N/A",
           itemId: 0,
+          transactionStatus: 0,
         },
         distance,
         imageDownloadUrl,
