@@ -46,3 +46,15 @@ export const updateUserItemStatusReducer = (
     return donation;
   });
 }
+
+export const updateUserTransactionStatusReducer = ( 
+  state: UserState,
+  action: PayloadAction<{ itemId: string, transactionStatus: number }>
+) => {
+  state.donations = state.donations.map((donation) => {
+    if (donation._id === action.payload.itemId) {
+      donation.reservationInfo.transactionStatus = action.payload.transactionStatus;
+    }
+    return donation;
+  });
+}

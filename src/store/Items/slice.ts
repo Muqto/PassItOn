@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { Item } from "../user/slice"
-import { addItemCoordsReducer, deleteItemReducer, updateItemStatusReducer } from "./reducers"
+import { addItemCoordsReducer, deleteItemReducer, updateItemStatusReducer, updateTransactionStatusReducer } from "./reducers"
 import { LatLng } from "react-native-maps"
 import { updateItemStatus } from "../../api/userApi"
 
@@ -10,7 +10,7 @@ export interface ItemCoord {
     distance: number,
     isRequest: boolean,
     isSelected?: boolean,
-    itemStatus: number,
+    transactionStatus: number,
     userId: string
 
 }
@@ -33,11 +33,12 @@ const itemsSlice = createSlice({
     reducers: {
       addItemsCoordsAction: addItemCoordsReducer,
       deleteItemAction: deleteItemReducer,
-      updateItemStatusAction: updateItemStatusReducer
+      updateItemStatusAction: updateItemStatusReducer,
+      updateTransactionStatusAction: updateTransactionStatusReducer
     }
   })
   
   // Action creators are generated for each case reducer function
-  export const { addItemsCoordsAction, deleteItemAction, updateItemStatusAction } = itemsSlice.actions
+  export const { addItemsCoordsAction, deleteItemAction, updateItemStatusAction, updateTransactionStatusAction } = itemsSlice.actions
   
   export default itemsSlice.reducer

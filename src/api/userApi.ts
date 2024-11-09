@@ -72,6 +72,9 @@ export const deleteItem = (itemId: string): Promise<void> => {
 export const updateItemStatus = (itemId: string, itemStatus: number): Promise<Item> => {
   return API.post(`/item/updateStatus`, { itemId, itemStatus });
 }
+export const updateItemTransactionStatus = (itemId: string, transactionStatus: number): Promise<Item> => {
+  return API.post(`/item/updateTransactionStatus`, { itemId, transactionStatus });
+}
 export type UploadDonationReq = {
   userId: string;
   itemName: string;
