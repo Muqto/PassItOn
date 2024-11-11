@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { deleteItem, getUserById, updateItemStatus, updateItemTransactionStatus } from "../../api/userApi";
+import { deleteItem, DonorDetails, getUserById, getUserInfoById, updateItemStatus, updateItemTransactionStatus, UserRes } from "../../api/userApi";
 import { Divider } from "react-native-paper";
 import { Image } from 'expo-image';
 import { deleteItemAction, updateItemStatusAction, updateTransactionStatusAction } from "../../store/Items/slice";
@@ -37,11 +37,11 @@ const DonationDetails = ({ route }) => {
     userId,
     itemStatus,
     imageDownloadUrl,
-    pickupLocationText
+    pickupLocationText,
   } = route.params;
   const navigation = useNavigation();
-  const [fullName, setFullName] = useState("");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [donorInfo, setDonorInfo] = useState<UserRes>();
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const dispatch = useDispatch()
@@ -58,6 +58,14 @@ const DonationDetails = ({ route }) => {
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const res = await getUserInfoById(userId)
+      setDonorInfo(res)
+    }
+    fetchUserInfo();
+  }, [])
 
   return (
     <ScrollView style={styles.container}>
@@ -137,8 +145,9 @@ const DonationDetails = ({ route }) => {
           </Text>
           <Text style={styles.sectionTitle}>Donor</Text>
           <Text style={styles.detailText}>
-            Jon Doe
             {/* {fullName ? fullName : "Loading..."} */}
+            {donorInfo?.data !== undefined ? `${donorInfo?.data.firstName} ${donorInfo?.data.lastName}`: 'Loading...'}
+            {donorInfo?.data?.rating !== undefined ? ` (${donorInfo?.data?.rating}/5 ⭐)`: '(N/A)'}
           </Text>
         </View>
 

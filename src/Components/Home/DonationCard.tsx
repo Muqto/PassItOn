@@ -11,11 +11,11 @@ import { getUserById } from '../../api/userApi';
 const DonationCard = ({itemId, itemName, expirationTime, itemType, imageDownloadUrl, itemStatus, userId, description, pickupLocationText}: DonationProps) => {
 
     const navigation = useNavigation(); // access navigation
-    const getUserName = async () => {
-        const user = await getUserById({id: userId});
-        return `${user.data.firstName} ${user.data.lastName}`;
-      }
-    const fullName = getUserName();
+    // const getUserName = async () => {
+    //     const user = await getUserById(userId);
+    //     return `${user.data.firstName} ${user.data.lastName}`;
+    //   }
+    // const fullName = getUserName();
   return (
     <View style = {styles.cardContainer}>
         <View style = {styles.bodyContainer}>

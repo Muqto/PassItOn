@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import { Button } from "react-native-paper";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { createReservation } from '../../../api/reservationApi';
-import { getItemsByIds } from '../../../api/userApi';
+import { createReservation, getReservationsById } from '../../../api/reservationApi';
+import { DonorDetails, getItemsByIds, getUserInfoById, UserRes } from '../../../api/userApi';
 import styles from './Styles';
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -60,6 +60,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   const [item, setItem] = useState<Item | null>(null);
   const userState = useSelector(userSelector);
   const userId = userState._id;
+  const [donorInfo, setDonorInfo] = useState<UserRes>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -126,6 +127,8 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
         const items = res.data.items;
         if (items[0] && items.length === 1) {
           setItem(items[0]);
+          const donorInfoRes = await getUserInfoById(items[0].userId)
+          setDonorInfo(donorInfoRes)
           // console.log("Item: ", item)
         } else {
           setError('Item not found.');
@@ -369,7 +372,8 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                 <View style={styles.subSection}>
                   <Text style={styles.subSectionHeader}>Donor</Text>
                   <Text style={styles.detailText}>
-                    {item.reservationInfo.userId || 'Unknown Donor'}{' '}
+                    {`${donorInfo?.data.firstName} ${donorInfo?.data.lastName}` || 'Unknown Donor'}{' '}
+                    {donorInfo?.data.rating !== 0 ? `(${donorInfo?.data.rating}/5 ⭐)`: `(N/A ⭐) `}
                   </Text>
                 </View>
                 <View style={styles.subSection}>
@@ -452,7 +456,8 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                     <View style={styles.modalSubSection}>
                       <Text style={styles.modalSubSectionHeader}>Donor</Text>
                       <Text style={styles.detailText}>
-                        {item.reservationInfo.userId || 'Unknown Donor'}{' '}
+                        {`${donorInfo?.data.firstName} ${donorInfo?.data.lastName}` || 'Unknown Donor'}{' '}
+                        {donorInfo?.data.rating !== 0 ? `(${donorInfo?.data.rating}/5 ⭐)`: `(N/A ⭐) `}
                       </Text>
                     </View>
                     <View style={styles.modalSubSection}>

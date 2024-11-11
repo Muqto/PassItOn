@@ -161,7 +161,7 @@ const MyReservationDetails = ({route}) => {
             </Text>
             <Text style={styles.sectionTitle}>Donor</Text>
             <Text style={styles.detailText}>
-                {`${donorInfo?.firstName} ${donorInfo?.lastName}`}
+                {`${donorInfo?.firstName} ${donorInfo?.lastName} (${donorInfo?.rating !== 0 ? donorInfo?.rating : 'N/A'} ⭐)`}
             </Text>
             <Text style={styles.sectionTitle}>Status</Text>
             <Text style={styles.detailText}>
