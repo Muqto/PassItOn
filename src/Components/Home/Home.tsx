@@ -41,7 +41,7 @@ const Home = ({navigation}) => {
         <View>
           {isDonations ? 
           <View>
-            {donationCardProps.map((props, idx) => <DonationCard key={idx} {...props}/>)}
+            {donationCardProps.map((props, idx) => <DonationCard key={idx} {...props} userId={userState._id}/>)}
           </View> : 
           <View>
             {reservationCardProps.map((props, idx) => (
