@@ -129,7 +129,6 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
           setItem(items[0]);
           const donorInfoRes = await getUserInfoById(items[0].userId)
           setDonorInfo(donorInfoRes)
-          // console.log("Item: ", item)
         } else {
           setError('Item not found.');
         }
@@ -201,7 +200,6 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   };
 
   const confirmReservation = async () => {
-    console.log("item: ", item)
     if (selectedPickupDate && selectedPickupTime) {
         if (!userId) {
             alert('User not authenticated. Please log in.')
@@ -243,7 +241,6 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
             setModalStep('confirmation')
             // Optionally, refetch item details to reflect reservation status
             const updatedItem = await getItemsByIds([item._id])
-            console.log("updatedItem: ", updatedItem)
             if (updatedItem.data.items.length === 1) {
               setItem(updatedItem.data.items[0])
             }

@@ -22,6 +22,7 @@ export const BottomSheetComponent = () => {
     loadDonations,
     loadRequests 
           } = useBottomSheet()
+
   const renderItem = useCallback(
     ({ item }) => (
       <ListCard 
@@ -34,7 +35,7 @@ export const BottomSheetComponent = () => {
     ),
     []
   );
-  const user = useSelector(userSelector)
+
   return (
       <BottomSheet snapPoints={snapPoints}>
         <BottomSheetView style={styles.contentContainer}>
@@ -51,9 +52,7 @@ export const BottomSheetComponent = () => {
           </View>
           {donationsSelected ? 
           <FlatList 
-            data = {donations && donations.filter(item => 
-              item.itemStatus === 1 && item.userId !== user._id
-            )} 
+            data = {donations} 
             renderItem = {renderItem} 
             onEndReached={loadDonations}
             keyExtractor={(item) => item._id}
