@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 15,
-      marginBottom: 15
+      marginBottom: 15,
     },
     topButton1: {
       backgroundColor: colors.lightUnselected,

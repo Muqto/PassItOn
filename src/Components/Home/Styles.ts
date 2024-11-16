@@ -97,6 +97,12 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 20
       },
+      statusIcon: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 'auto', // Push to the right
+        marginRight: 10,   // Optional spacing
+    },
       cardImagePlaceholder: {
         width: 100,
         height: 100,

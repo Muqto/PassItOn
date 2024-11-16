@@ -26,8 +26,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between', // Ensures space between back button and flag button
     paddingHorizontal: 10,
-    paddingVertical: 15,
-    marginTop: 30,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
@@ -42,9 +40,10 @@ const styles = StyleSheet.create({
     minHeight: 44, // Ensures a minimum touchable height
   },
   headerText: {
-    fontSize: 32,
-    fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
     flex: 1, // Allows the text to take available space
   },
 
@@ -52,22 +51,25 @@ const styles = StyleSheet.create({
   // Content Styles
   // =========================================================
   imageFullWidth: {
+    height: 255,
+    backgroundColor: "#E0E0E0",
+    justifyContent: "center",
+    alignItems: "center",
     width: '100%',
-    height: 200,
     resizeMode: 'cover',
     marginBottom: 16,
   },
   placeholderFullWidth: {
     width: '100%',
-    height: 200,
+    height: 255,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#e0e0e0",
     marginBottom: 16,
   },
   placeholderText: {
-    color: "#999",
-    fontSize: 22,
+    color: "#808080",
+    fontSize: 14,
   },
   title: {
     fontSize: 22,
@@ -79,23 +81,23 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   section: {
-    marginBottom: 28, // Overall gap between sections
+    marginBottom: 16, // Overall gap between sections
   },
   subSection: {
     marginBottom: 14, // Overall gap between sub-sections
   },
   sectionHeader: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8, // Gap between header and content
   },
   subSectionHeader: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4, // Gap between sub-header and content
   },
   description: {
-    fontSize: 18,
+    fontSize: 14,
     color: "#333",
     // No additional margin since it's under the "Description" header
   },
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     marginTop: 8, // Gap between header and details
   },
   detailText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#333",
     marginBottom: 4,
   },
@@ -121,17 +123,17 @@ const styles = StyleSheet.create({
   // =========================================================
   buttonContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingVertical: 12,
   },
   button: {
     backgroundColor: "#6B6BE1",
-    borderRadius: 5,
-    height: 60,
+    borderRadius: 8,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 16,
     color: "#fff",
     lineHeight: 24,
   },
@@ -193,13 +195,14 @@ const styles = StyleSheet.create({
     top: 80,
   },
   modalTitle: {
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 4,
   },
   modalCategory: {
-    fontSize: 18,
+    fontSize: 14,
     color: "#888",
+    marginBottom: 8,
   },
   modalSection: {
     marginBottom: 28, // Overall gap between sections
