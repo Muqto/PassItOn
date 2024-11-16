@@ -14,6 +14,8 @@ const SignUp = ({ navigation }: RouterProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const { signUp, isLoading } = useAuthentication()
@@ -34,7 +36,7 @@ const SignUp = ({ navigation }: RouterProps) => {
               onChangeText={(text) => setFirstName(text)}
               mode="flat"
               activeUnderlineColor="black"
-              style={styles.signInInput}
+              style={styles.firstNameInput}
             />
             <TextInput
               label="Last Name"
@@ -42,7 +44,7 @@ const SignUp = ({ navigation }: RouterProps) => {
               onChangeText={(text) => setLastName(text)}
               mode="flat"
               activeUnderlineColor="black"
-              style={styles.signInInput}
+              style={styles.lastNameInput}
             />
           </View>
           <TextInput
@@ -60,6 +62,13 @@ const SignUp = ({ navigation }: RouterProps) => {
             style={styles.signInInput}
             mode="flat"
             activeUnderlineColor="black"
+            secureTextEntry={!showPassword}
+            right={
+              <TextInput.Icon
+                icon={showPassword ? "eye-off" : "eye"}
+                onPress={() => setShowPassword(!showPassword)}
+              />
+            }
           />
           <TextInput
             label="Confirm Password"
@@ -68,6 +77,13 @@ const SignUp = ({ navigation }: RouterProps) => {
             style={styles.signInInput}
             mode="flat"
             activeUnderlineColor="black"
+            secureTextEntry={!showConfirmPassword}
+            right={
+              <TextInput.Icon
+                icon={showConfirmPassword ? "eye-off" : "eye"}
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              />
+            }
           />
           <Text style={styles.signUpCTA}>
             Already have an account?{" "}

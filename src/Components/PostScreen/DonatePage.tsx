@@ -25,8 +25,8 @@ const DonatePage = () => {
     { label: "Clothes", value: "Clothes",},
     { label: "Furniture", value: "Furniture",},
     { label: "Book", value: "Book",},
-    { label: "Stationery",value: "Stationery",},
-    { label: "Other",value: "Other",},
+    { label: "Stationery", value: "Stationery",},
+    { label: "Other", value: "Other",},
   ];
   const [location, setLocation] = useState({latitude: 0, longitude: 0})
   const [date, setDate] = useState(dayjs())
@@ -69,6 +69,23 @@ const DonatePage = () => {
   }
 
   const postDonation = async () => {
+    if ( !donationItemName ) {
+      alert("Need an item name to post donation!")
+      return
+    } 
+    if ( !category ) {
+      alert("Need an item category to post donation!")
+      return
+    } 
+    if ( !location ) {
+      alert("Need a location to post donation!")
+      return
+    } 
+    if ( !pickupTimes ) {
+      alert("Need a pick up time to post donation!")
+      return
+    }
+
     try {
       // calculate distance from user to new donation
       const distance = getDistance(
@@ -176,7 +193,7 @@ const DonatePage = () => {
           activeUnderlineColor="black"
         />
         <TextInput
-          label="Description *"
+          label="Description "
           multiline
           value={donationItemDescription}
           onChangeText={(text) => setDonationItemDescription(text)}
@@ -233,7 +250,7 @@ const DonatePage = () => {
                 mode="contained-tonal"
                 style={styles.closePickupTimeModalButton}
                 onPress={handleClosePickupTimeModal}>
-              Close Modal
+              Close
               </Button>
               <Text style={{paddingBottom: 40, fontSize: 18, textAlign: "center"}}>Please select a pickup time during which you are available for 15 minutes</Text>
               <DateTimePicker 

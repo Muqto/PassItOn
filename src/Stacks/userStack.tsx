@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigation from '../Components/Tabs/TabNavigation';
 import DonationFocus from '../Components/BrowseScreen/DonationFocus/DonationFocus';
 import { useEffect, useState } from 'react';
-import useAuthentication from '../Hooks/Authetication';
+import useAuthentication from '../Hooks/Authentication';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSelector } from '../store/user/selectors';
 import { addTokenToAPI, getItemsCoord, getUser } from '../api/userApi';
@@ -10,7 +10,6 @@ import { addUserAction, addUserLocationAction, initialUserState, mtlRegionCoord 
 import { firebase_auth } from '../config/firebase';
 import { LatLng, Region } from 'react-native-maps';
 import * as Location from 'expo-location' 
-import { addItemsCoordsAction } from '../store/Items/slice';
 import DonationDetails from '../Components/Home/DonationDetails';
 import FeedbackScreen from '../Components/Support/FeedbackScreen';
 import MyReservationDetails from '../Components/Home/MyReservationDetails';
@@ -55,6 +54,7 @@ export default function UserStack() {
               return currLocation
             }
         }
+        
         const initialLoad = async () => {
             if (!user._id) {
                 // get user info
@@ -68,8 +68,6 @@ export default function UserStack() {
             }
             let res = await getItemsCoord(loc)
             const itemCoords = res.data.itemsCoords
-            
-            dispatch(addItemsCoordsAction(itemCoords))
         }
 
         initialLoad()

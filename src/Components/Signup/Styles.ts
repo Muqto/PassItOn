@@ -9,14 +9,14 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
-  
     signInLogoContainer: {
-      height: "20%",
+      // height: "20%",
       width: "100%",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       paddingBottom: 60,
+      paddingTop: 20,
     },
     signInLogoText: {
       fontSize: 50,
@@ -65,11 +65,23 @@ const styles = StyleSheet.create({
       alignContent: "center",
       fontSize: 50,
     },
-  
     signUpName: {
       display: 'flex',
       flexDirection: 'row'
-    }
+    },
+    firstNameInput: {
+      flex: 1,
+      marginRight: 8,
+      backgroundColor: "#EEEEEE",
+      marginBottom: 20,
+    },
+    lastNameInput: {
+      flex: 1,
+      marginLeft: 8,
+      backgroundColor: "#EEEEEE",
+      marginBottom: 20,
+    },
+
   });
 
   export default styles

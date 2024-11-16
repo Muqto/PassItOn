@@ -12,6 +12,7 @@ import { colors } from "../../Colors/Colors";
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { signIn, isLoading } = useAuthentication()
   const isSessionLoading = useSelector(isSessionLoadingSelector)
   const auth = firebase_auth
@@ -43,6 +44,13 @@ const Signin = ({ navigation }) => {
             style={styles.signInInput}
             mode="flat"
             activeUnderlineColor="black"
+            secureTextEntry={!showPassword}
+            right={
+              <TextInput.Icon
+                icon={showPassword ? "eye-off" : "eye"}
+                onPress={() => setShowPassword(!showPassword)}
+              />
+            }
           />
           <Text style={styles.signUpCTA}>
             Don't have an account?{" "}

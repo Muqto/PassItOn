@@ -1,16 +1,8 @@
 import API from "./apiInstance";
 import { LatLng, Region } from 'react-native-maps';
-import {LOCALHOST_IP} from '../../env.js'
 import { Item, Reservation } from '../store/user/slice';
 import { ItemCoord } from '../store/Items/slice';
 import { DateType } from 'react-native-ui-datepicker';
-
-// require("dotenv").config();
-
-// const LOCALHOST = "http://10.0.0.28:6006/"; // iOS Emulator
-// const LOCALHOST = "http://10.0.2.2:6006"; // Android Emulator
-// const LOCALHOST = LOCALHOST_IP;
-// const API = axios.create({ baseURL: LOCALHOST });
 
 export const addTokenToAPI = (token: string) =>
   (API.defaults.headers.common = { Authorization: "Bearer " + token });
@@ -55,6 +47,7 @@ export const uploadDonation = (
     .catch((e) => {
       return e;
     });
+
 export const getUserById = (userId: string): Promise<UserRes> =>
   API.get(`user/getuserbyid/${userId}`);
 
@@ -62,6 +55,7 @@ export const getItemsCoord = (
   currentLocation: LatLng
 ): Promise<getItemsCoordRes> =>
   API.post("item/getitemscoord", { data: currentLocation });
+  
 export const getItemsByIds = (itemIds: string[]): Promise<GetItemsByIdsRes> =>
   API.post("item/itemsbyids", { data: itemIds });
 
