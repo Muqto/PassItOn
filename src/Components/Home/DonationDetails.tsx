@@ -101,7 +101,7 @@ const DonationDetails = ({ route }) => {
             />
           ) : (
             <Text style={styles.imagePlaceholder}>
-              image of the item here if provided, else placeholder
+              Image not available
             </Text>
           )}
         </View>
