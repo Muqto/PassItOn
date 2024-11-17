@@ -58,7 +58,8 @@ const DonationDetails = ({ route }) => {
     itemStatus,
     imageDownloadUrl,
     pickupLocationText,
-    reservationInfo
+    reservationInfo,
+    fromHistory
   } = route.params as DonationProps;
   const navigation = useNavigation();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -98,8 +99,10 @@ const DonationDetails = ({ route }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialIcons name="arrow-back-ios" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Your donation</Text>
+        <Text style={styles.headerTitle}>{fromHistory ? '' : 'Your donation'}</Text>
+
       </View>
+
 
       {/* Image Placeholder */}
       <View>
@@ -185,13 +188,13 @@ const DonationDetails = ({ route }) => {
         </View>
 
         {/* Complete Transaction Button */}
-        <TouchableOpacity
+        {!fromHistory ? <TouchableOpacity
           style={{...styles.completeButton, backgroundColor: transactionStatus === 1 ? '#6B6BE1' : '#EEEEEE'}} // Change button color based on transaction status
           onPress={() => setModalVisible(true)} // Show modal on press
           disabled={transactionStatus !== 1} // Disable button if transaction is not reserved
         >
           <Text style={{...styles.completeButtonText, color: transactionStatus === 1 ? 'white' : '#3D404A'}}>Complete Transaction</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> : null}
 
         {/* Modal for transaction completion */}
         <Modal
@@ -246,7 +249,6 @@ export const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
     paddingTop: 48,
@@ -255,16 +257,13 @@ export const styles = StyleSheet.create({
     borderBottomColor: "#E0E0E0",
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
+    flex: 1,
+    marginRight: 15,
     color: "black",
-    position: "absolute",
-    left: "50%",
-    bottom: "50%",
-    transform: [
-      { translateX: -50 }, // Separate objects for each transformation
-      { translateY: -5 },
-    ],
+    width: "100%",
+    textAlign: "center",
   },
 
   imageContainer: {

@@ -1,4 +1,3 @@
-import { updateTransactionStatus } from './../../api/reservationApi';
 import { PayloadAction } from "@reduxjs/toolkit"
 import { ItemCoord, ItemsState } from "./slice"
 import { Item } from "../user/slice"

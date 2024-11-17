@@ -20,6 +20,7 @@ export type DonationProps = {
     fullName?: string,
     imageDownloadUrl: string | undefined,
     reservationInfo: Reservation
+    fromHistory?: boolean
 }
 
 export type ReservationProps = {

@@ -17,7 +17,7 @@ const ReportScreen = () => {
             <Text style={styles.feedbackPromptText}>
                 To report a listing, please contact us at{' '}
                 <Text style={styles.feedbackEmailText}>
-                    passitonsupport@gmail.com
+                passitoncontactmail@gmail.com
                 </Text>
             </Text>
         </View>

@@ -294,7 +294,6 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   const openImageModal = () => setImageModalVisible(true);
   const closeImageModal = () => setImageModalVisible(false);
   const transactionStatus = item?.reservationInfo.transactionStatus;
-
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
