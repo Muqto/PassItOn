@@ -8,30 +8,40 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
-  
-    signInLogoContainer: {
-      height: "40%",
+    signInPageInfoContainer: {
       width: "100%",
+      margin: 10,
+      paddingRight: 10,
+      paddingLeft: 10,
+    },
+    // signInLogoContainer: {
+    //   height: "40%",
+    //   width: "100%",
+    //   display: "flex",
+    //   alignItems: "center",
+    //   justifyContent: "center",
+    //   paddingBottom: 60,
+    // },
+    signInLogoContainer: {
+      height: 250,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      paddingBottom: 60,
+      paddingTop: 80,
     },
     signInLogoText: {
       fontSize: 50,
       fontWeight: "bold",
     },
-  
     signInContent: {
       height: "60%",
       width: "100%",
       display: "flex",
       paddingBottom: 0,
-      paddingTop: 0,
+      paddingTop: 60,
       paddingLeft: 20,
       paddingRight: 20,
     },
-  
     signInHeadingDiv: {
       width: "100%",
       marginBottom: 30,
@@ -52,12 +62,10 @@ const styles = StyleSheet.create({
       fontWeight: "600",
       color: "#6B6BE1",
     },
-  
     signInButtonDiv: {
       height: 56,
       marginTop: 80,
     },
-  
     signInButton: {
       width: "100%",
       borderRadius: 5,

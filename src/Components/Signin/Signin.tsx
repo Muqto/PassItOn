@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform, KeyboardAvoidingView, ScrollView } from "react-native";
 import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
 import useAuthentication from "../../Hooks/Authentication";
@@ -18,58 +18,65 @@ const Signin = ({ navigation }) => {
   const auth = firebase_auth
   
   return (
-    <View style = {{width: "100%", height: "100%"}}>
-    
-    <View style={styles.signInPageContainer}>
-      <View style={styles.signInLogoContainer}>
-        <Text style={styles.signInLogoText}>PassItOn</Text>
-      </View>
-      <View style={styles.signInContent}>
-        <View style={styles.signInHeadingDiv}>
-          <Text style={styles.signInText}>Sign in</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.signInPageContainer}>
+        <View style={styles.signInLogoContainer}>
+          <Text style={styles.signInLogoText}>PassItOn</Text>
         </View>
-        <View>
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            mode="flat"
-            activeUnderlineColor="black"
-            style={styles.signInInput}
-          />
-          <TextInput
-            label="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            style={styles.signInInput}
-            mode="flat"
-            activeUnderlineColor="black"
-            secureTextEntry={!showPassword}
-            right={
-              <TextInput.Icon
-                icon={showPassword ? "eye-off" : "eye"}
-                onPress={() => setShowPassword(!showPassword)}
+        <ScrollView
+          style={styles.signInPageInfoContainer}
+          keyboardShouldPersistTaps={"handled"}
+        >
+          <View style={styles.signInContent}>
+            <View style={styles.signInHeadingDiv}>
+              <Text style={styles.signInText}>Sign in</Text>
+            </View>
+            <View>
+              <TextInput
+                label="Email"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                mode="flat"
+                activeUnderlineColor="black"
+                style={styles.signInInput}
               />
-            }
-          />
-          <Text style={styles.signUpCTA}>
-            Don't have an account?{" "}
-            <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignUp")}>Sign up</Text>
-          </Text>
-          <View style={styles.signInButtonDiv}>
-            {isLoading ? <ActivityIndicator size={30} animating={true} color={colors.primaryPurple}/> : <Button
-              mode="contained"
-              buttonColor="#6B6BE1"
-              style={styles.signInButton}
-              onPress={() => signIn(email, password)}
-            >
-              Sign In
-            </Button>}
+              <TextInput
+                label="Password"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                style={styles.signInInput}
+                mode="flat"
+                activeUnderlineColor="black"
+                secureTextEntry={!showPassword}
+                right={
+                  <TextInput.Icon
+                    icon={showPassword ? "eye-off" : "eye"}
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
+              />
+              <Text style={styles.signUpCTA}>
+                Don't have an account?{" "}
+                <Text style={styles.signUpCTALink} onPress = {() => navigation.navigate("SignUp")}>Sign up</Text>
+              </Text>
+              <View style={styles.signInButtonDiv}>
+                {isLoading ? <ActivityIndicator size={30} animating={true} color={colors.primaryPurple}/> : <Button
+                  mode="contained"
+                  buttonColor="#6B6BE1"
+                  style={styles.signInButton}
+                  onPress={() => signIn(email, password)}
+                >
+                  Sign In
+                </Button>}
+              </View>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
-    </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
