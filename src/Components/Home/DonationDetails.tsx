@@ -17,7 +17,7 @@ import { Image } from 'expo-image';
 import { deleteItemAction, updateItemStatusAction, updateTransactionStatusAction } from "../../store/Items/slice";
 import { useDispatch } from "react-redux";
 import { deleteUserDonationAction, updateUserItemStatusAction, updateUserTransactionStatusAction } from "../../store/user/slice";
-
+import { DonationProps } from "./Types";
 
 export const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -25,6 +25,12 @@ export const formatDate = (isoString) => {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
+};
+const transactionStatusMap = {
+  0: "Not Reserved",
+  1: "Reserved",
+  2: "Transaction Completed",
+  3: "Review Submitted",
 };
 
 const DonationDetails = ({ route }) => {
@@ -38,7 +44,8 @@ const DonationDetails = ({ route }) => {
     itemStatus,
     imageDownloadUrl,
     pickupLocationText,
-  } = route.params;
+    reservationInfo
+  } = route.params as DonationProps;
   const navigation = useNavigation();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [donorInfo, setDonorInfo] = useState<UserRes>();
@@ -47,6 +54,8 @@ const DonationDetails = ({ route }) => {
   const dispatch = useDispatch()
   const openImageModal = () => setImageModalVisible(true);
   const closeImageModal = () => setImageModalVisible(false);
+  const transactionStatus = reservationInfo.transactionStatus;
+  console.log('reservationInfo: ', reservationInfo)
   const confirmCompletion = async () => {
     setModalVisible(false);
     navigation.goBack();
@@ -92,7 +101,7 @@ const DonationDetails = ({ route }) => {
             />
           ) : (
             <Text style={styles.imagePlaceholder}>
-              image of the item here if provided, else placeholder
+              Image not available
             </Text>
           )}
         </View>
@@ -137,7 +146,7 @@ const DonationDetails = ({ route }) => {
           <Divider />
           <Text style={styles.sectionTitle}>Status</Text>
           <Text style={styles.detailText}>
-            {itemStatus ? "Available" : "Unavailable"}
+            {transactionStatusMap[transactionStatus as keyof typeof transactionStatusMap]}
           </Text>
           <Text style={styles.sectionTitle}>Pickup location</Text>
           <Text style={styles.detailText}>
@@ -212,7 +221,7 @@ const DonationDetails = ({ route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",

@@ -1,18 +1,34 @@
 import { useState, useRef, useEffect } from "react";
-import { View, Text, SafeAreaView, ScrollView, Modal, Image } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  Modal,
+  Image,
+} from "react-native";
+import { Button, IconButton, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
 import styles from "./Styles";
 import { userSelector } from "../../store/user/selectors";
 import { useSelector } from "react-redux";
-import {Dropdown} from 'react-native-element-dropdown';
-import {GooglePlacesAutocomplete, GooglePlacesAutocompleteRef} from 'react-native-google-places-autocomplete';
-import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
-import * as ImagePicker from 'expo-image-picker';
-import {ref as firebaseStorageRef, getDownloadURL, uploadBytes} from "firebase/storage";
+import { Dropdown } from "react-native-element-dropdown";
+import {
+  GooglePlacesAutocomplete,
+  GooglePlacesAutocompleteRef,
+} from "react-native-google-places-autocomplete";
+import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+import * as ImagePicker from "expo-image-picker";
+import {
+  ref as firebaseStorageRef,
+  getDownloadURL,
+  uploadBytes,
+} from "firebase/storage";
 import { storage } from "../../config/firebase";
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 const DonatePage = () => {
   const { donate } = useItem();
@@ -21,52 +37,57 @@ const DonatePage = () => {
   const [donationItemDescription, setDonationItemDescription] = useState("");
   const [category, setCategory] = useState("");
   const categoryList = [
-    { label: "Food", value: "Food",},
-    { label: "Clothes", value: "Clothes",},
-    { label: "Furniture", value: "Furniture",},
-    { label: "Book", value: "Book",},
-    { label: "Stationery", value: "Stationery",},
-    { label: "Other", value: "Other",},
+    { label: "Food", value: "Food" },
+    { label: "Clothes", value: "Clothes" },
+    { label: "Furniture", value: "Furniture" },
+    { label: "Book", value: "Book" },
+    { label: "Stationery", value: "Stationery" },
+    { label: "Other", value: "Other" },
   ];
-  const [location, setLocation] = useState({latitude: 0, longitude: 0})
-  const [date, setDate] = useState(dayjs())
-  const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false)
-  const [pickupTimes, setPickupTimes] = useState<DateType[]>([])
-  const [pickupLocationText, setPickupLocationText] = useState("")
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [date, setDate] = useState(dayjs());
+  const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
+  const [pickupTimes, setPickupTimes] = useState<DateType[]>([]);
+  const [pickupLocationText, setPickupLocationText] = useState("");
   const placesRef = useRef<GooglePlacesAutocompleteRef | null>(null);
   const [imageuri, setImageUri] = useState<string | undefined>(undefined);
-
   const openDateTimePicker = () => {
     setIsDateTimePickerVisible(true);
-  }
+  };
   const handleClosePickupTimeModal = () => {
     setIsDateTimePickerVisible(false);
-  }
-  const handleDateChange = (params:any) => {
+  };
+  const handleDateChange = (params: any) => {
     setDate(params.date);
-  }
+  };
   const addPickupTime = () => {
     setIsDateTimePickerVisible(false);
-    setPickupTimes([...pickupTimes, date])
-  }
+    setPickupTimes([...pickupTimes, date]);
+  };
 
-  const getDistance = (lat1:number, lon1:number, lat2:number, lon2:number) => {
+  const getDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
     var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
     return d;
-  }
+  };
 
-  const deg2rad = (deg:number) => {
-    return deg * (Math.PI/180)
-  }
+  const deg2rad = (deg: number) => {
+    return deg * (Math.PI / 180);
+  };
 
   const postDonation = async () => {
     if ( !donationItemName ) {
@@ -94,26 +115,29 @@ const DonatePage = () => {
         location.latitude || 0,
         location.longitude || 0
       );
-  
+
       let imageDownloadUrl = "";
-  
+
       // If an image is provided, upload it to Firebase
       if (imageuri) {
         const storageRef = firebaseStorageRef(storage, "image");
-  
+
         // Create unique filename for the uploaded image
         const fileName = `${userState._id}_${Date.now()}`;
-        const donationImageStorageRef = firebaseStorageRef(storageRef, `${fileName}`);
-  
+        const donationImageStorageRef = firebaseStorageRef(
+          storageRef,
+          `${fileName}`
+        );
+
         try {
           // Fetch image blob
           const blobRes = await fetch(imageuri);
           const blob = await blobRes.blob();
-  
+
           // Upload image blob to Firebase
           await uploadBytes(donationImageStorageRef, blob);
           console.log("Uploaded a blob or file!");
-  
+
           // Get download URL for the image
           imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
         } catch (error) {
@@ -121,7 +145,7 @@ const DonatePage = () => {
           // You could add additional handling here if needed, e.g., notifying the user that the image upload failed.
         }
       }
-  
+
       // Proceed with the donation creation, with or without an image
       donate(
         userState._id,
@@ -129,7 +153,7 @@ const DonatePage = () => {
         category,
         donationItemDescription,
         dayjs().toString(),
-        dayjs().add(7, 'day').toString(),
+        dayjs().add(7, "day").toString(),
         1,
         false,
         location,
@@ -145,9 +169,9 @@ const DonatePage = () => {
           transactionStatus: 0,
         },
         distance,
-        imageDownloadUrl,
-      )
-  
+        imageDownloadUrl
+      );
+
       // Reset form states
       setDonationItemName("");
       setDonationItemDescription("");
@@ -161,7 +185,6 @@ const DonatePage = () => {
       console.log("Error in postDonation function:", error);
     }
   };
-  
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -174,128 +197,212 @@ const DonatePage = () => {
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
     }
-  }
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <View style={styles.donatePageContainer} >
+      <View style={styles.donatePageContainer}>
         <Text style={styles.donatePageHeader}>Donate an item</Text>
-        <ScrollView style={styles.donatePageInfoContainer} keyboardShouldPersistTaps={'handled'}>
-        <TextInput
-          label="Item name *"
-          value={donationItemName}
-          onChangeText={(text) => setDonationItemName(text)}
-          style={styles.donationItemTitle}
-          mode="flat"
-          activeUnderlineColor="black"
-        />
-        <TextInput
-          label="Description "
-          multiline
-          value={donationItemDescription}
-          onChangeText={(text) => setDonationItemDescription(text)}
-          style={styles.donationItemDescription}
-          mode="flat"
-          activeUnderlineColor="black"
-        />
-        <SafeAreaView style={styles.donationDropdownContainer}>
-          <Dropdown 
-            style={styles.donationDropdown}
-            placeholderStyle={styles.donationDropdownPlaceholder}
-            selectedTextStyle={styles.donationDropdownSelectedText}
-            data={categoryList}
-            labelField="label"
-            valueField="value"
-            placeholder="Category *"
-            value={category}
-            onChange={(category) => setCategory(category.value)}
+        <ScrollView
+          style={styles.donatePageInfoContainer}
+          keyboardShouldPersistTaps={"handled"}
+        >
+          <TextInput
+            label="Item name *"
+            value={donationItemName}
+            onChangeText={(text) => setDonationItemName(text)}
+            style={styles.donationItemTitle}
+            mode="flat"
+            activeUnderlineColor="black"
           />
-        </SafeAreaView>
-        <View style={styles.locationInputContainer}>
-          <GooglePlacesAutocomplete 
-            ref = {placesRef}
-            placeholder="Location *" 
-            query={{
-              key: "AIzaSyA95NKdnduXsF7IoCZ5Je6qAJl7FGQksTQ",
-              language:'en'
-            }}
-            fetchDetails={true}
-            onPress={(data, details = null) => {
-              setLocation({latitude:details?.geometry?.location?.lat || 0, longitude:details?.geometry?.location?.lng || 0});
-              setPickupLocationText(placesRef.current?.getAddressText() || "");
-            }}
+          <TextInput
+            label="Description *"
+            multiline
+            value={donationItemDescription}
+            onChangeText={(text) => setDonationItemDescription(text)}
+            style={styles.donationItemDescription}
+            mode="flat"
+            activeUnderlineColor="black"
           />
-        </View>
-        <SafeAreaView style={styles.pickupTimesContainer}>
-          <Text numberOfLines={1} style={styles.pickupTimesPreview}>
-            {pickupTimes.length != 0 ? pickupTimes.map((pickupTime, i) => <Text key={`${pickupTime}_${i}`}>{pickupTime?.toString()}, </Text>) : <Text>Pickup times *</Text>}
-          </Text>
-          <View style={styles.openDateTimePickerButtonContainer}>
-          <Button 
+          <SafeAreaView style={styles.donationDropdownContainer}>
+            <Dropdown
+              style={styles.donationDropdown}
+              placeholderStyle={styles.donationDropdownPlaceholder}
+              selectedTextStyle={styles.donationDropdownSelectedText}
+              data={categoryList}
+              labelField="label"
+              valueField="value"
+              placeholder="Category *"
+              value={category}
+              onChange={(category) => setCategory(category.value)}
+            />
+          </SafeAreaView>
+          <View style={styles.locationInputContainer}>
+            <GooglePlacesAutocomplete
+              ref={placesRef}
+              placeholder="Location *"
+              query={{
+                key: "AIzaSyA95NKdnduXsF7IoCZ5Je6qAJl7FGQksTQ",
+                language: "en",
+              }}
+              fetchDetails={true}
+              onPress={(data, details = null) => {
+                setLocation({
+                  latitude: details?.geometry?.location?.lat || 0,
+                  longitude: details?.geometry?.location?.lng || 0,
+                });
+                setPickupLocationText(details?.formatted_address || "");
+              }}
+              textInputProps={{
+                placeholderTextColor: "#4A454E",
+                returnKeyType: "search",
+              }}
+              styles={{
+                textInputContainer: {
+                  backgroundColor: "#EEEEEE", // Background for the container
+                  borderRadius: 5,
+                  marginVertical: 10,
+                  paddingHorizontal: 10,
+                },
+                textInput: {
+                  backgroundColor: "#EEEEEE", // Input background color
+                  height: 50,
+                  borderRadius: 5,
+                  paddingHorizontal: 10,
+                  fontSize: 16,
+                  color: "#333333", // Text color
+                  borderWidth: 0,
+                },
+                listView: {
+                  backgroundColor: "#FFFFFF", // Background for dropdown list
+                  borderRadius: 5,
+                  shadowColor: "#000", // Adding shadow for a modern UI
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3,
+                  elevation: 3, // For Android shadow effect
+                },
+              }}
+            />
+          </View>
+          <SafeAreaView style={styles.pickupTimesContainer}>
+            <Text numberOfLines={1} style={styles.pickupTimesPreview}>
+              {pickupTimes.length != 0 ? (
+                pickupTimes.map((pickupTime, i) => (
+                  <Text key={`${pickupTime}_${i}`}>
+                    {pickupTime?.toString()},{" "}
+                  </Text>
+                ))
+              ) : (
+                <Text style={{ color: "#4A454E", fontSize: 16 }}>
+                  Pickup times *
+                </Text>
+              )}
+            </Text>
+            <View style={{ marginLeft: 20, position: "absolute", right: 5 }}>
+              <IconButton
+                icon={() => (
+                  <FontAwesomeIcon
+                    size={30}
+                    icon={faPlusCircle}
+                    color={"#6B6BE1"}
+                  />
+                )}
+                onPress={openDateTimePicker}
+              />
+            </View>
+          </SafeAreaView>
+          <Modal animationType="slide" visible={isDateTimePickerVisible}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 20,
+                }}
+              >
+                <Button
+                  mode="contained-tonal"
+                  style={styles.closePickupTimeModalButton}
+                  onPress={handleClosePickupTimeModal}
+                >
+                  Close Modal
+                </Button>
+                <Text
+                  style={{
+                    paddingBottom: 40,
+                    fontSize: 18,
+                    textAlign: "center",
+                  }}
+                >
+                  Please select a pickup time during which you are available for
+                  15 minutes
+                </Text>
+                <DateTimePicker
+                  mode="single"
+                  timePicker
+                  date={date}
+                  minDate={dayjs()}
+                  maxDate={dayjs().add(7, "day")}
+                  onChange={handleDateChange}
+                />
+                <Button
+                  mode="contained"
+                  buttonColor="#6B6BE1"
+                  style={styles.addPickupTimeButton}
+                  onPress={addPickupTime}
+                >
+                  Add Availability
+                </Button>
+              </View>
+            </View>
+          </Modal>
+          {imageuri !== undefined ? (
+            <View style={styles.uploadedImagePreviewContainer}>
+              <Image
+                source={{ uri: imageuri }}
+                style={styles.uploadedImagePreview}
+              />
+            </View>
+          ) : (
+            <View></View>
+          )}
+          <View style={styles.imageUploadButtonContainer}>
+            <Button icon="camera" mode="outlined" onPress={pickImage}>
+              Upload a picture of your donation
+            </Button>
+          </View>
+          <Button
             mode="contained"
             buttonColor="#6B6BE1"
-            style={styles.openDateTimePickerButton}
-            onPress={openDateTimePicker}>
-          +
-          </Button>
-          </View>
-        </SafeAreaView>
-        <Modal animationType="slide" visible={isDateTimePickerVisible}>
-          <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-            <View style={{flex:1, alignItems: 'center', justifyContent: 'center', padding: 20,}}>  
-              <Button 
-                mode="contained-tonal"
-                style={styles.closePickupTimeModalButton}
-                onPress={handleClosePickupTimeModal}>
-              Close
-              </Button>
-              <Text style={{paddingBottom: 40, fontSize: 18, textAlign: "center"}}>Please select a pickup time during which you are available for 15 minutes</Text>
-              <DateTimePicker 
-                mode="single" 
-                timePicker 
-                date={date} 
-                minDate={dayjs()}
-                maxDate={dayjs().add(7, 'day')}
-                onChange={handleDateChange}
-              />
-              <Button 
-                mode="contained"
-                buttonColor="#6B6BE1"
-                style={styles.addPickupTimeButton}
-                onPress={addPickupTime}>
-              Add Availability
-              </Button>
-            </View>
-          </View>
-        </Modal>
-        {
-        imageuri !== undefined ? 
-        <View style={styles.uploadedImagePreviewContainer}>
-          <Image source={{uri: imageuri}} style={styles.uploadedImagePreview} />
-        </View> : 
-        <View></View>
-        }
-        <View style={styles.imageUploadButtonContainer}>
-          <Button
-            icon="camera"
-            mode="outlined"
-            onPress={pickImage}
+            style={styles.postDonationButton}
+            onPress={postDonation}
           >
-            Upload a picture of your donation
+            Donate
           </Button>
-        </View>
-        <Button
-          mode="contained"
-          buttonColor="#6B6BE1"
-          style={styles.postDonationButton}
-          onPress={postDonation} 
-        >
-          Donate
-        </Button>
-        <Text> Please note that your donation posting will expire in 1 week. </Text>
+          <Text
+            style={{
+              fontSize: 14, // Slightly smaller text for a note
+              color: "#8a8a8a", // Neutral gray color for a softer look
+              textAlign: "center", // Center the text if needed
+              fontWeight: "400", // Light font weight for a less prominent look
+              fontStyle: "italic", // Optional: Italic style to emphasize the disclaimer tone
+              paddingBottom: 10, // Optional: Space at the bottom
+              marginTop: 20, // Optional: Space at the top
+            }}
+          >
+            Please note that your donation posting will expire in 1 week.
+          </Text>
         </ScrollView>
       </View>
     </KeyboardAvoidingView>

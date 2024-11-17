@@ -1,4 +1,5 @@
 import { LatLng } from "react-native-maps"
+import { Reservation } from "../../store/user/slice"
 
 export type HomeProps = {
     userId: string,
@@ -13,11 +14,12 @@ export type DonationProps = {
     itemType: string,
     description: string,
     itemStatus: number,
-    location: LatLng,
+    location?: LatLng,
     pickupLocationText: string | undefined,
     userId: string,
-    fullName: string,
+    fullName?: string,
     imageDownloadUrl: string | undefined,
+    reservationInfo: Reservation
 }
 
 export type ReservationProps = {

@@ -8,8 +8,8 @@ export const useHome = () => {
     const donationCardProps = donations
     .filter((item) => item.reservationInfo.transactionStatus === 0 || item.reservationInfo.transactionStatus === 1)
     .map((item) => {
-        const {_id, itemName, expirationTime, itemType, imageDownloadUrl, description, itemStatus, location, pickupLocationText} = item
-        const prop: DonationProps = {itemId: _id, itemName, expirationTime, itemType, imageDownloadUrl, description, itemStatus, location, pickupLocationText}
+        const {_id, itemName, expirationTime, itemType, imageDownloadUrl, description, itemStatus, location, pickupLocationText, reservationInfo} = item
+        const prop: DonationProps = {itemId: _id, itemName, expirationTime, itemType, imageDownloadUrl, description, itemStatus, location, pickupLocationText, reservationInfo}
         return prop
     })
 

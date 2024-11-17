@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../../Colors/Colors";
 
 const styles = StyleSheet.create({
   postPageContainer: {
@@ -7,10 +6,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   postHeader: {
-    height: "20%",
+    height: "13%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  textInput: {
+    backgroundColor: "#FFFFFF",
+    marginVertical: 10,
   },
   donatePageContainer: {
     height: "100%",
@@ -19,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   donatePageHeader: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
   },
   donatePageInfoContainer: {
@@ -82,34 +85,27 @@ const styles = StyleSheet.create({
   },
   pickupTimesContainer: {
     width: "100%",
-    height: 35,
-    borderRadius: 3,
-    backgroundColor: "white",
+    height: 60,  // Height adjusted to match typical input field size
+    borderRadius: 5,  // Rounded corners for consistency
+    backgroundColor: "#EEEEEE",  // Light grey background
     display: "flex",
     justifyContent: "center",
-    alignContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",  // Center align the content
+    flexDirection: "row",  // Row layout for button and text
+    paddingHorizontal: 10,  // Horizontal padding for spacing
   },
+  
   pickupTimesPreview: {
-    width: "80%",
-    height: "100%",
+    position: "absolute",
+    left: 20,
   },
-  openDateTimePickerButtonContainer: {
-    width: "20%",
-    height: "100%",
-    flex: 1,
-    justifyContent: "center"
-  },
-  openDateTimePickerButton: {
-    width: "100%",
-    height: "100%",
-  },
+  
   addPickupTimeButton: {
     width: "100%",
   },
+  
   imageUploadButtonContainer: {
-    marginTop: 10,
+    marginTop: 30,
   },
   uploadedImagePreviewContainer: {
     display: 'flex',

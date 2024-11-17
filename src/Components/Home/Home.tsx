@@ -11,7 +11,6 @@ import { useHome, useHomeReservations } from './Hooks'
 import { itemCoordsSelector } from '../../store/Items/selectors'
 
 const Home = ({navigation}) => {
-  // const {userId, firstName, lastName} = route.params
   const [isDonations, setIsDonations] = useState(true);
   const userState = useSelector(userSelector);
   const itemsState = useSelector(itemCoordsSelector);
