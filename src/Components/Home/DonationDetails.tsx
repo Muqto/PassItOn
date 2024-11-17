@@ -58,7 +58,8 @@ const DonationDetails = ({ route }) => {
     itemStatus,
     imageDownloadUrl,
     pickupLocationText,
-    reservationInfo
+    reservationInfo,
+    fromHistory
   } = route.params as DonationProps;
   const navigation = useNavigation();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -185,13 +186,13 @@ const DonationDetails = ({ route }) => {
         </View>
 
         {/* Complete Transaction Button */}
-        <TouchableOpacity
+        {!fromHistory ? <TouchableOpacity
           style={{...styles.completeButton, backgroundColor: transactionStatus === 1 ? '#6B6BE1' : '#EEEEEE'}} // Change button color based on transaction status
           onPress={() => setModalVisible(true)} // Show modal on press
           disabled={transactionStatus !== 1} // Disable button if transaction is not reserved
         >
           <Text style={{...styles.completeButtonText, color: transactionStatus === 1 ? 'white' : '#3D404A'}}>Complete Transaction</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> : null}
 
         {/* Modal for transaction completion */}
         <Modal

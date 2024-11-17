@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigation from '../Components/Tabs/TabNavigation';
 import DonationFocus from '../Components/BrowseScreen/DonationFocus/DonationFocus';
 import { useEffect, useState } from 'react';
-import useAuthentication from '../Hooks/Authetication';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSelector } from '../store/user/selectors';
 import { addTokenToAPI, getItemsCoord, getUser } from '../api/userApi';
@@ -15,6 +14,7 @@ import DonationDetails from '../Components/Home/DonationDetails';
 import FeedbackScreen from '../Components/Support/FeedbackScreen';
 import MyReservationDetails from '../Components/Home/MyReservationDetails';
 import ReportScreen from '../Components/Support/ReportScreen';
+import History from '../Components/ProfileScreen/History';
 
 
 const Stack = createNativeStackNavigator();
@@ -84,6 +84,7 @@ export default function UserStack() {
                 <Stack.Screen name="DonationDetails" component={DonationDetails} />
                 <Stack.Screen name="SendFeedback" component={FeedbackScreen} />
                 <Stack.Screen name="ReportListing" component={ReportScreen} />
+                <Stack.Screen name="History" component={History} />
             </Stack.Navigator>
     );
 }

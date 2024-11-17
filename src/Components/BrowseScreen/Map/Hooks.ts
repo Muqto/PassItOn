@@ -26,7 +26,6 @@ export const useMap = () => {
 
         const res = await getItemsByIds([itemId])
         const item = res.data.items[0]
-        console.log('i')
         setSelectedItem({...item, distance})
     }
 
