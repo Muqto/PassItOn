@@ -9,6 +9,7 @@ import { addUserAction, addUserLocationAction, initialUserState, mtlRegionCoord 
 import { firebase_auth } from '../config/firebase';
 import { LatLng, Region } from 'react-native-maps';
 import * as Location from 'expo-location' 
+import { addItemsCoordsAction } from '../store/Items/slice';
 import DonationDetails from '../Components/Home/DonationDetails';
 import FeedbackScreen from '../Components/Support/FeedbackScreen';
 import MyReservationDetails from '../Components/Home/MyReservationDetails';
@@ -54,7 +55,6 @@ export default function UserStack() {
               return currLocation
             }
         }
-        
         const initialLoad = async () => {
             if (!user._id) {
                 // get user info
@@ -68,6 +68,8 @@ export default function UserStack() {
             }
             let res = await getItemsCoord(loc)
             const itemCoords = res.data.itemsCoords
+            
+            dispatch(addItemsCoordsAction(itemCoords))
         }
 
         initialLoad()
