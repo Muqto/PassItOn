@@ -99,8 +99,10 @@ const DonationDetails = ({ route }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialIcons name="arrow-back-ios" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Your donation</Text>
+        <Text style={styles.headerTitle}>{fromHistory ? '' : 'Your donation'}</Text>
+
       </View>
+
 
       {/* Image Placeholder */}
       <View>
@@ -247,7 +249,6 @@ export const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
     paddingTop: 48,
@@ -256,16 +257,13 @@ export const styles = StyleSheet.create({
     borderBottomColor: "#E0E0E0",
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
+    flex: 1,
+    marginRight: 15,
     color: "black",
-    position: "absolute",
-    left: "50%",
-    bottom: "50%",
-    transform: [
-      { translateX: -50 }, // Separate objects for each transformation
-      { translateY: -5 },
-    ],
+    width: "100%",
+    textAlign: "center",
   },
 
   imageContainer: {

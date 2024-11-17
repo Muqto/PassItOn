@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons"; // Replace with the appropriate icon library you're using
+import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import {
   userDonationsSelector,
@@ -12,9 +12,9 @@ import { Image } from "expo-image";
 import { getItemsByIds } from "../../api/userApi";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGifts, faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
+import { colors } from "../../Colors/Colors";
 
 const History = ({ navigation }) => {
-
   const user = useSelector(userSelector);
   const completedDonations = useSelector(userDonationsSelector).filter(
     (donation) => Number(donation.reservationInfo.transactionStatus) >= 2
@@ -23,32 +23,37 @@ const History = ({ navigation }) => {
     (reservation) => Number(reservation.transactionStatus) >= 2
   );
   const [itemsPickedUp, setItemsPickedUp] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const allTransactions = [...itemsPickedUp, ...completedDonations];
   const sortedTransactions = allTransactions.sort((a: Item, b: Item) => {
     const dateA = new Date(a.reservationInfo.pickUpDate as string).getTime();
     const dateB = new Date(b.reservationInfo.pickUpDate as string).getTime();
     return dateB - dateA; // Descending order
   });
-  type ItemObject = {
-    item: Item;
-  };
+
   const getReservations = async () => {
     let resIds = completedReservations.map((item) => item.itemId);
-    let res = await getItemsByIds(resIds);
-    setItemsPickedUp(res.data.items);
+    try {
+      let res = await getItemsByIds(resIds);
+      setItemsPickedUp(res.data.items);
+    } catch (error) {
+      console.error("Error fetching reservations:", error);
+    } finally {
+      setLoading(false); // Set loading to false after API call
+    }
   };
 
   useEffect(() => {
     getReservations();
   }, []);
 
-  const renderTransaction = ({ item }: ItemObject) => {
+  const renderTransaction = ({ item }: { item: Item }) => {
     const isDonated = user._id === item.userId;
     return (
       <Pressable
         style={styles.transactionItem}
         onPress={() =>
-            navigation.navigate("DonationDetails", { ...item, fromHistory: true })
+          navigation.navigate("DonationDetails", { ...item, fromHistory: true })
         }
       >
         {/* Placeholder for Image */}
@@ -63,7 +68,9 @@ const History = ({ navigation }) => {
           <Text style={styles.itemName}>{item.itemName}</Text>
           <View
             style={{
-              backgroundColor: isDonated ? 'rgba(0, 220, 22, 0.1)' : "rgba(107, 176, 225, 0.1)",
+              backgroundColor: isDonated
+                ? 'rgba(0, 220, 22, 0.1)'
+                : "rgba(107, 176, 225, 0.1)",
               display: "flex",
               flexDirection: "row",
               width: 90,
@@ -71,7 +78,6 @@ const History = ({ navigation }) => {
               justifyContent: "center",
               paddingVertical: 4,
               borderRadius: 10,
-              
             }}
           >
             <Text
@@ -114,12 +120,18 @@ const History = ({ navigation }) => {
         <View style={styles.backButton} />
       </View>
       <Text style={styles.subHeader}>Your recent transactions</Text>
-      <FlatList
-        data={sortedTransactions}
-        keyExtractor={(item) => item._id}
-        renderItem={renderTransaction}
-        contentContainerStyle={styles.listContainer}
-      />
+
+      {/* Show loader while data is being fetched */}
+      {loading ? (
+        <ActivityIndicator size={'large'} color={colors.lightPurple} style={styles.loader} />
+      ) : (
+        <FlatList
+          data={sortedTransactions}
+          keyExtractor={(item) => item._id}
+          renderItem={renderTransaction}
+          contentContainerStyle={styles.listContainer}
+        />
+      )}
     </View>
   );
 };
@@ -156,6 +168,11 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 20,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   transactionItem: {
     flexDirection: "row",
