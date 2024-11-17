@@ -98,10 +98,6 @@ const styles = StyleSheet.create({
         borderRadius: 20
       },
       statusIcon: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 'auto', // Push to the right
-        marginRight: 10,   // Optional spacing
     },
       cardImagePlaceholder: {
         width: 100,
@@ -119,7 +115,8 @@ const styles = StyleSheet.create({
       itemNameText: {
         fontSize: 15,
         fontWeight: "bold",
-        marginBottom: 2
+        marginBottom: 4,
+        marginRight: 10
       },
 
       pickUpText: {

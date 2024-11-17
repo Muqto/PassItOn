@@ -11,12 +11,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { deleteItem, DonorDetails, getUserById, getUserInfoById, updateItemStatus, updateItemTransactionStatus, UserRes } from "../../api/userApi";
+import { deleteItem, DonorDetails, getUserById, getUserInfoById, updateItemStatus, updateItemTransactionStatus, updateReservationTransactionStatus, UserRes } from "../../api/userApi";
 import { Divider } from "react-native-paper";
 import { Image } from 'expo-image';
 import { deleteItemAction, updateItemStatusAction, updateTransactionStatusAction } from "../../store/Items/slice";
 import { useDispatch } from "react-redux";
-import { deleteUserDonationAction, updateUserItemStatusAction, updateUserTransactionStatusAction } from "../../store/user/slice";
+import { deleteUserDonationAction, updateUserItemStatusAction, updateUserReservationTransactionStatusAction, updateUserTransactionStatusAction } from "../../store/user/slice";
 import { DonationProps } from "./Types";
 
 export const formatDate = (isoString) => {
@@ -24,8 +24,22 @@ export const formatDate = (isoString) => {
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
+  
   return `${day}/${month}/${year}`;
 };
+
+export const formatDateWithTime = (isoString) => {
+  const date = new Date(isoString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+};
+
 const transactionStatusMap = {
   0: "Not Reserved",
   1: "Reserved",
@@ -55,12 +69,13 @@ const DonationDetails = ({ route }) => {
   const openImageModal = () => setImageModalVisible(true);
   const closeImageModal = () => setImageModalVisible(false);
   const transactionStatus = reservationInfo.transactionStatus;
-  console.log('reservationInfo: ', reservationInfo)
   const confirmCompletion = async () => {
     setModalVisible(false);
     navigation.goBack();
     dispatch(updateTransactionStatusAction({itemId, transactionStatus: 2}))
     dispatch(updateUserTransactionStatusAction({itemId, transactionStatus: 2}))
+    dispatch(updateUserReservationTransactionStatusAction({itemId, transactionStatus: 2}));
+    const reserv = await updateReservationTransactionStatus(itemId, 2);
     const res = await updateItemTransactionStatus(itemId, 2);
   }
 
@@ -84,9 +99,6 @@ const DonationDetails = ({ route }) => {
           <MaterialIcons name="arrow-back-ios" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Your donation</Text>
-        <TouchableOpacity>
-          <MaterialIcons name="edit" size={24} color="black" />
-        </TouchableOpacity>
       </View>
 
       {/* Image Placeholder */}
@@ -156,7 +168,7 @@ const DonationDetails = ({ route }) => {
           <Text style={styles.detailText}>
             {/* {fullName ? fullName : "Loading..."} */}
             {donorInfo?.data !== undefined ? `${donorInfo?.data.firstName} ${donorInfo?.data.lastName}`: 'Loading...'}
-            {donorInfo?.data?.rating !== undefined ? ` (${donorInfo?.data?.rating}/5 ⭐)`: '(N/A)'}
+            {donorInfo?.data?.rating !== undefined ? ` (${donorInfo?.data?.rating}/5 ⭐)`: ''}
           </Text>
         </View>
 
@@ -174,10 +186,11 @@ const DonationDetails = ({ route }) => {
 
         {/* Complete Transaction Button */}
         <TouchableOpacity
-          style={styles.completeButton}
+          style={{...styles.completeButton, backgroundColor: transactionStatus === 1 ? '#6B6BE1' : '#EEEEEE'}} // Change button color based on transaction status
           onPress={() => setModalVisible(true)} // Show modal on press
+          disabled={transactionStatus !== 1} // Disable button if transaction is not reserved
         >
-          <Text style={styles.completeButtonText}>Complete Transaction</Text>
+          <Text style={{...styles.completeButtonText, color: transactionStatus === 1 ? 'white' : '#3D404A'}}>Complete Transaction</Text>
         </TouchableOpacity>
 
         {/* Modal for transaction completion */}
@@ -225,6 +238,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
+    marginTop: 24,
   },
   cardImage: {
     width: '100%',
@@ -244,7 +258,15 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "black",
+    position: "absolute",
+    left: "50%",
+    bottom: "50%",
+    transform: [
+      { translateX: -50 }, // Separate objects for each transformation
+      { translateY: -5 },
+    ],
   },
+
   imageContainer: {
     height: 255,
     backgroundColor: "#E0E0E0",

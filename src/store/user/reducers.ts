@@ -26,6 +26,24 @@ export const updateUserReservations = (
   state.reservations.push(action.payload);
 };
 
+export const updateUserReservationTransactionStatus = (
+  state: UserState,
+  action: PayloadAction<{ itemId: string; transactionStatus: number }>
+) => {
+  const { itemId, transactionStatus } = action.payload;
+
+  // Find the reservation in the user's state using the itemId
+  const reservation = state.reservations.find(
+    (reservation) => reservation.itemId === itemId
+  );
+
+  // If the reservation is found, update its transactionStatus
+  if (reservation) {
+    reservation.transactionStatus = transactionStatus;
+  }
+};
+
+
 export const deleteUserDonation = (
   state: UserState,
   action: PayloadAction<string>
