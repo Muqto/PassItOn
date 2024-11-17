@@ -53,6 +53,7 @@ const useItem = () => {
       
     } catch (error) {
       console.log("error uploading donation", error);
+      throw error;
     }
   };
   return { donate };

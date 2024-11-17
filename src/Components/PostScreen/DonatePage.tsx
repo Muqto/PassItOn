@@ -6,6 +6,7 @@ import {
   ScrollView,
   Modal,
   Image,
+  Alert,
 } from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
@@ -30,6 +31,8 @@ import { KeyboardAvoidingView, Platform } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
+const defaultLocation = { latitude: 0, longitude: 0 };
+
 const DonatePage = () => {
   const { donate } = useItem();
   const userState = useSelector(userSelector);
@@ -44,25 +47,58 @@ const DonatePage = () => {
     { label: "Stationery", value: "Stationery" },
     { label: "Other", value: "Other" },
   ];
-  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [location, setLocation] = useState(defaultLocation);
   const [date, setDate] = useState(dayjs());
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [pickupTimes, setPickupTimes] = useState<DateType[]>([]);
   const [pickupLocationText, setPickupLocationText] = useState("");
   const placesRef = useRef<GooglePlacesAutocompleteRef | null>(null);
   const [imageuri, setImageUri] = useState<string | undefined>(undefined);
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+
   const openDateTimePicker = () => {
     setIsDateTimePickerVisible(true);
   };
+
   const handleClosePickupTimeModal = () => {
     setIsDateTimePickerVisible(false);
   };
+
   const handleDateChange = (params: any) => {
     setDate(params.date);
   };
+
   const addPickupTime = () => {
     setIsDateTimePickerVisible(false);
     setPickupTimes([...pickupTimes, date]);
+  };
+
+  const openCancelModal = () => {
+    // Open cancel modal only if at least one field has an input. Otherwise do
+    if (donationItemName || donationItemDescription || category || imageuri ||
+      location.latitude !== defaultLocation.latitude ||
+      pickupTimes.length !== 0
+    )
+    {
+      setIsCancelModalVisible(true);
+    }
+  };
+  
+  const closeCancelModal = () => {
+    setIsCancelModalVisible(false);
+  };
+  
+  const confirmCancelDonation = () => {
+    setDonationItemName("");
+    setDonationItemDescription("");
+    setCategory("");
+    setPickupTimes([]);
+    setImageUri(undefined);
+    closeCancelModal();
+  };
+
+  const deg2rad = (deg: number) => {
+    return deg * (Math.PI / 180);
   };
 
   const getDistance = (
@@ -85,11 +121,27 @@ const DonatePage = () => {
     return d;
   };
 
-  const deg2rad = (deg: number) => {
-    return deg * (Math.PI / 180);
-  };
-
   const postDonation = async () => {
+    var alertMsg = "";
+
+    if ( !donationItemName ) {
+      alertMsg = "Need an item name to post donation!"
+    } 
+    else if ( !category ) {
+      alertMsg = "Need an item category to post donation!"
+    } 
+    else if ( !location ) {
+      alertMsg = "Need a location to post donation!"
+    } 
+    else if ( !pickupTimes ) {
+      alertMsg = "Need a pick up time to post donation!"
+    }
+
+    if (alertMsg !== "") {
+      Alert.alert("Alert", alertMsg);
+      return;
+    }
+
     try {
       // calculate distance from user to new donation
       const distance = getDistance(
@@ -130,7 +182,7 @@ const DonatePage = () => {
       }
 
       // Proceed with the donation creation, with or without an image
-      donate(
+      await donate(
         userState._id,
         donationItemName,
         category,
@@ -161,11 +213,16 @@ const DonatePage = () => {
       setCategory("");
       setPickupTimes([]);
       setDate(dayjs());
-      setLocation({ latitude: 0, longitude: 0 });
+      setLocation(defaultLocation);
       placesRef.current?.setAddressText("");
       setImageUri(undefined);
+
+      // Show success alert
+      Alert.alert("Success", "Your donation has been posted successfully!");
+
     } catch (error) {
       console.log("Error in postDonation function:", error);
+      Alert.alert("Submission Error", "There was an error posting your donation. Please try again.");
     }
   };
 
@@ -200,15 +257,17 @@ const DonatePage = () => {
             style={styles.donationItemTitle}
             mode="flat"
             activeUnderlineColor="black"
+            underlineColor="transparent"
           />
           <TextInput
-            label="Description *"
+            label="Description "
             multiline
             value={donationItemDescription}
             onChangeText={(text) => setDonationItemDescription(text)}
             style={styles.donationItemDescription}
             mode="flat"
             activeUnderlineColor="black"
+            underlineColor="transparent"
           />
           <SafeAreaView style={styles.donationDropdownContainer}>
             <Dropdown
@@ -247,7 +306,7 @@ const DonatePage = () => {
                 textInputContainer: {
                   backgroundColor: "#EEEEEE", // Background for the container
                   borderRadius: 5,
-                  marginVertical: 10,
+                  // marginVertical: 10,
                   paddingHorizontal: 10,
                 },
                 textInput: {
@@ -319,7 +378,7 @@ const DonatePage = () => {
                   style={styles.closePickupTimeModalButton}
                   onPress={handleClosePickupTimeModal}
                 >
-                  Close Modal
+                  Close
                 </Button>
                 <Text
                   style={{
@@ -365,26 +424,65 @@ const DonatePage = () => {
               Upload a picture of your donation
             </Button>
           </View>
-          <Button
-            mode="contained"
-            buttonColor="#6B6BE1"
-            style={styles.postDonationButton}
-            onPress={postDonation}
+
+          <View style={styles.cancelOrPostDonationContainer}>
+            <Button
+              mode="contained"
+              // buttonColor="#A9A9A9"
+              style={styles.cancelDonationButton}
+              onPress={openCancelModal}
+            >
+              Cancel Donation
+            </Button>
+            <Button
+              mode="contained"
+              // buttonColor="#6B6BE1"
+              style={styles.postDonationButton}
+              onPress={postDonation}
+            >
+              Post Donation
+            </Button>
+          </View>
+
+          {/* Confirmation Modal */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isCancelModalVisible}
+            onRequestClose={closeCancelModal}
           >
-            Donate
-          </Button>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Confirm Cancellation</Text>
+                <Text style={styles.modalMessage}>
+                  Are you sure you want to cancel this donation?
+                  This action cannot be undone.
+                </Text>
+                <View style={styles.modalButtons}>
+                  <Button
+                    mode="outlined"
+                    onPress={closeCancelModal}
+                    style={styles.modalCancelButton}
+                    textColor="black"
+                  >
+                    No
+                  </Button>
+                  <Button
+                    mode="contained"
+                    onPress={confirmCancelDonation}
+                    style={styles.modalConfirmButton}
+                  >
+                    Yes, Cancel
+                  </Button>
+                </View>
+              </View>
+            </View>
+          </Modal>
+
           <Text
-            style={{
-              fontSize: 14, // Slightly smaller text for a note
-              color: "#8a8a8a", // Neutral gray color for a softer look
-              textAlign: "center", // Center the text if needed
-              fontWeight: "400", // Light font weight for a less prominent look
-              fontStyle: "italic", // Optional: Italic style to emphasize the disclaimer tone
-              paddingBottom: 10, // Optional: Space at the bottom
-              marginTop: 20, // Optional: Space at the top
-            }}
+            style={styles.expirationDisclaimer}
           >
-            Please note that your donation posting will expire in 1 week.
+            Please note that donation posts expire 1 week after latest pickup time.
           </Text>
         </ScrollView>
       </View>
