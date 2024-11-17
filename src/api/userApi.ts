@@ -69,6 +69,10 @@ export const updateItemStatus = (itemId: string, itemStatus: number): Promise<It
 export const updateItemTransactionStatus = (itemId: string, transactionStatus: number): Promise<Item> => {
   return API.post(`/item/updateTransactionStatus`, { itemId, transactionStatus });
 }
+
+export const updateReservationTransactionStatus = (itemId: string, transactionStatus: number): Promise<Reservation> => {
+  return API.post(`/reservation/updateReservationTransactionStatus`, { itemId, transactionStatus });
+}
 export type UploadDonationReq = {
   userId: string;
   itemName: string;

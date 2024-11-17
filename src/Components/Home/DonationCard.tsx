@@ -6,12 +6,10 @@ import Icon from "react-native-vector-icons/MaterialIcons"; // Example: Using Ma
 import styles from "./Styles";
 import { DonationProps } from "./Types";
 import { useNavigation } from "@react-navigation/native";
-import { formatDate } from "./DonationDetails";
+import { formatDate, formatDateWithTime } from "./DonationDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
-  faCalendarCheck,
   faClockRotateLeft,
-  faHandshakeAlt,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { colors } from "../../Colors/Colors";
@@ -78,7 +76,19 @@ const DonationCard = ({
         </View>
         <View style={styles.cardDesc}>
           <View>
-            <Text style={styles.itemNameText}>{itemName}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.itemNameText}>{itemName}</Text>
+              <View style={styles.statusIcon}>
+                {getIconForTransactionStatus(
+                  Number(reservationInfo.transactionStatus)
+                )}
+              </View>
+            </View>
             <Text style={styles.pickUpText}>
               {reservationInfo.transactionStatus === 0 ? (
                 "Awaiting Reservation"
@@ -86,7 +96,7 @@ const DonationCard = ({
                 <Text>
                   <Text>Pickup:</Text>{" "}
                   <Text style={styles.pickUpTimeText}>
-                    {formatDate(expirationTime)}
+                    {formatDateWithTime(expirationTime)}
                   </Text>
                 </Text>
               )}
@@ -116,11 +126,6 @@ const DonationCard = ({
           </View>
         </View>
         {/* Icon for transaction status */}
-        <View style={styles.statusIcon}>
-          {getIconForTransactionStatus(
-            Number(reservationInfo.transactionStatus)
-          )}
-        </View>
       </View>
     </View>
   );

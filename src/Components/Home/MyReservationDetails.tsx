@@ -7,8 +7,9 @@ import {
     Modal,
     Pressable,
     TouchableWithoutFeedback,
-    Image
 } from "react-native";
+import { Image } from 'expo-image';
+
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Divider, TextInput } from "react-native-paper";
@@ -16,7 +17,10 @@ import { useEffect, useState } from "react";
 import StarRating from 'react-native-star-rating-widget';
 import { getReservationsById, ReservationDetails, submitRating, updateTransactionStatus } from "../../api/reservationApi";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
-import { DonorDetails, getUserInfoById } from "../../api/userApi";
+import { DonorDetails, getUserInfoById, updateItemTransactionStatus, updateReservationTransactionStatus } from "../../api/userApi";
+import { useDispatch } from "react-redux";
+import { updateTransactionStatusAction } from "../../store/Items/slice";
+import { updateUserReservationTransactionStatusAction, updateUserTransactionStatusAction } from "../../store/user/slice";
 
 export const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -27,7 +31,7 @@ export const formatDate = (isoString) => {
 };
 
 const MyReservationDetails = ({route}) => {
-    const { _id } = route.params || {};
+    const { _id, transactionStatus, itemId } = route.params || {};
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
     const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -37,17 +41,25 @@ const MyReservationDetails = ({route}) => {
     const [reservationTransactionStatusString, setReservationTransactionStatusString] = useState<String>('Reserved');
     const [donorInfo, setDonorInfo] = useState<DonorDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-
-    const handleSubmitReview = () => {
+    const [isImageModalVisible, setImageModalVisible] = useState(false);
+    const openImageModal = () => setImageModalVisible(true);
+    const closeImageModal = () => setImageModalVisible(false);
+    const dispatch = useDispatch();
+    const handleSubmitReview = async () => {
       submitRating(donorInfo?._id!, userRating)
       setReviewSubmitted(true)
+      dispatch(updateTransactionStatusAction({itemId, transactionStatus: 3}))
+      dispatch(updateUserTransactionStatusAction({itemId, transactionStatus: 3}))
+      dispatch(updateUserReservationTransactionStatusAction({itemId, transactionStatus: 3}));
+      const reserv = await updateReservationTransactionStatus(itemId, 3);
+      const res = await updateItemTransactionStatus(itemId, 3);
+      setReservationTransactionStatus(3);
     }
 
     const handleReviewModalClose = async () => {
       // set transaction status of reservation to 3 (review submitted)
-      let res = await updateTransactionStatus(_id, 3)
-      setReservationTransactionStatus(res.transactionStatus)
       setModalVisible(false)
+
     }
 
     useEffect(() => {
@@ -105,24 +117,31 @@ const MyReservationDetails = ({route}) => {
             <MaterialIcons name="arrow-back-ios" size={24} color="black" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Your reservation</Text>
-            <TouchableOpacity>
-            <MaterialIcons name="edit" size={24} color="black" />
-            </TouchableOpacity>
         </View>
 
         {/* Image */}
+        <TouchableOpacity onPress={openImageModal}>
         <View style={styles.imageContainer}>
-            {reservation?.imageDownloadUrl ? (
-              <Image 
-                source={{uri: reservation?.imageDownloadUrl}} 
-                style={styles.cardImage}
-              />
+          {reservation?.imageDownloadUrl ? (
+            <Image
+              source={{ uri: reservation?.imageDownloadUrl}}
+              style={styles.cardImage}
+            />
           ) : (
             <Text style={styles.imagePlaceholder}>
-              image of the item here if provided, else placeholder
+              Image not available
             </Text>
           )}
         </View>
+      </TouchableOpacity>
+      <Modal visible={isImageModalVisible} transparent={true}>
+        <TouchableOpacity style={styles.modalBackground} onPress={closeImageModal}>
+          <Image
+            source={{ uri: reservation?.imageDownloadUrl }}
+            style={styles.fullSizeImage}
+          />
+        </TouchableOpacity>
+      </Modal>
 
         {/* My Reservation Details */}
         <View style={styles.detailsContainer}>
@@ -132,19 +151,8 @@ const MyReservationDetails = ({route}) => {
 
             {/* Description Section */}
             <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Description</Text>
-            <Text style={styles.sectionText}>{reservation?.description}</Text>
-            {/* {isDescriptionExpanded || description.length <= 50 ? (
-                <Text style={styles.sectionText}>{description}</Text>
-            ) : (
-                <Text style={styles.sectionText}>
-                {description.slice(0, 50)}
-                <Text> </Text>
-                <Text onPress={toggleDescription} style={styles.ellipsis}>
-                    ...
-                </Text>
-                </Text>
-            )} */}
+              <Text style={styles.sectionTitle}>Description</Text>
+              <Text style={styles.sectionText}>{reservation?.description}</Text>
             </View>
 
             {/* Details Section */}
@@ -161,7 +169,7 @@ const MyReservationDetails = ({route}) => {
             </Text>
             <Text style={styles.sectionTitle}>Donor</Text>
             <Text style={styles.detailText}>
-                {`${donorInfo?.firstName} ${donorInfo?.lastName} (${donorInfo?.rating !== 0 ? donorInfo?.rating : 'N/A'} ⭐)`}
+                {`${donorInfo?.firstName} ${donorInfo?.lastName} ${donorInfo?.rating !== 0 ? `(${donorInfo?.rating}/5⭐)` : ''} `}
             </Text>
             <Text style={styles.sectionTitle}>Status</Text>
             <Text style={styles.detailText}>
@@ -182,6 +190,7 @@ const MyReservationDetails = ({route}) => {
         </View>
 
         {/* Review Transaction Button */}
+        {console.log(transactionStatus)}
         <TouchableOpacity
           style={reservationTransactionStatus != 2 ? styles.disabledButton : styles.completeButton}
           onPress={() => setModalVisible(true)} // Show modal on press
@@ -208,14 +217,14 @@ const MyReservationDetails = ({route}) => {
                 <Text style={styles.modalText}>
                   Thank you for submitting your review!
                 </Text>
-                <Pressable
+                <TouchableOpacity
                   style={styles.confirmButton}
                   onPress={handleReviewModalClose} // Close modal on confirmation
                 >
                   <Text style={styles.confirmButtonText}>
                     Close
                   </Text>
-                </Pressable>
+                </TouchableOpacity>
               </View>)
               : (<View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Review transaction</Text>
@@ -228,6 +237,7 @@ const MyReservationDetails = ({route}) => {
                   rating={userRating}
                   onChange={setUserRating}
                   color="#6B6BE1"
+                  enableHalfStar={false}
                 />
                 <Pressable
                   style={styles.confirmButton}
@@ -251,6 +261,18 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: "#F8F8F8",
+      marginTop: 24,
+    },
+    modalBackground: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    fullSizeImage: {
+      width: '90%',
+      height: '90%',
+      resizeMode: 'contain',
     },
     cardImage: {
       width: '100%',
@@ -270,6 +292,13 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight: "bold",
       color: "black",
+      position: "absolute",
+      left: "50%",
+      bottom: "50%",
+      transform: [
+        { translateX: -50 }, // Separate objects for each transformation
+        { translateY: -5 },
+      ],
     },
     imageContainer: {
       height: 255,

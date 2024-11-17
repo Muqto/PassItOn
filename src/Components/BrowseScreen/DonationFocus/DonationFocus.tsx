@@ -26,6 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../../../store/user/selectors";
 import { Reservation, updateUserReservationAction } from "../../../store/user/slice";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 interface Item {
   _id: string;
@@ -429,7 +431,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                       "Unknown Donor"}{" "}
                     {donorInfo?.data.rating !== 0
                       ? `(${donorInfo?.data.rating}/5 ⭐)`
-                      : `(N/A ⭐) `}
+                      : ``}
                   </Text>
                 </View>
                 <View style={styles.subSection}>
@@ -470,10 +472,11 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
         </ScrollView>
 
         {/* Reserve Button */}
-        <View style={styles.buttonContainer}>
+        <View style={{...styles.buttonContainer}}>
           <Button
+            disabled={transactionStatus !== 0}
             mode="contained"
-            style={styles.button}
+            style={{...styles.button, backgroundColor: transactionStatus !== 0 ? "#808080" : "#6B6BE1"}}
             labelStyle={styles.buttonText}
             onPress={openModal}
           >
@@ -503,7 +506,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                   onPress={closeModal}
                   accessibilityLabel="Close modal"
                 >
-                  <Text style={styles.closeButtonText}>X</Text>
+                  <FontAwesomeIcon icon={faClose} size={24} color={'white'}/>
                 </TouchableOpacity>
               </View>
 
@@ -721,7 +724,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                     </Text>
                     <View style={styles.contactDonorContainer}>
                       <Text style={styles.donorName}>
-                        {item.reservationInfo.userId || "Unknown Donor"}
+                        {`${donorInfo?.data.firstName} ${donorInfo?.data.lastName}` || "Unknown Donor"}
                       </Text>
                       <TouchableOpacity
                         style={styles.conversationIcon}

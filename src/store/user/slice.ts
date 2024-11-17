@@ -7,6 +7,7 @@ import {
   updateUserDonations,
   updateUserItemStatusReducer,
   updateUserReservations,
+  updateUserReservationTransactionStatus,
   updateUserTransactionStatusReducer,
 } from "./reducers";
 import { Region } from "react-native-maps";
@@ -79,6 +80,7 @@ const userSlice = createSlice({
     updateUserReservationAction: updateUserReservations,
     updateUserItemStatusAction: updateUserItemStatusReducer,
     updateUserTransactionStatusAction: updateUserTransactionStatusReducer,
+    updateUserReservationTransactionStatusAction: updateUserReservationTransactionStatus,
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
     },
@@ -98,7 +100,8 @@ export const {
   updateUserReservationAction,
   updateUserItemStatusAction,
   deleteUserDonationAction,
-  updateUserTransactionStatusAction
+  updateUserTransactionStatusAction,
+  updateUserReservationTransactionStatusAction
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -18,7 +18,7 @@ export const useHome = () => {
 
 export const useHomeReservations = () => {
     const reservations = useSelector(userReservationsSelector);
-    const reservationCardProps = reservations.map((reservation) => {
+    const reservationCardProps = reservations.filter((reservation) => reservation.transactionStatus !== 3).map((reservation) => {
       const {
         _id,
         userId,
