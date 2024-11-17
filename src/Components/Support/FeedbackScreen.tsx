@@ -17,7 +17,7 @@ const FeedbackScreen = () => {
             <Text style={styles.feedbackPromptText}>
                 Have feedback about our app? We would love to hear about it at{' '}
                 <Text style={styles.feedbackEmailText}>
-                    passitonsupport@gmail.com
+                passitoncontactmail@gmail.com
                 </Text>
             </Text>
         </View>
