@@ -14,14 +14,6 @@ const styles = StyleSheet.create({
       paddingRight: 10,
       paddingLeft: 10,
     },
-    // signInLogoContainer: {
-    //   height: "40%",
-    //   width: "100%",
-    //   display: "flex",
-    //   alignItems: "center",
-    //   justifyContent: "center",
-    //   paddingBottom: 60,
-    // },
     signInLogoContainer: {
       height: 250,
       display: "flex",
