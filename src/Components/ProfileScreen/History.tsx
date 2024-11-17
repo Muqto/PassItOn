@@ -14,17 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGifts, faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 
 const History = ({ navigation }) => {
-  // Example data for recent transactions
-  const transactions = [
-    { id: "1", name: "Item 1", status: "Picked up", icon: "📦" },
-    { id: "2", name: "Another Item", status: "Donated", icon: "🌱" },
-    { id: "3", name: "Item 2", status: "Picked up", icon: "📦" },
-    { id: "4", name: "Item 3", status: "Picked up", icon: "📦" },
-    { id: "5", name: "Another Item", status: "Donated", icon: "🌱" },
-    { id: "6", name: "Another Item", status: "Donated", icon: "🌱" },
-    { id: "7", name: "Another Item", status: "Donated", icon: "🌱" },
-    { id: "8", name: "Another Item", status: "Donated", icon: "🌱" },
-  ];
+
   const user = useSelector(userSelector);
   const completedDonations = useSelector(userDonationsSelector).filter(
     (donation) => Number(donation.reservationInfo.transactionStatus) >= 2
@@ -73,10 +63,10 @@ const History = ({ navigation }) => {
           <Text style={styles.itemName}>{item.itemName}</Text>
           <View
             style={{
-              backgroundColor: "rgba(107, 176, 225, 0.1)",
+              backgroundColor: isDonated ? 'rgba(0, 220, 22, 0.1)' : "rgba(107, 176, 225, 0.1)",
               display: "flex",
               flexDirection: "row",
-              width: "50%",
+              width: 90,
               alignItems: "center",
               justifyContent: "center",
               paddingVertical: 4,
@@ -93,7 +83,7 @@ const History = ({ navigation }) => {
               {isDonated ? "Donated" : "Picked up"}
             </Text>
             <FontAwesomeIcon
-              size={20}
+              size={15}
               icon={isDonated ? faHandHoldingHeart : faGifts}
               color={
                 isDonated
@@ -175,8 +165,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#eee",
   },
   imagePlaceholder: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     borderRadius: 10,
     backgroundColor: "#E0E7FF", // Light purple
     alignItems: "center",
@@ -184,21 +174,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   imageIcon: {
-    height: 100,
-    width: 100,
+    height: 70,
+    width: 70,
   },
   detailsContainer: {
     flex: 1,
   },
   itemName: {
-    fontSize: 20,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "400",
     color: "#000",
     marginBottom: 10,
   },
   itemStatus: {
-    fontSize: 14,
-    marginRight: 8,
+    fontSize: 12,
+    marginRight: 5,
   },
   statusPicked: {
     color: "#6BB0E1", // Blue for "Picked up"
