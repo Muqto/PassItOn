@@ -6,6 +6,7 @@ import {
   ScrollView,
   Modal,
   Image,
+  Alert,
 } from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
 import useItem from "../../Hooks/Item";
@@ -121,21 +122,24 @@ const DonatePage = () => {
   };
 
   const postDonation = async () => {
+    var alertMsg = "";
+
     if ( !donationItemName ) {
-      alert("Need an item name to post donation!")
-      return
+      alertMsg = "Need an item name to post donation!"
     } 
-    if ( !category ) {
-      alert("Need an item category to post donation!")
-      return
+    else if ( !category ) {
+      alertMsg = "Need an item category to post donation!"
     } 
-    if ( !location ) {
-      alert("Need a location to post donation!")
-      return
+    else if ( !location ) {
+      alertMsg = "Need a location to post donation!"
     } 
-    if ( !pickupTimes ) {
-      alert("Need a pick up time to post donation!")
-      return
+    else if ( !pickupTimes ) {
+      alertMsg = "Need a pick up time to post donation!"
+    }
+
+    if (alertMsg !== "") {
+      Alert.alert("Alert", alertMsg);
+      return;
     }
 
     try {
@@ -178,7 +182,7 @@ const DonatePage = () => {
       }
 
       // Proceed with the donation creation, with or without an image
-      donate(
+      await donate(
         userState._id,
         donationItemName,
         category,
@@ -212,8 +216,13 @@ const DonatePage = () => {
       setLocation(defaultLocation);
       placesRef.current?.setAddressText("");
       setImageUri(undefined);
+
+      // Show success alert
+      Alert.alert("Success", "Your donation has been posted successfully!");
+
     } catch (error) {
       console.log("Error in postDonation function:", error);
+      Alert.alert("Submission Error", "There was an error posting your donation. Please try again.");
     }
   };
 
