@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Button, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -72,6 +73,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   const [error, setError] = useState<string | null>(null);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isContactDonorModalVisible, setIsContactDonorModalVisible] = useState<boolean>(false);
   const [modalStep, setModalStep] = useState<"selection" | "confirmation">(
     "selection"
   );
@@ -729,11 +731,39 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                         style={styles.conversationIcon}
                         onPress={() => {
                           // Future functionality
+                          setIsContactDonorModalVisible(true)
                         }}
                         accessibilityLabel="Contact donor"
                       >
                         <Text style={styles.conversationIconText}>💬</Text>
                       </TouchableOpacity>
+                      <Modal visible={isContactDonorModalVisible} transparent={true}>
+                        <TouchableWithoutFeedback onPress={() => setIsContactDonorModalVisible(false)}>
+                          <View style={styles.modalOverlay}>
+                            <TouchableWithoutFeedback>
+                            <View style={styles.modalContentContactDonor}>
+                              <Text style={styles.modalTitleContactDonor}>Contact the Donor</Text>
+                              <Divider style={{marginBottom: 20}}/>
+                              <Divider style={{marginBottom: 20}}/>
+                              <Text style={styles.modalText}>
+                                Concerns about your reservation? Contact your donor at: 
+                              </Text>
+                              <Text style={styles.modalTextDonorEmail}>
+                                {`${donorInfo?.data.email}`} 
+                              </Text>
+                              <TouchableOpacity
+                                style={styles.confirmButton}
+                                onPress={() => {setIsContactDonorModalVisible(false)}} // Close modal on confirmation
+                              >
+                                <Text style={styles.confirmButtonText}>
+                                  Close
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                            </TouchableWithoutFeedback>
+                          </View>
+                        </TouchableWithoutFeedback>
+                      </Modal>
                     </View>
                   </View>
                 </View>
