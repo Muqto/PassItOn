@@ -27,7 +27,8 @@ const useAuthentication = () => {
         } 
 
         catch (error) {
-            console.error(error)
+            console.error(error);
+            throw error;
         }
 
         setIsLoading(false)
