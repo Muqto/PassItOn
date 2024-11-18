@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, KeyboardAvoidingView, ScrollView } from "react-native";
+import { View, Text, KeyboardAvoidingView, ScrollView, Alert } from "react-native";
 import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
 import { NavigationProp } from "@react-navigation/native";
@@ -19,7 +19,56 @@ const SignUp = ({ navigation }: RouterProps) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const { signUp, isLoading } = useAuthentication()
+  const { signUp, isLoading } = useAuthentication();
+
+  const checkSignUp = async () => {
+    var alertMsg = "";
+
+    if ( !firstName ) {
+      alertMsg = "Must input a first name!"
+    } 
+    else if ( !lastName ) {
+      alertMsg = "Must input a last name!"
+    } 
+    else if ( !email ) {
+      alertMsg = "Must input an email!"
+    }
+    else if ( !password ) {
+      alertMsg = "Must input a password!"
+    }
+    else if ( !confirmPassword ) {
+      alertMsg = "Must confirm password!"
+    }
+    else if ( password.length < 6 ) {
+      alertMsg = "Password must have a length of at least 6 characters!"
+    }
+    else if ( password !== confirmPassword ) {
+      alertMsg = "Password and Confirm Password need to match!"
+    } 
+
+    if (alertMsg !== "") {
+      Alert.alert("Alert", alertMsg);
+      return;
+    }
+
+    try {
+      signUp(firstName, lastName, email, password, navigation)
+
+      // Show success alert
+      Alert.alert("Success", "Account created successfully!");
+
+    } 
+    catch(error) {
+      if (error instanceof Error) {
+        const errorMessage = error.message ? error.message : String(error);
+        Alert.alert("Error", errorMessage);
+      } else {
+        Alert.alert("Error", "An unexpected error occurred.");
+      }
+    }
+
+  }
+  
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -40,7 +89,7 @@ const SignUp = ({ navigation }: RouterProps) => {
             <View>
               <View style = {styles.signUpName}>
                 <TextInput
-                  label="First Name"
+                  label="First Name *"
                   value={firstName}
                   onChangeText={(text) => setFirstName(text)}
                   mode="flat"
@@ -48,7 +97,7 @@ const SignUp = ({ navigation }: RouterProps) => {
                   style={styles.firstNameInput}
                 />
                 <TextInput
-                  label="Last Name"
+                  label="Last Name *"
                   value={lastName}
                   onChangeText={(text) => setLastName(text)}
                   mode="flat"
@@ -57,7 +106,7 @@ const SignUp = ({ navigation }: RouterProps) => {
                 />
               </View>
               <TextInput
-                label="Email"
+                label="Email *"
                 value={email}
                 onChangeText={(text) => setEmail(text)}
                 mode="flat"
@@ -65,7 +114,7 @@ const SignUp = ({ navigation }: RouterProps) => {
                 style={styles.signUpInput}
               />
               <TextInput
-                label="Password"
+                label="Password *"
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 style={styles.signUpInput}
@@ -80,7 +129,7 @@ const SignUp = ({ navigation }: RouterProps) => {
                 }
               />
               <TextInput
-                label="Confirm Password"
+                label="Confirm Password *"
                 value={confirmPassword}
                 onChangeText={(text) => setConfirmPassword(text)}
                 style={styles.signUpInput}
@@ -103,7 +152,7 @@ const SignUp = ({ navigation }: RouterProps) => {
                   mode="contained"
                   buttonColor= {colors.primaryPurple}
                   style={styles.signUpButton}
-                  onPress={() => signUp(firstName, lastName, email, password, navigation)}
+                  onPress={() => checkSignUp(firstName, lastName, email, password, confirmPassword, navigation)}
                 >
                   Sign up
                 </Button>}
