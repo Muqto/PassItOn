@@ -35,11 +35,11 @@ const Profile = ({ navigation }) => {
       <View style={styles.impactContainer}>
         <View style={styles.impactItem}>
           <Text style={styles.impactNumber}>{numberOfItemsDonated}</Text>
-          <Text style={styles.impactLabel}>Items donated</Text>
+          <Text style={styles.impactLabel}>{numberOfItemsDonated > 1 ? 'Items donated' : 'Item donated'}</Text>
         </View>
           <View style={styles.impactItem}>
             <Text style={styles.impactNumber}>{uniqueUsersHelped}</Text>
-            <Text style={styles.impactLabel}>Users helped</Text>
+            <Text style={styles.impactLabel}>{uniqueUsersHelped > 1 ? 'Users helped' : 'User helped'}</Text>
           </View>
       </View>
 
