@@ -175,11 +175,13 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
           minute: "2-digit",
           hour12: true,
         }); // e.g., '01:04 AM'
-
-        if (!timesByDate[dateString]) {
-          timesByDate[dateString] = [];
+        const today = new Date();
+        if (dateTime > today) {
+          if (!timesByDate[dateString]) {
+            timesByDate[dateString] = [];
+          }
+          timesByDate[dateString].push(timeString);
         }
-        timesByDate[dateString].push(timeString);
       });
     }
 
