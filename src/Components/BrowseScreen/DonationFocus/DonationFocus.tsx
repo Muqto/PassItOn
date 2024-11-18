@@ -29,6 +29,7 @@ import { Reservation, updateUserReservationAction } from "../../../store/user/sl
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { useHomeReservations } from "../../Home/Hooks";
 
 interface Item {
   _id: string;
@@ -87,6 +88,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
     [dateString: string]: string[];
   }>({});
   const dispatch = useDispatch();
+  const { reservationCardProps } = useHomeReservations();
 
   const transactionStatusMap = {
     0: "Not Reserved",
@@ -193,6 +195,10 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   }, [item]);
 
   const openModal = () => {
+    if (reservationCardProps.length >= 5) {
+      alert("Oops! You already reserved 5 donations - to keep this app equitable, we limit the reservations one can make to 5 at once.");
+        return;
+    }
     setModalStep("selection");
     setModalVisible(true);
   };
