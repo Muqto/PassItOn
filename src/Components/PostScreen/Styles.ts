@@ -1,19 +1,11 @@
+
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  // ---------------------- Containers ----------------------
   postPageContainer: {
     height: "100%",
     width: "100%",
-  },
-  postHeader: {
-    height: "13%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textInput: {
-    backgroundColor: "#FFFFFF",
-    marginVertical: 10,
   },
   donatePageContainer: {
     height: "100%",
@@ -21,34 +13,138 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  donatePageInfoContainer: {
+    width: "100%",
+    margin: 10,
+    paddingHorizontal: 10,
+  },
+  donationDropdownContainer: {
+    width: "100%",
+    marginTop: 10,
+  },
+  locationInputContainer: {
+    width: "100%",
+    marginTop: 10,
+  },
+  pickupTimesContainer: {
+    marginTop: 10,
+    width: "100%",
+  },
+  pickupTimesGridContainer: {
+    width: '100%'
+  },
+  pickupTimeGroup: {
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  cancelOrPostDonationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 20,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+
+  // ---------------------- Text Styles ----------------------
+  postHeader: {
+    height: "13%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   donatePageHeader: {
     fontSize: 25,
     fontWeight: "bold",
   },
-  donatePageInfoContainer: {
-    width: "100%",
-    margin: 10,
-    paddingRight: 10,
+  pickupTimesHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  pickupTimesLabel: {
+    fontSize: 18,
+    fontWeight: '600',
     paddingLeft: 10,
   },
-  // Title
+  pickupDateLabel: {
+    fontSize: 16,
+    color: '#333333',
+    paddingLeft: 20,
+    marginBottom: 10, 
+  },
+  // pickupTimeText: {
+  //   color: '#FFFFFF',
+  //   fontSize: 14,
+  //   textAlign: 'center',
+  //   width: '80%',
+  // },
+  pickupTimeText: {
+    color: '#FFFFFF',
+    fontSize: 14, // Reduced font size
+    textAlign: "right",
+    // flex: 1, // Allow text to take available space
+    // width: 100,
+    width: '70%',
+  },
+  noPickupTimesText: {
+    color: '#4A454E',
+    fontSize: 14,
+    textAlign: "left",
+    width: '100%',
+    paddingLeft: 50,
+    paddingBottom: 20
+  },
+  pickerLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  modalMessage: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  expirationDisclaimer: {
+    fontSize: 14,
+    color: "#8a8a8a",
+    textAlign: "left",
+    fontStyle: "italic",
+    paddingTop: 20,
+    paddingHorizontal: 10,
+  },
+
+  // ---------------------- Input Styles ----------------------
   donationItemTitle: {
     marginTop: 20,
     height: 50,
     backgroundColor: "#EEEEEE",
     width: "100%",
   },
-  // Description
   donationItemDescription: {
     marginTop: 10,
     height: 90,
     backgroundColor: "#EEEEEE",
     width: "100%",
-  },
-  // Category
-  donationDropdownContainer: {
-    width: "100%",
-    marginTop: 10,
   },
   donationDropdown: {
     height: 60,
@@ -62,98 +158,57 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     color: "rgb(29, 27, 30)"
   },
-  // Location
-  locationInputContainer: {
-    width: "100%",
-    // marginBottom: 20,
-    marginTop: 10,
+  // timePickerRow: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   width: '80%',
+  //   marginBottom: 20,
+  // },
+  timePickerDropdown: {
+    width: '45%',
+    height: 50,
+    borderColor: '#6B6BE1',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    // paddingBottom: 10,
   },
-  donationItemLocation: {
-    marginTop: 10,
-    height: 60,
-    backgroundColor: "#EEEEEE",
-    width: "100%",
+  pickupDropdownPlaceholder: {
+    fontSize: 16,
+    color: '#A9A9A9',
+    textAlign: 'center',
   },
-  // Pick up times
-  pickupTimesContainer: {
-    marginTop: 10,
-    width: "100%",
-    height: 60,  // Height adjusted to match typical input field size
-    borderRadius: 5,  // Rounded corners for consistency
-    backgroundColor: "#EEEEEE",  // Light grey background
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",  // Center align the content
-    flexDirection: "row",  // Row layout for button and text
-    paddingHorizontal: 10,  // Horizontal padding for spacing
+  pickupDropdownSelectedText: {
+    fontSize: 16,
+    color: '#333333',
+    textAlign: 'center',
   },
-  pickupTimesPreview: {
-    position: "absolute",
-    left: 20,
-  },
+
+  // ---------------------- Button Styles ----------------------
   addPickupTimeButton: {
     width: "100%",
+    marginTop: 20,
   },
   closePickupTimeModalButton: {
     marginBottom: 30,
-  },
-  // Upload picture
-  imageUploadButtonContainer: {
-    paddingTop: 20
-  },
-  uploadedImagePreviewContainer: {
-    display: 'flex',
     width: '100%',
-    alignItems: 'center',
-    marginTop: 10
-  },
-  uploadedImagePreview: {
-    height: 100,
-    width: 130
-  },
-  // Cancel or Post Donation Buttons
-  cancelOrPostDonationContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 50,
   },
   cancelDonationButton: {
     backgroundColor: "#A9A9A9",
     flex: 1,
     marginRight: 8,
     borderRadius: 5,
-    fontSize: 50,
   },
   postDonationButton: {
     backgroundColor: "#6B6BE1",
     flex: 1,
     borderRadius: 5,
-    fontSize: 50,
   },
-  // Cancel Donation Modal
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  modalMessage: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 20,
+  deletePickupTimeButton: {
+    // height: 40,
+    // width: 35,
+    width: '30%',
   },
   modalButtons: {
     flexDirection: "row",
@@ -167,15 +222,78 @@ const styles = StyleSheet.create({
   modalConfirmButton: {
     backgroundColor: "#6B6BE1",
     flex: 1,
-  },  
-  // Disclaimer
-  expirationDisclaimer: {
-    fontSize: 14, // Slightly smaller text for a note
-    color: "#8a8a8a", // Neutral gray color
-    textAlign: "left",
-    fontStyle: "italic",
-    paddingTop: 20,
-    paddingHorizontal: 10,
+  },
+
+  // ---------------------- Image Upload Styles ----------------------
+  imageUploadButtonContainer: {
+    paddingTop: 10
+  },
+  uploadedImagePreviewContainer: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10
+  },
+  uploadedImagePreview: {
+    height: 100,
+    width: 130
+  },
+
+  // ---------------------- Pickup Times Styles ----------------------
+  // pickupTimesGrid: {
+  //   flexDirection: 'row',
+  //   flexWrap: 'wrap',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 30,
+  // },
+  pickupTimesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20, // Reduced padding to allow more space
+  },
+  // pickupTimeItem: {
+  //   backgroundColor: '#6B6BE1',
+  //   borderRadius: 10,
+  //   padding: 10,
+  //   marginBottom: 5,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'space-between',
+  //   width: '100%',
+  // },
+  pickupTimeItem: {
+    backgroundColor: '#6B6BE1',
+    borderRadius: 10,
+    paddingVertical: 8, // Reduced vertical padding
+    paddingHorizontal: 5, // Reduced horizontal padding
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '48%', // Set width to approximately half for two items per row
+    height: 40 // Optional: Set a fixed height
+  },
+
+  // ---------------------- Modal Styles ----------------------
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  calendar: {
+    marginBottom: 20,
+  },
+  instructionText: { 
+    paddingBottom: 20, 
+    fontSize: 16, 
+    textAlign: "center" 
   },
 });
 
