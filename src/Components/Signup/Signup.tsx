@@ -47,7 +47,7 @@ const SignUp = ({ navigation }: RouterProps) => {
     } 
 
     if (alertMsg !== "") {
-      Alert.alert("Alert", alertMsg);
+      Alert.alert("Error", alertMsg);
       return;
     }
 

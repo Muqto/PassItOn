@@ -8,6 +8,7 @@ import {
   Modal,
   Pressable,
   TouchableWithoutFeedback,
+  SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -93,7 +94,7 @@ const DonationDetails = ({ route }) => {
   }, [])
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -102,146 +103,148 @@ const DonationDetails = ({ route }) => {
         <Text style={styles.headerTitle}>{fromHistory ? '' : 'Your donation'}</Text>
 
       </View>
-
-
-      {/* Image Placeholder */}
-      <View>
-      {/* Main Image Container */}
-      <TouchableOpacity onPress={openImageModal}>
-        <View style={styles.imageContainer}>
-          {imageDownloadUrl ? (
-            <Image
-              source={{ uri: imageDownloadUrl}}
-              style={styles.cardImage}
-            />
-          ) : (
-            <Text style={styles.imagePlaceholder}>
-              Image not available
-            </Text>
-          )}
-        </View>
-      </TouchableOpacity>
-
-      {/* Modal for Full-Size Image */}
-      <Modal visible={isImageModalVisible} transparent={true}>
-        <TouchableOpacity style={styles.modalBackground} onPress={closeImageModal}>
-          <Image
-            source={{ uri: imageDownloadUrl }}
-            style={styles.fullSizeImage}
-          />
+      <ScrollView style={styles.container}>
+        {/* Image Placeholder */}
+        <View>
+        {/* Main Image Container */}
+        <TouchableOpacity onPress={openImageModal} disabled={!imageDownloadUrl}>
+          <View style={styles.imageContainer}>
+            {imageDownloadUrl ? (
+              <Image
+                source={{ uri: imageDownloadUrl }}
+                style={styles.cardImage}
+              />
+            ) : (
+              <View style={[styles.cardImage, { backgroundColor: '#6B6BE1' }]}></View>
+            )}
+          </View>
         </TouchableOpacity>
-      </Modal>
-    </View>
 
-      {/* Donation Details */}
-      <View style={styles.detailsContainer}>
-        <Text style={styles.itemName}>{itemName}</Text>
-        <Text style={styles.itemCategory}>{itemType}</Text>
-        <Divider />
-
-        {/* Description Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Description</Text>
-          {isDescriptionExpanded || description.length <= 50 ? (
-            <Text style={styles.sectionText}>{description}</Text>
-          ) : (
-            <Text style={styles.sectionText}>
-              {description.slice(0, 50)}
-              <Text> </Text>
-              <Text onPress={toggleDescription} style={styles.ellipsis}>
-                ...
-              </Text>
-            </Text>
-          )}
-        </View>
-
-        {/* Details Section */}
-        <View style={styles.section}>
-          <Text style={styles.detailsTitle}>Details</Text>
-          <Divider />
-          <Text style={styles.sectionTitle}>Status</Text>
-          <Text style={styles.detailText}>
-            {transactionStatusMap[transactionStatus as keyof typeof transactionStatusMap]}
-          </Text>
-          <Text style={styles.sectionTitle}>Pickup location</Text>
-          <Text style={styles.detailText}>
-            {pickupLocationText ? pickupLocationText : "Not specified"}
-          </Text>
-          <Text style={styles.sectionTitle}>Donor</Text>
-          <Text style={styles.detailText}>
-            {/* {fullName ? fullName : "Loading..."} */}
-            {donorInfo?.data !== undefined ? `${donorInfo?.data.firstName} ${donorInfo?.data.lastName}`: 'Loading...'}
-            {donorInfo?.data?.rating !== undefined ? ` (${donorInfo?.data?.rating}/5 ⭐)`: ''}
-          </Text>
-        </View>
-
-        {/* Footer Section */}
-        <View style={styles.footer}>
-          <Text>
-            <Text style={styles.footerTextBold}>Posted</Text>{" "}
-            <Text style={styles.footerText}>03/06/2024</Text>
-          </Text>
-          <Text>
-            <Text style={styles.footerTextBold}>Expires</Text>{" "}
-            <Text style={styles.footerText}>{formatDate(expirationTime)}</Text>
-          </Text>
-        </View>
-
-        {/* Complete Transaction Button */}
-        {!fromHistory ? <TouchableOpacity
-          style={{...styles.completeButton, backgroundColor: transactionStatus === 1 ? '#6B6BE1' : '#EEEEEE'}} // Change button color based on transaction status
-          onPress={() => setModalVisible(true)} // Show modal on press
-          disabled={transactionStatus !== 1} // Disable button if transaction is not reserved
-        >
-          <Text style={{...styles.completeButtonText, color: transactionStatus === 1 ? 'white' : '#3D404A'}}>Complete Transaction</Text>
-        </TouchableOpacity> : null}
-
-        {/* Modal for transaction completion */}
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)} // Hide modal on back button press
-        >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View style={styles.modalOverlay}>
-              <TouchableWithoutFeedback>
-                {/* This prevents the modal content from closing when pressed */}
-                <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>Complete transaction</Text>
-                  <Divider style={{ marginBottom: 20 }} />
-                  <Text style={styles.modalText}>
-                    Complete transaction for item:{" "}
-                    <Text style={styles.modalItemName}>{itemName}</Text>?
-                  </Text>
-                  <Text style={styles.modalDescription}>
-                    Remember, confirm a transaction only once you've donated
-                    your item.
-                  </Text>
-
-                  <Pressable
-                    style={styles.confirmButton}
-                    onPress={confirmCompletion} // Close modal on confirmation
-                  >
-                    <Text style={styles.confirmButtonText}>
-                      Confirm completion
-                    </Text>
-                  </Pressable>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
+        {/* Modal for Full-Size Image */}
+        <Modal visible={isImageModalVisible} transparent={true}>
+          <TouchableOpacity style={styles.modalBackground} onPress={closeImageModal}>
+            <Image
+              source={{ uri: imageDownloadUrl }}
+              style={styles.fullSizeImage}
+            />
+          </TouchableOpacity>
         </Modal>
       </View>
-    </ScrollView>
+
+        {/* Donation Details */}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.itemName}>{itemName}</Text>
+          <Text style={styles.itemCategory}>{itemType}</Text>
+          <Divider />
+
+          {/* Description Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Description</Text>
+            {isDescriptionExpanded || description.length <= 50 ? (
+              <Text style={styles.sectionText}>{description}</Text>
+            ) : (
+              <Text style={styles.sectionText}>
+                {description.slice(0, 50)}
+                <Text> </Text>
+                <Text onPress={toggleDescription} style={styles.ellipsis}>
+                  ...
+                </Text>
+              </Text>
+            )}
+          </View>
+
+          {/* Details Section */}
+          <View style={styles.section}>
+            <Text style={styles.detailsTitle}>Details</Text>
+            <Divider />
+            <Text style={styles.sectionTitle}>Status</Text>
+            <Text style={styles.detailText}>
+              {transactionStatusMap[transactionStatus as keyof typeof transactionStatusMap]}
+            </Text>
+            <Text style={styles.sectionTitle}>Pickup location</Text>
+            <Text style={styles.detailText}>
+              {pickupLocationText ? pickupLocationText : "Not specified"}
+            </Text>
+            <Text style={styles.sectionTitle}>Donor</Text>
+            <Text style={styles.detailText}>
+              {/* {fullName ? fullName : "Loading..."} */}
+              {donorInfo?.data !== undefined ? `${donorInfo?.data.firstName} ${donorInfo?.data.lastName}`: 'Loading...'}
+              {donorInfo?.data?.rating !== undefined ? ` (${donorInfo?.data?.rating}/5 ⭐)`: ''}
+            </Text>
+          </View>
+
+          {/* Footer Section */}
+          <View style={styles.footer}>
+            <Text>
+              <Text style={styles.footerTextBold}>Posted</Text>{" "}
+              <Text style={styles.footerText}>03/06/2024</Text>
+            </Text>
+            <Text>
+              <Text style={styles.footerTextBold}>Expires</Text>{" "}
+              <Text style={styles.footerText}>{formatDate(expirationTime)}</Text>
+            </Text>
+          </View>
+
+          {/* Complete Transaction Button */}
+          {!fromHistory ? <TouchableOpacity
+            style={{...styles.completeButton, backgroundColor: transactionStatus === 1 ? '#6B6BE1' : '#EEEEEE'}} // Change button color based on transaction status
+            onPress={() => setModalVisible(true)} // Show modal on press
+            disabled={transactionStatus !== 1} // Disable button if transaction is not reserved
+          >
+            <Text style={{...styles.completeButtonText, color: transactionStatus === 1 ? 'white' : '#3D404A'}}>Complete Transaction</Text>
+          </TouchableOpacity> : null}
+
+          {/* Modal for transaction completion */}
+          <Modal
+            transparent={true}
+            visible={modalVisible}
+            animationType="fade"
+            onRequestClose={() => setModalVisible(false)} // Hide modal on back button press
+          >
+            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+              <View style={styles.modalOverlay}>
+                <TouchableWithoutFeedback>
+                  {/* This prevents the modal content from closing when pressed */}
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Complete transaction</Text>
+                    <Divider style={{ marginBottom: 20 }} />
+                    <Text style={styles.modalText}>
+                      Complete transaction for item:{" "}
+                      <Text style={styles.modalItemName}>{itemName}</Text>?
+                    </Text>
+                    <Text style={styles.modalDescription}>
+                      Remember, confirm a transaction only once you've donated
+                      your item.
+                    </Text>
+
+                    <Pressable
+                      style={styles.confirmButton}
+                      onPress={confirmCompletion} // Close modal on confirmation
+                    >
+                      <Text style={styles.confirmButtonText}>
+                        Confirm completion
+                      </Text>
+                    </Pressable>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
-    marginTop: 24,
+    // marginTop: 24,
   },
   cardImage: {
     width: '100%',
@@ -251,7 +254,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    paddingTop: 48,
+    // paddingTop: 48,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",

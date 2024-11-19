@@ -360,8 +360,8 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
             <Icon name="flag" size={24} color="#000" />
           </TouchableOpacity>
         </View>
+        {/* Image (Full Width) */}
         <View>
-          {/* Image (Full Width) */}
           <TouchableOpacity onPress={openImageModal}>
             <View>
               {item.imageDownloadUrl ? (

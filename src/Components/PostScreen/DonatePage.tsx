@@ -86,6 +86,8 @@ const DonatePage = () => {
   const [imageuri, setImageUri] = useState<string | undefined>(undefined);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
 
+  const [isPosting, setIsPosting] = useState(false); // To prevent double posting
+
   // ---------------------- Effect Hooks ----------------------
   useEffect(() => {
     resetToDefault();
@@ -262,9 +264,11 @@ const DonatePage = () => {
 
   // ---------------------- Main Functions ----------------------
   const postDonation = async () => {
-    let alertMsg = "";
+    // Prevent multiple triggers
+    if (isPosting) return;
 
-    console.log(pickupTimes)
+    setIsPosting(true); // Set posting state to true
+    let alertMsg = "";
 
     if (!donationItemName) {
       alertMsg = "Need an item name to post donation!"
@@ -275,12 +279,16 @@ const DonatePage = () => {
     else if (!location) {
       alertMsg = "Need a location to post donation!"
     } 
-    else if (pickupTimes.length === 0) { // Updated condition
-      alertMsg = "Need a pick up time to post donation!"
+    else if (pickupTimes.length === 0) {
+      alertMsg = "Need atleast one pick up time to post donation!"
     }
+    // else if (!imageuri) {
+    //   alertMsg = "Need a picture to post donation!"
+    // }
 
     if (alertMsg !== "") {
-      Alert.alert("Alert", alertMsg);
+      Alert.alert("Error", alertMsg);
+      setIsPosting(false); // Reset posting state
       return;
     }
 
@@ -311,6 +319,9 @@ const DonatePage = () => {
           imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
         } catch (error) {
           console.log("Error uploading image:", error);
+          Alert.alert("Submission Error", "Failed to upload image.");
+          setIsPosting(false); // Reset posting state
+          return;
           // Optionally notify the user about the upload failure
         }
       }
@@ -357,6 +368,8 @@ const DonatePage = () => {
     } catch (error) {
       console.log("Error in postDonation function:", error);
       Alert.alert("Submission Error", "There was an error posting your donation. Please try again.");
+    } finally {
+      setIsPosting(false); // Reset posting state
     }
   };
 
@@ -600,6 +613,7 @@ const DonatePage = () => {
               mode="contained"
               style={styles.cancelDonationButton}
               onPress={openCancelModal}
+              disabled={isPosting} // Disable button if posting
             >
               Cancel Donation
             </Button>
@@ -607,8 +621,9 @@ const DonatePage = () => {
               mode="contained"
               style={styles.postDonationButton}
               onPress={postDonation}
+              disabled={isPosting} // Disable button if posting
             >
-              Post Donation
+              {isPosting ? "Posting..." : "Post Donation"} {/* Display progress */}
             </Button>
           </View>
 
