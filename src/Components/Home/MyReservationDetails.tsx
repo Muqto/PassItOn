@@ -131,7 +131,7 @@ const MyReservationDetails = ({ route }) => {
                 style={styles.cardImage}
               />
             ) : (
-              <View style={[styles.cardImage, { backgroundColor: '#6B6BE1' }]}></View>
+              <View style={[styles.cardImage, { backgroundColor: '#d0d0fa' }]}></View>
             )}
           </View>
         </TouchableOpacity>

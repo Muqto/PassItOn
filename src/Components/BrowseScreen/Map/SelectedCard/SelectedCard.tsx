@@ -30,12 +30,11 @@ export const SelectedCard = ({itemId, itemName, itemType, distance, imageDownloa
               style={styles.cardImage}
             />
           ) : (
-            <View >
-            </View>
+            <View style={styles.imagePlaceholder}></View>
           )}
         </View>
         <View style = {listCardStyle.textContainer}>
-          <Text style={listCardStyle.itemText}>{itemName}</Text>
+            <Text style={listCardStyle.itemText}>{itemName.length > 21 ? itemName.substring(0, 21) + "..." : itemName}</Text>
           <Text style={listCardStyle.categText}>{itemType}</Text>
         </View>
         <View style = {listCardStyle.end}>
@@ -94,8 +93,9 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   imagePlaceholder: {
-    width: '100%',
-    height: '100%',
+    width: 60,
+    height: 60,
     backgroundColor: colors.lightPurple,
+    borderRadius: 10
   },
 });

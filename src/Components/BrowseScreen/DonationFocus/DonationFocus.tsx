@@ -362,19 +362,15 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
         </View>
         {/* Image (Full Width) */}
         <View>
-          <TouchableOpacity onPress={openImageModal}>
-            <View>
+          <TouchableOpacity onPress={openImageModal} disabled={!item.imageDownloadUrl}>
+            <View style={styles.imageContainer}>
               {item.imageDownloadUrl ? (
                 <Image
                   source={{ uri: item.imageDownloadUrl }}
-                  style={styles.imageFullWidth}
+                  style={styles.cardImage}
                 />
               ) : (
-                <View style={styles.placeholderFullWidth}>
-                  <Text style={styles.placeholderText}>
-                    Image not available
-                  </Text>
-                </View>
+                <View style={[styles.cardImage, { backgroundColor: '#d0d0fa' }]}></View>
               )}
             </View>
           </TouchableOpacity>
@@ -481,17 +477,20 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
         </ScrollView>
 
         {/* Reserve Button */}
-        <View style={{...styles.buttonContainer}}>
+        <TouchableOpacity
+          disabled={transactionStatus !== 0}
+          style={styles.buttonContainer}
+          onPress={openModal}
+          activeOpacity={0.7} // Adjusts the opacity when pressed
+        >
           <Button
-            disabled={transactionStatus !== 0}
             mode="contained"
             style={{...styles.button, backgroundColor: transactionStatus !== 0 ? "#808080" : "#6B6BE1"}}
             labelStyle={styles.buttonText}
-            onPress={openModal}
           >
-            Reserve donation
+            Reserve Donation
           </Button>
-        </View>
+        </TouchableOpacity>
       </View>
 
       {/* Reservation Modal */}
@@ -677,16 +676,20 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
               </ScrollView>
 
               {/* Confirm Reservation Button */}
-              <View style={{...styles.buttonContainer}}>
+              <TouchableOpacity
+                disabled={transactionStatus !== 0}
+                style={styles.buttonContainer}
+                onPress={confirmReservation}
+                activeOpacity={0.7} // Adjusts the opacity when pressed
+              >
                 <Button
                   mode="contained"
                   style={styles.button}
                   labelStyle={styles.buttonText}
-                  onPress={confirmReservation}
                 >
                   Confirm Reservation
                 </Button>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         ) : (

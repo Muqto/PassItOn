@@ -89,7 +89,7 @@ const DonationCard = ({
               />
             ) : (
               <View
-                style={[styles.cardImage, { backgroundColor: "#6B6BE1" }]}
+                style={[styles.cardImage, { backgroundColor: "#d0d0fa" }]}
               ></View>
             )}
           </View>

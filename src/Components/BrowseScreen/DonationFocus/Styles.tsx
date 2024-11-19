@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     marginBottom: 4,
+    marginTop: 10,
   },
   modalCategory: {
     fontSize: 14,
@@ -415,7 +416,16 @@ const styles = StyleSheet.create({
   // =========================================================
   // Miscellaneous Styles
   // =========================================================
-  // (Add any additional styles here as needed)
+  imageContainer: {
+    height: 255,
+    backgroundColor: "#E0E0E0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default styles;
