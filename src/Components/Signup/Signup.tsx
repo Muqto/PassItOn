@@ -152,7 +152,7 @@ const SignUp = ({ navigation }: RouterProps) => {
                   mode="contained"
                   buttonColor= {colors.primaryPurple}
                   style={styles.signUpButton}
-                  onPress={() => checkSignUp(firstName, lastName, email, password, confirmPassword, navigation)}
+                  onPress={() => checkSignUp()}
                 >
                   Sign up
                 </Button>}

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 4, // Gap between sub-header and content
   },
   description: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#333",
     // No additional margin since it's under the "Description" header
   },
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#6B6BE1",
     borderRadius: 8,
     height: 50,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -156,8 +157,8 @@ const styles = StyleSheet.create({
     flex: 1, // Allows the text to take available space
   },
   closeButton: {
-    position: 'absolute',
-    right: 15,
+    // position: 'absolute',
+    // right: 15,
     backgroundColor: '#6B6BE1',
     width: 30,
     height: 30,
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
   },
   reservationModalContent: {
     width: '90%',
-    height: '90%',
+    height: '80%',
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
@@ -195,8 +196,8 @@ const styles = StyleSheet.create({
     top: 80,
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "600",
     marginBottom: 4,
   },
   modalCategory: {
@@ -211,18 +212,21 @@ const styles = StyleSheet.create({
     marginBottom: 14, // Overall gap between sub-sections
   },
   modalSectionHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "600",
     marginBottom: 8, // Gap between header and content
   },
   modalSubSectionHeader: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: 4, // Gap between sub-header and content
   },
-  pickupDescription: {
+  modalExpiresHeader: {
     fontSize: 18,
-    color: "#333",
+    fontWeight: "600",
+  },
+  pickupDescription: {
+    fontSize: 16,
     marginBottom: 20,
   },
   pickupOptionsContainer: {
@@ -265,6 +269,16 @@ const styles = StyleSheet.create({
   },
   selectedDateText: {
     color: '#fff',
+  },
+  // Style for disabled date circles
+  disabledDateCircle: {
+    borderColor: '#d3d3d3',
+    backgroundColor: "#d3d3d3", // Light grey background
+  },
+
+  // Style for disabled date text
+  disabledDateText: {
+    color: "white", // Dark grey text
   },
   modalTextDonorEmail: {
     color: "#6B6BE1",
@@ -339,11 +353,12 @@ const styles = StyleSheet.create({
   selectedTimeOptionText: {
     color: '#fff',
   },
-  noTimesText: {
-    fontSize: 16,
-    color: '#999',
+  disclaimerText: {
+    fontSize: 14,
     textAlign: 'center',
+    marginBottom: 10,
   },
+
 
   // =========================================================
   // Confirmation Modal Styles

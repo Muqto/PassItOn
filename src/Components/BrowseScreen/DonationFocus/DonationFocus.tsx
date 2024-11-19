@@ -524,7 +524,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                 {/* Details (excluding "Posted" date) */}
                 <View>
                   {/* Item Title Section */}
-                  <View style={styles.modalSection}>
+                  <View style={styles.modalSubSection}>
                     <Text style={styles.modalTitle}>
                       {item.itemName || "Unnamed Item"}
                     </Text>
@@ -547,13 +547,13 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                       <Text style={styles.modalSubSectionHeader}>
                         Pickup location
                       </Text>
-                      <Text style={styles.detailText}>
+                      <Text style={styles.description}>
                         {item.pickupLocationText || "Location not provided"}
                       </Text>
                     </View>
                     <View style={styles.modalSubSection}>
                       <Text style={styles.modalSubSectionHeader}>Donor</Text>
-                      <Text style={styles.detailText}>
+                      <Text style={styles.description}>
                         {`${donorInfo?.data.firstName} ${donorInfo?.data.lastName}` ||
                           "Unknown Donor"}{" "}
                         {donorInfo?.data.rating !== 0
@@ -561,14 +561,14 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                           : `(N/A ⭐) `}
                       </Text>
                     </View>
-                    <View style={styles.modalSubSection}>
                       <Text style={[styles.dateText, { flex: 1 }]}>
-                        <Text style={styles.modalSubSectionHeader}>
+                        <Text style={styles.modalExpiresHeader}>
                           Expires
                         </Text>{" "}
-                        {formatDate(item.expirationTime) || "Unknown"}
+                        <Text style={styles.description}>
+                          {formatDate(item.expirationTime) || "Unknown"}
+                        </Text>
                       </Text>
-                    </View>
                   </View>
 
                   {/* Pickup Time Section */}
@@ -589,32 +589,42 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                       </View>
                       {/* Dates */}
                       <View style={styles.datesContainer}>
-                        {daysAndDates.map((dayItem, index) => (
-                          <TouchableOpacity
-                            key={index}
-                            style={[
-                              styles.dateCircle,
-                              selectedPickupDate?.fullDate.toDateString() ===
-                                dayItem.fullDate.toDateString() &&
-                                styles.selectedDateCircle,
-                            ]}
-                            onPress={() => {
-                              setSelectedPickupDate(dayItem);
-                              setSelectedPickupTime(null); // Reset selected time when date changes
-                            }}
-                          >
-                            <Text
+                        {daysAndDates.map((dayItem, index) => {
+                          const dateStr = dayItem.fullDate.toDateString();
+                          const hasPickupTimes =
+                            pickupTimesByDate[dateStr] &&
+                            pickupTimesByDate[dateStr].length > 0;
+
+                          return (
+                            <TouchableOpacity
+                              key={index}
                               style={[
-                                styles.dateTextInCircle,
-                                selectedPickupDate?.fullDate.toDateString() ===
-                                  dayItem.fullDate.toDateString() &&
-                                  styles.selectedDateText,
+                                styles.dateCircle,
+                                selectedPickupDate?.fullDate.toDateString() === dateStr &&
+                                  styles.selectedDateCircle,
+                                !hasPickupTimes && styles.disabledDateCircle, // Apply disabled style
                               ]}
+                              onPress={() => {
+                                if (hasPickupTimes) {
+                                  setSelectedPickupDate(dayItem);
+                                  setSelectedPickupTime(null); // Reset selected time when date changes
+                                }
+                              }}
+                              disabled={!hasPickupTimes} // Disable if no pickup times
                             >
-                              {dayItem.date}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
+                              <Text
+                                style={[
+                                  styles.dateTextInCircle,
+                                  selectedPickupDate?.fullDate.toDateString() === dateStr &&
+                                    styles.selectedDateText,
+                                  !hasPickupTimes && styles.disabledDateText, // Apply disabled text style
+                                ]}
+                              >
+                                {dayItem.date}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
                       </View>
                     </View>
                     {/* Times for selected date */}
@@ -625,7 +635,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                         ] ? (
                           <View>
                             <View>
-                              <Text style={styles.text}>
+                              <Text style={styles.disclaimerText}>
                                 Please note that each time slot is 15 minutes.
                               </Text>
                             </View>
@@ -656,7 +666,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                             </View>
                           </View>
                         ) : (
-                          <Text style={styles.text}>
+                          <Text style={styles.disclaimerText}>
                             No available times for this date.
                           </Text>
                         )}
@@ -667,14 +677,16 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
               </ScrollView>
 
               {/* Confirm Reservation Button */}
-              <Button
-                mode="contained"
-                style={styles.button}
-                labelStyle={styles.buttonText}
-                onPress={confirmReservation}
-              >
-                Confirm Reservation
-              </Button>
+              <View style={{...styles.buttonContainer}}>
+                <Button
+                  mode="contained"
+                  style={styles.button}
+                  labelStyle={styles.buttonText}
+                  onPress={confirmReservation}
+                >
+                  Confirm Reservation
+                </Button>
+              </View>
             </View>
           </View>
         ) : (

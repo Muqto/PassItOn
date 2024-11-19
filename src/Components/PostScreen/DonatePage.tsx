@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,18 +7,17 @@ import {
   Modal,
   Image,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
-import useItem from "../../Hooks/Item";
-import styles from "./Styles";
-import { userSelector } from "../../store/user/selectors";
-import { useSelector } from "react-redux";
 import { Dropdown } from "react-native-element-dropdown";
 import {
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
-import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPlusCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
 import dayjs from "dayjs";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -27,18 +26,26 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import { storage } from "../../config/firebase";
-import { KeyboardAvoidingView, Platform } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+
+import useItem from "../../Hooks/Item";
+import { userSelector } from "../../store/user/selectors";
+import styles from "./Styles";
+
+import { Calendar } from "react-native-calendars";
 
 const defaultLocation = { latitude: 0, longitude: 0 };
 
 const DonatePage = () => {
+  // ---------------------- Hooks ----------------------
   const { donate } = useItem();
   const userState = useSelector(userSelector);
+
+  // ---------------------- State Variables ----------------------
   const [donationItemName, setDonationItemName] = useState("");
   const [donationItemDescription, setDonationItemDescription] = useState("");
   const [category, setCategory] = useState("");
+
   const categoryList = [
     { label: "Food", value: "Food" },
     { label: "Clothes", value: "Clothes" },
@@ -47,39 +54,169 @@ const DonatePage = () => {
     { label: "Stationery", value: "Stationery" },
     { label: "Other", value: "Other" },
   ];
+
   const [location, setLocation] = useState(defaultLocation);
   const [date, setDate] = useState(dayjs());
-  const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
-  const [pickupTimes, setPickupTimes] = useState<DateType[]>([]);
+  const [modalStep, setModalStep] = useState<'none' | 'date' | 'time'>('none');
+
+  // Combined Time Slots in 15-minute increments
+  const generateTimeSlots = () => {
+    const slots = [];
+    const startOfDay = dayjs().startOf('day');
+    for (let i = 0; i < 96; i++) { // 24 hours * 4 slots per hour
+      const time = startOfDay.add(i * 15, 'minute');
+      slots.push(time.format('HH:mm'));
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
+
+  // Define separate arrays for start and end time slots
+  const startTimeSlots = timeSlots;
+  const endTimeSlots = [...timeSlots.slice(1), "00:00"]; // Move "00:00" to the end
+
+  // State for selected start and end times
+  const [selectedStartTime, setSelectedStartTime] = useState<string>("00:00");
+  const [selectedEndTime, setSelectedEndTime] = useState<string>("00:15");
+
+  const [pickupTimes, setPickupTimes] = useState<string[]>([]);
   const [pickupLocationText, setPickupLocationText] = useState("");
   const placesRef = useRef<GooglePlacesAutocompleteRef | null>(null);
   const [imageuri, setImageUri] = useState<string | undefined>(undefined);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
 
-  const openDateTimePicker = () => {
-    setIsDateTimePickerVisible(true);
+  // ---------------------- Effect Hooks ----------------------
+  useEffect(() => {
+    resetToDefault();
+  }, []);
+
+  // ---------------------- Helper Functions ----------------------
+  const resetToDefault = () => {
+    const now = dayjs();
+    const roundedMinutes = Math.ceil(now.minute() / 15) * 15;
+    let nextSlot = now.hour().toString().padStart(2, '0') + ':' + roundedMinutes.toString().padStart(2, '0');
+    
+    if (roundedMinutes === 60) {
+      nextSlot = (now.hour() + 1).toString().padStart(2, '0') + ':00';
+    }
+
+    // Find the index of the nextSlot in startTimeSlots
+    const startIndex = startTimeSlots.findIndex(slot => slot === nextSlot);
+    
+    if (startIndex === -1) {
+      // If nextSlot is not found (edge case), default to '00:00' and '00:15'
+      setSelectedStartTime("00:00");
+      setSelectedEndTime("00:15");
+    } else {
+      setSelectedStartTime(startTimeSlots[startIndex]);
+      setSelectedEndTime(startTimeSlots[(startIndex + 1) % startTimeSlots.length]);
+    }
   };
 
-  const handleClosePickupTimeModal = () => {
-    setIsDateTimePickerVisible(false);
+  const openDatePicker = () => setModalStep('date'); // Open the date picker modal
+  const closeModal = () => {
+    setModalStep('none');
+    setDate(dayjs()); // Reset date to today
+    resetToDefault(); // Reset start and end times to defaults
   };
 
-  const handleDateChange = (params: any) => {
-    setDate(params.date);
+  const handleDateSelect = () => {
+    try {
+      if (date) { // Ensure a date is selected
+        setModalStep('time'); // Switch to 'time' step
+      } else {
+        Alert.alert("No Date Selected", "Please select a date before proceeding.");
+      }
+    }
+    catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message)
+      }
+    }
   };
 
   const addPickupTime = () => {
-    setIsDateTimePickerVisible(false);
-    setPickupTimes([...pickupTimes, date]);
+    const startDateTime = dayjs(`${date.format('YYYY-MM-DD')} ${selectedStartTime}`, 'YYYY-MM-DD HH:mm');
+    const endDateTime = dayjs(`${date.format('YYYY-MM-DD')} ${selectedEndTime}`, 'YYYY-MM-DD HH:mm');
+
+    // Validation: End time must be after start time
+    if (!endDateTime.isAfter(startDateTime)) {
+      Alert.alert("Invalid Time Range", "End time must be after start time.");
+      return;
+    }
+
+    // Validation: Difference must be a multiple of 15 minutes
+    const diffMinutes = endDateTime.diff(startDateTime, 'minute');
+    if (diffMinutes % 15 !== 0) {
+      Alert.alert("Invalid Time Range", "The time range must be in increments of 15 minutes.");
+      return;
+    }
+
+    // Generate pickup times in 15-minute increments
+    const times = [];
+    let current = startDateTime;
+
+    while (true) {
+      current = current.add(15, 'minute');
+      if (current.isBefore(endDateTime) || current.isSame(endDateTime)) {
+        const formattedTime = current.format('YYYY-MM-DD HH:mm');
+        times.push(formattedTime);
+      } else {
+        break;
+      }
+    }
+
+    // Check for duplicates
+    const isDuplicate = times.some(t => pickupTimes.includes(t));
+    if (isDuplicate) {
+      // Alert.alert("Duplicate Pickup Time", "Some of the selected pickup times have already been added.");
+      closeModal(); // This will reset date and time selections
+      return;
+    }
+
+    // Add new times to pickupTimes
+    setPickupTimes([...pickupTimes, ...times]);
+
+    // Close the modal and reset selected times
+    closeModal(); // This will reset date and time selections
+  };
+
+  const groupPickupTimesByDate = () => {
+    const sortedPickupTimes = [...pickupTimes].sort((a, b) => dayjs(a, 'YYYY-MM-DD HH:mm').diff(dayjs(b, 'YYYY-MM-DD HH:mm')));
+
+    const grouped = sortedPickupTimes.reduce((acc, timeStr) => {
+      const dateFormatted = dayjs(timeStr, 'YYYY-MM-DD HH:mm').format("MMM DD YYYY");
+      
+      const existingGroup = acc.find(group => group.date === dateFormatted);
+      
+      if (existingGroup) {
+        existingGroup.times.push(timeStr);
+      } else {
+        acc.push({ date: dateFormatted, times: [timeStr] });
+      }
+      
+      return acc;
+    }, [] as { date: string, times: string[] }[]);
+
+    return grouped;
+  };
+
+  const removePickupTime = (timeStr: string) => {
+    const newPickupTimes = pickupTimes.filter(t => t !== timeStr);
+    setPickupTimes(newPickupTimes);
   };
 
   const openCancelModal = () => {
-    // Open cancel modal only if at least one field has an input. Otherwise do
-    if (donationItemName || donationItemDescription || category || imageuri ||
+    if (
+      donationItemName ||
+      donationItemDescription ||
+      category ||
+      imageuri ||
       location.latitude !== defaultLocation.latitude ||
+      pickupLocationText ||
       pickupTimes.length !== 0
-    )
-    {
+    ) {
       setIsCancelModalVisible(true);
     }
   };
@@ -92,6 +229,8 @@ const DonatePage = () => {
     setDonationItemName("");
     setDonationItemDescription("");
     setCategory("");
+    setLocation(defaultLocation);
+    setPickupLocationText("");
     setPickupTimes([]);
     setImageUri(undefined);
     closeCancelModal();
@@ -107,33 +246,36 @@ const DonatePage = () => {
     lat2: number,
     lon2: number
   ) => {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2 - lat1); // deg2rad below
-    var dLon = deg2rad(lon2 - lon1);
-    var a =
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) *
         Math.cos(deg2rad(lat2)) *
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
     return d;
   };
 
+  // ---------------------- Main Functions ----------------------
   const postDonation = async () => {
-    var alertMsg = "";
+    let alertMsg = "";
 
-    if ( !donationItemName ) {
+    console.log(pickupTimes)
+
+    if (!donationItemName) {
       alertMsg = "Need an item name to post donation!"
     } 
-    else if ( !category ) {
+    else if (!category) {
       alertMsg = "Need an item category to post donation!"
     } 
-    else if ( !location ) {
+    else if (!location) {
       alertMsg = "Need a location to post donation!"
     } 
-    else if ( !pickupTimes ) {
+    else if (pickupTimes.length === 0) { // Updated condition
       alertMsg = "Need a pick up time to post donation!"
     }
 
@@ -143,7 +285,7 @@ const DonatePage = () => {
     }
 
     try {
-      // calculate distance from user to new donation
+      // Calculate distance from user to new donation
       const distance = getDistance(
         userState.location?.latitude || 0,
         userState.location?.longitude || 0,
@@ -156,32 +298,24 @@ const DonatePage = () => {
       // If an image is provided, upload it to Firebase
       if (imageuri) {
         const storageRef = firebaseStorageRef(storage, "image");
-
-        // Create unique filename for the uploaded image
         const fileName = `${userState._id}_${Date.now()}`;
-        const donationImageStorageRef = firebaseStorageRef(
-          storageRef,
-          `${fileName}`
-        );
+        const donationImageStorageRef = firebaseStorageRef(storageRef, `${fileName}`);
 
         try {
-          // Fetch image blob
           const blobRes = await fetch(imageuri);
           const blob = await blobRes.blob();
 
-          // Upload image blob to Firebase
           await uploadBytes(donationImageStorageRef, blob);
           console.log("Uploaded a blob or file!");
 
-          // Get download URL for the image
           imageDownloadUrl = await getDownloadURL(donationImageStorageRef);
         } catch (error) {
           console.log("Error uploading image:", error);
-          // You could add additional handling here if needed, e.g., notifying the user that the image upload failed.
+          // Optionally notify the user about the upload failure
         }
       }
 
-      // Proceed with the donation creation, with or without an image
+      // Proceed with the donation creation
       await donate(
         userState._id,
         donationItemName,
@@ -239,6 +373,50 @@ const DonatePage = () => {
     }
   };
 
+  // ---------------------- Time Adjustment Functions ----------------------
+  const handleStartTimeChange = (item: any) => {
+    const newStartTime = item.value;
+    setSelectedStartTime(newStartTime);
+
+    const startIndex = startTimeSlots.findIndex(slot => slot === newStartTime);
+    const endIndex = endTimeSlots.findIndex(slot => slot === selectedEndTime);
+
+    if (startIndex === -1) return;
+
+    if (startIndex > endIndex) {
+      // Set end time to the next available slot after start time
+      const newEndIndex = startIndex;
+      if (newEndIndex < endTimeSlots.length) {
+        setSelectedEndTime(endTimeSlots[newEndIndex]);
+      } else {
+        // If start time is the last slot, wrap around or set to the last slot
+        setSelectedEndTime(endTimeSlots[endTimeSlots.length - 1]);
+      }
+    }
+  };
+
+  const handleEndTimeChange = (item: any) => {
+    const newEndTime = item.value;
+    setSelectedEndTime(newEndTime);
+
+    const endIndex = endTimeSlots.findIndex(slot => slot === newEndTime);
+    const startIndex = startTimeSlots.findIndex(slot => slot === selectedStartTime);
+
+    if (endIndex === -1) return;
+
+    if (endIndex < startIndex) {
+      // Set start time to the previous available slot before end time
+      const newStartIndex = endIndex;
+      if (newStartIndex >= 0) {
+        setSelectedStartTime(startTimeSlots[newStartIndex]);
+      } else {
+        // If end time is the first slot, set to the first slot
+        setSelectedStartTime(startTimeSlots[0]);
+      }
+    }
+  };
+
+  // ---------------------- UI Components ----------------------
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -246,29 +424,36 @@ const DonatePage = () => {
     >
       <View style={styles.donatePageContainer}>
         <Text style={styles.donatePageHeader}>Donate an item</Text>
+        
         <ScrollView
           style={styles.donatePageInfoContainer}
           keyboardShouldPersistTaps={"handled"}
         >
+
+          {/* ---------------------- Item Name ---------------------- */}
           <TextInput
             label="Item name *"
             value={donationItemName}
-            onChangeText={(text) => setDonationItemName(text)}
+            onChangeText={setDonationItemName}
             style={styles.donationItemTitle}
             mode="flat"
             activeUnderlineColor="black"
             underlineColor="transparent"
           />
+
+          {/* ---------------------- Description ---------------------- */}
           <TextInput
             label="Description "
             multiline
             value={donationItemDescription}
-            onChangeText={(text) => setDonationItemDescription(text)}
+            onChangeText={setDonationItemDescription}
             style={styles.donationItemDescription}
             mode="flat"
             activeUnderlineColor="black"
             underlineColor="transparent"
           />
+
+          {/* ---------------------- Category ---------------------- */}
           <SafeAreaView style={styles.donationDropdownContainer}>
             <Dropdown
               style={styles.donationDropdown}
@@ -282,6 +467,8 @@ const DonatePage = () => {
               onChange={(category) => setCategory(category.value)}
             />
           </SafeAreaView>
+
+          {/* ---------------------- Location ---------------------- */}
           <View style={styles.locationInputContainer}>
             <GooglePlacesAutocomplete
               ref={placesRef}
@@ -304,47 +491,37 @@ const DonatePage = () => {
               }}
               styles={{
                 textInputContainer: {
-                  backgroundColor: "#EEEEEE", // Background for the container
+                  backgroundColor: "#EEEEEE",
                   borderRadius: 5,
-                  // marginVertical: 10,
                   paddingHorizontal: 10,
                 },
                 textInput: {
-                  backgroundColor: "#EEEEEE", // Input background color
+                  backgroundColor: "#EEEEEE",
                   height: 50,
                   borderRadius: 5,
                   paddingHorizontal: 10,
                   fontSize: 16,
-                  color: "#333333", // Text color
+                  color: "#333333",
                   borderWidth: 0,
                 },
                 listView: {
-                  backgroundColor: "#FFFFFF", // Background for dropdown list
+                  backgroundColor: "#FFFFFF",
                   borderRadius: 5,
-                  shadowColor: "#000", // Adding shadow for a modern UI
+                  shadowColor: "#000",
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.2,
                   shadowRadius: 3,
-                  elevation: 3, // For Android shadow effect
+                  elevation: 3,
                 },
               }}
             />
           </View>
+
+          {/* ---------------------- Pickup Times ---------------------- */}
           <SafeAreaView style={styles.pickupTimesContainer}>
-            <Text numberOfLines={1} style={styles.pickupTimesPreview}>
-              {pickupTimes.length != 0 ? (
-                pickupTimes.map((pickupTime, i) => (
-                  <Text key={`${pickupTime}_${i}`}>
-                    {pickupTime?.toString()},{" "}
-                  </Text>
-                ))
-              ) : (
-                <Text style={{ color: "#4A454E", fontSize: 16 }}>
-                  Pickup times *
-                </Text>
-              )}
-            </Text>
-            <View style={{ marginLeft: 20, position: "absolute", right: 5 }}>
+            {/* Header with Label and Add Button */}
+            <View style={styles.pickupTimesHeader}>
+              <Text style={styles.pickupTimesLabel}>Pickup times:</Text>
               <IconButton
                 icon={() => (
                   <FontAwesomeIcon
@@ -353,82 +530,74 @@ const DonatePage = () => {
                     color={"#6B6BE1"}
                   />
                 )}
-                onPress={openDateTimePicker}
+                onPress={openDatePicker}
               />
             </View>
+
+            {/* Grouped Pickup Times Section */}
+            <SafeAreaView style={styles.pickupTimesGridContainer}>
+              {groupPickupTimesByDate().map((group) => (
+                <View key={group.date} style={styles.pickupTimeGroup}>
+                  {/* Date Label */}
+                  <Text style={styles.pickupDateLabel}>{group.date}:</Text>
+
+                  {/* Times Grid */}
+                  <View style={styles.pickupTimesGrid}>
+                    {group.times.map((timeStr) => {
+                      const start = dayjs(timeStr, 'YYYY-MM-DD HH:mm').format('HH:mm');
+                      const end = dayjs(timeStr, 'YYYY-MM-DD HH:mm').add(15, 'minute').format('HH:mm');
+                      const timeRange = `${start} - ${end}`;
+
+                      return (
+                        <View key={timeStr} style={styles.pickupTimeItem}>
+                          <Text style={styles.pickupTimeText}>{timeRange}</Text>
+                          <IconButton
+                            icon={() => (
+                              <FontAwesomeIcon
+                                size={16}
+                                icon={faTimes}
+                                color={"#FFFFFF"}
+                              />
+                            )}
+                            style={styles.deletePickupTimeButton}
+                            onPress={() => removePickupTime(timeStr)}
+                            accessibilityLabel="Delete Pickup Time"
+                            accessibilityHint="Removes this pickup time from the list"
+                          />
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+              ))}
+
+              {/* If no pickup times are added */}
+              {pickupTimes.length === 0 && (
+                <Text style={styles.noPickupTimesText}>No pickup times added.</Text>
+              )}
+            </SafeAreaView>
           </SafeAreaView>
-          <Modal animationType="slide" visible={isDateTimePickerVisible}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 20,
-                }}
-              >
-                <Button
-                  mode="contained-tonal"
-                  style={styles.closePickupTimeModalButton}
-                  onPress={handleClosePickupTimeModal}
-                >
-                  Close
-                </Button>
-                <Text
-                  style={{
-                    paddingBottom: 40,
-                    fontSize: 18,
-                    textAlign: "center",
-                  }}
-                >
-                  Please select a pickup time during which you are available for
-                  15 minutes
-                </Text>
-                <DateTimePicker
-                  mode="single"
-                  timePicker
-                  date={date}
-                  minDate={dayjs()}
-                  maxDate={dayjs().add(7, "day")}
-                  onChange={handleDateChange}
-                />
-                <Button
-                  mode="contained"
-                  buttonColor="#6B6BE1"
-                  style={styles.addPickupTimeButton}
-                  onPress={addPickupTime}
-                >
-                  Add Availability
-                </Button>
-              </View>
-            </View>
-          </Modal>
-          {imageuri !== undefined ? (
+
+          {/* ---------------------- Picture Upload ---------------------- */}
+          {imageuri ? (
             <View style={styles.uploadedImagePreviewContainer}>
               <Image
                 source={{ uri: imageuri }}
                 style={styles.uploadedImagePreview}
               />
             </View>
-          ) : (
-            <View></View>
-          )}
+          ) : null}
+
           <View style={styles.imageUploadButtonContainer}>
             <Button icon="camera" mode="outlined" onPress={pickImage}>
               Upload a picture of your donation
             </Button>
           </View>
 
+          {/* ---------------------- Cancel and Post Donation Buttons ---------------------- */}
           <View style={styles.cancelOrPostDonationContainer}>
             <Button
               mode="contained"
-              // buttonColor="#A9A9A9"
               style={styles.cancelDonationButton}
               onPress={openCancelModal}
             >
@@ -436,7 +605,6 @@ const DonatePage = () => {
             </Button>
             <Button
               mode="contained"
-              // buttonColor="#6B6BE1"
               style={styles.postDonationButton}
               onPress={postDonation}
             >
@@ -444,7 +612,7 @@ const DonatePage = () => {
             </Button>
           </View>
 
-          {/* Confirmation Modal */}
+          {/* ---------------------- Confirm Cancellation Modal ---------------------- */}
           <Modal
             animationType="fade"
             transparent={true}
@@ -479,12 +647,120 @@ const DonatePage = () => {
             </View>
           </Modal>
 
-          <Text
-            style={styles.expirationDisclaimer}
-          >
+          {/* ---------------------- Disclaimer ---------------------- */}
+          <Text style={styles.expirationDisclaimer}>
             Please note that donation posts expire 1 week after latest pickup time.
           </Text>
         </ScrollView>
+
+        {/* ---------------------- Single Modal for Date and Time Picker ---------------------- */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalStep !== 'none'}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              {/* Close Button */}
+              <Button
+                mode="contained-tonal"
+                style={styles.closePickupTimeModalButton}
+                onPress={closeModal}
+              >
+                Close
+              </Button>
+
+              {/* Conditional Rendering based on modalStep */}
+              {modalStep === 'date' && (
+                <View style={{ width: '100%', alignItems: 'center' }}>
+
+                  {/* Instruction Text */}
+                  <Text style={styles.instructionText}>
+                    Please select a date
+                  </Text>
+
+                  {/* Calendar Component for Date Selection */}
+                  <Calendar
+                    onDayPress={(day) => {
+                      setDate(dayjs(day.dateString));
+                      console.log("Date selected:", day.dateString);
+                    }}
+                    markedDates={{
+                      [date.format('YYYY-MM-DD')]: { selected: true, selectedColor: '#6B6BE1' },
+                    }}
+                    style={styles.calendar}
+                    theme={{
+                      selectedDayBackgroundColor: '#6B6BE1',
+                      todayTextColor: '#6B6BE1',
+                      disabledDayTextColor: '#d9e1e8', // Customize disabled dates color
+                    }}
+                    minDate={dayjs().format('YYYY-MM-DD')} // Disable past dates
+                    maxDate={dayjs().add(14, 'day').format('YYYY-MM-DD')} // Disable dates beyond 2 weeks
+                    disableAllTouchEventsForDisabledDays={true} // Prevent interaction with disabled dates
+                  />
+
+                  {/* Add Availability For Date Selected Button */}
+                  <Button
+                    mode="contained"
+                    buttonColor="#6B6BE1"
+                    style={styles.addPickupTimeButton}
+                    onPress={handleDateSelect}
+                  >
+                    Add availability for date
+                  </Button>
+                </View>
+              )}
+
+              {modalStep === 'time' && (
+                <View style={{ width: '100%', alignItems: 'center' }}>
+                  {/* Instruction Text */}
+                  <Text style={styles.instructionText}>
+                    Please select a pickup time range
+                  </Text>
+                  
+                  {/* Start Time Picker */}
+                  <Text style={styles.pickerLabel}>Start Time:</Text>
+                  <Dropdown
+                    style={styles.timePickerDropdown}
+                    placeholderStyle={styles.pickupDropdownPlaceholder}
+                    selectedTextStyle={styles.pickupDropdownSelectedText}
+                    data={startTimeSlots.map(slot => ({ label: slot, value: slot }))}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Start Time"
+                    value={selectedStartTime}
+                    onChange={handleStartTimeChange}
+                  />
+                  
+                  {/* End Time Picker */}
+                  <Text style={styles.pickerLabel}>End Time:</Text>
+                  <Dropdown
+                    style={styles.timePickerDropdown}
+                    placeholderStyle={styles.pickupDropdownPlaceholder}
+                    selectedTextStyle={styles.pickupDropdownSelectedText}
+                    data={endTimeSlots.map(slot => ({ label: slot, value: slot }))}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="End Time"
+                    value={selectedEndTime}
+                    onChange={handleEndTimeChange}
+                  />
+                  
+                  {/* Add Availability Button */}
+                  <Button
+                    mode="contained"
+                    buttonColor="#6B6BE1"
+                    style={styles.addPickupTimeButton}
+                    onPress={addPickupTime}
+                  >
+                    Add Availability
+                  </Button>
+                </View>
+              )}
+            </View>
+          </View>
+        </Modal>
       </View>
     </KeyboardAvoidingView>
   );
