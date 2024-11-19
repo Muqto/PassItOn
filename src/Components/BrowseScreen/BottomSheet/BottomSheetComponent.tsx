@@ -49,7 +49,7 @@ export const BottomSheetComponent = () => {
             Explore nearby
           </Text>
         </View>
-
+    
         <FlatList
           data={donations}
           renderItem={renderItem}

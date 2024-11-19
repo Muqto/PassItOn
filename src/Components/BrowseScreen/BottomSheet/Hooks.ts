@@ -34,12 +34,12 @@ export const useBottomSheet = () => {
 
     setIsDonLoading(true);
     try {
-      const pageOfItemIds = donCoords.slice(startIndexDon, startIndexDon + 10);
+      const pageOfItemIds = donCoords
       const itemIds = pageOfItemIds.map((item) => item._id);
       const res = await getItemsByIds(itemIds);
       const data = res.data.items.map((item, i) => ({
         ...item,
-        distance: donCoords[startIndexDon + i]?.distance || 0,
+        distance: donCoords[i]?.distance || 0,
       }));
 
       console.log(
@@ -50,12 +50,7 @@ export const useBottomSheet = () => {
 
       // setDonations((prevDonations) => [...prevDonations, ...data]);
       setDonations([...data]); // Replaces existing donations
-      setStartIndexDon((prevIndex) => prevIndex + 10);
 
-      // If fewer items were fetched than requested, assume no more data
-      if (data.length < 10) {
-        setHasMoreDon(false);
-      }
 
     } catch (error) {
       console.error("Error loading donations:", error);
@@ -63,7 +58,7 @@ export const useBottomSheet = () => {
     } finally {
       setIsDonLoading(false);
     }
-  }, [isDonLoading, hasMoreDon, startIndexDon, donCoords]);
+  }, []);
 
   useEffect(() => {
     // Load initial donations
