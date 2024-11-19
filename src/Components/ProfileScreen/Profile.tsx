@@ -21,10 +21,11 @@ const Profile = ({ navigation }) => {
       <Text style={{fontSize: 25, fontWeight: 'bold', marginBottom: 30, marginTop: 20}}>Profile</Text>
       <View style={styles.profileHeader}>
         <Image
-          source={require('../../../assets/images/def_user2.jpg')} // Replace with user image URL
+          // source={require('../../../assets/images/def_user.png')} // Replace with user image URL
+          source={require('../../../assets/images/the-rock.png')} // Replace with user image URL
           style={styles.profileImage}
         />
-        <View style={{marginLeft: 50}}>
+        <View style={{marginLeft: 20}}>
         <Text style={styles.profileName}>{`${user.firstName} ${user.lastName}`}</Text>
         <Text style={styles.profileEmail}>{user.email}</Text>
         </View>
