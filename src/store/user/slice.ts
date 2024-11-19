@@ -58,6 +58,7 @@ export const mtlRegionCoord: Region = {
   longitudeDelta: 0.01,
   latitudeDelta: 0.01,
 };
+
 export const initialUserState: UserState = {
   _id: "",
   email: "",

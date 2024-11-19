@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createAction, createSlice } from "@reduxjs/toolkit"
 import { Item } from "../user/slice"
 import { addItemCoordsReducer, deleteItemReducer, updateItemStatusReducer, updateTransactionStatusReducer } from "./reducers"
 import { LatLng } from "react-native-maps"
-import { updateItemStatus } from "../../api/userApi"
+
 
 export interface ItemCoord {
     _id: string,
@@ -27,6 +27,8 @@ const initialItemsState: ItemsState = {
     startIndex: 0
 }
 
+export const clearItemsCoordsAction = createAction('items/clearItemsCoords');
+
 const itemsSlice = createSlice({
     name: 'items',
     initialState: initialItemsState,
@@ -35,6 +37,11 @@ const itemsSlice = createSlice({
       deleteItemAction: deleteItemReducer,
       updateItemStatusAction: updateItemStatusReducer,
       updateTransactionStatusAction: updateTransactionStatusReducer
+    },
+    extraReducers: (builder) => {
+        builder.addCase(clearItemsCoordsAction, (state) => {
+            state.itemsIds = [];
+        });
     }
   })
   

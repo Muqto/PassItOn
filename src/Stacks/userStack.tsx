@@ -44,10 +44,10 @@ export default function UserStack() {
               let currentLocation = await Location.getCurrentPositionAsync({})
               let coordinates = currentLocation.coords
               let currLocation = {
-                // latitude: coordinates.latitude,
-                // longitude: coordinates.longitude,
-                latitude: 45.520564372,
-                longitude: -73.56346246,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude,
+                // latitude: 45.520564372,
+                // longitude: -73.56346246,
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01
               }  
