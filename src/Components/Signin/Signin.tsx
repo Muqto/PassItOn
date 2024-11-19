@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, Platform, KeyboardAvoidingView, ScrollView } from "react-native";
+import { View, Text, Platform, KeyboardAvoidingView, ScrollView, Alert } from "react-native";
 import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import styles from "./Styles";
 import useAuthentication from "../../Hooks/Authentication";
@@ -16,7 +16,18 @@ const Signin = ({ navigation }) => {
   const { signIn, isLoading } = useAuthentication()
   const isSessionLoading = useSelector(isSessionLoadingSelector)
   const auth = firebase_auth
-  
+
+  const signInAttempt = async (email: string, password: string) => {
+    try {
+      await signIn(email, password)
+    } catch (error) {
+      console.log("caught error")
+      if (error instanceof Error) {
+        Alert.alert("Sign in error", "Email or Password is incorrect. Please try again.")
+      }
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -67,7 +78,7 @@ const Signin = ({ navigation }) => {
                   mode="contained"
                   buttonColor="#6B6BE1"
                   style={styles.signInButton}
-                  onPress={() => signIn(email, password)}
+                  onPress={() => signInAttempt(email, password)}
                 >
                   Sign In
                 </Button>}
