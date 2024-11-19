@@ -4,7 +4,7 @@ import React from 'react'
 import Home from '../Home/Home';
 import Post from '../PostScreen/Post';
 import Browse from '../BrowseScreen/Browse';
-import Chat from '../ChatScreen/Chat';
+// import Chat from '../ChatScreen/Chat';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faAdd, faHome, faLocationDot, faComments} from '@fortawesome/free-solid-svg-icons/';
 import { faComments as faCommentsOutlined} from '@fortawesome/free-regular-svg-icons/';
@@ -27,8 +27,8 @@ const TabNavigation = () => {
                             return <FontAwesomeIcon color={color} size={sz} icon={ faAdd }/>
                         case "Browse":
                             return <FontAwesomeIcon color={color} size={sz} icon={ faLocationDot }/>
-                        case "Chat":
-                            return <FontAwesomeIcon color={color} size={sz} icon={ faCommentsOutlined } />
+                        // case "Chat":
+                        //     return <FontAwesomeIcon color={color} size={sz} icon={ faCommentsOutlined } />
                         case "Profile":
                             return <FontAwesomeIcon color={color} size={sz} icon={ faUser }/>
                     }
@@ -42,7 +42,7 @@ const TabNavigation = () => {
             <Tab.Screen name="Home" component={Home}/>
             <Tab.Screen name="Post" component={Post}/>
             <Tab.Screen name="Browse" component={Browse}/>
-            <Tab.Screen name="Chat" component={Chat}/>
+            {/* <Tab.Screen name="Chat" component={Chat}/> */}
             <Tab.Screen name="Profile" component={Profile}/>
         </Tab.Navigator>
     )

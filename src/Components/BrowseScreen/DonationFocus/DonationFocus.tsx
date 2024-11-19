@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Button, Divider } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -28,6 +29,7 @@ import { Reservation, updateUserReservationAction } from "../../../store/user/sl
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { useHomeReservations } from "../../Home/Hooks";
 
 interface Item {
   _id: string;
@@ -72,6 +74,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   const [error, setError] = useState<string | null>(null);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isContactDonorModalVisible, setIsContactDonorModalVisible] = useState<boolean>(false);
   const [modalStep, setModalStep] = useState<"selection" | "confirmation">(
     "selection"
   );
@@ -85,6 +88,7 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
     [dateString: string]: string[];
   }>({});
   const dispatch = useDispatch();
+  const { reservationCardProps } = useHomeReservations();
 
   const transactionStatusMap = {
     0: "Not Reserved",
@@ -173,11 +177,13 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
           minute: "2-digit",
           hour12: true,
         }); // e.g., '01:04 AM'
-
-        if (!timesByDate[dateString]) {
-          timesByDate[dateString] = [];
+        const today = new Date();
+        if (dateTime > today) {
+          if (!timesByDate[dateString]) {
+            timesByDate[dateString] = [];
+          }
+          timesByDate[dateString].push(timeString);
         }
-        timesByDate[dateString].push(timeString);
       });
     }
 
@@ -189,6 +195,10 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
   }, [item]);
 
   const openModal = () => {
+    if (reservationCardProps.length >= 5) {
+      alert("Oops! You already reserved 5 donations - to keep this app equitable, we limit the reservations one can make to 5 at once.");
+        return;
+    }
     setModalStep("selection");
     setModalVisible(true);
   };
@@ -741,11 +751,39 @@ const DonationFocus: React.FC<DonationFocusProps> = ({ navigation, route }) => {
                         style={styles.conversationIcon}
                         onPress={() => {
                           // Future functionality
+                          setIsContactDonorModalVisible(true)
                         }}
                         accessibilityLabel="Contact donor"
                       >
                         <Text style={styles.conversationIconText}>💬</Text>
                       </TouchableOpacity>
+                      <Modal visible={isContactDonorModalVisible} transparent={true}>
+                        <TouchableWithoutFeedback onPress={() => setIsContactDonorModalVisible(false)}>
+                          <View style={styles.modalOverlay}>
+                            <TouchableWithoutFeedback>
+                            <View style={styles.modalContentContactDonor}>
+                              <Text style={styles.modalTitleContactDonor}>Contact the Donor</Text>
+                              <Divider style={{marginBottom: 20}}/>
+                              <Divider style={{marginBottom: 20}}/>
+                              <Text style={styles.modalText}>
+                                Concerns about your reservation? Contact your donor at: 
+                              </Text>
+                              <Text style={styles.modalTextDonorEmail}>
+                                {`${donorInfo?.data.email}`} 
+                              </Text>
+                              <TouchableOpacity
+                                style={styles.confirmButton}
+                                onPress={() => {setIsContactDonorModalVisible(false)}} // Close modal on confirmation
+                              >
+                                <Text style={styles.confirmButtonText}>
+                                  Close
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                            </TouchableWithoutFeedback>
+                          </View>
+                        </TouchableWithoutFeedback>
+                      </Modal>
                     </View>
                   </View>
                 </View>

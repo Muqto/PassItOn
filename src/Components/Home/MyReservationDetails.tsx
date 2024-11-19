@@ -42,6 +42,7 @@ const MyReservationDetails = ({route}) => {
     const [donorInfo, setDonorInfo] = useState<DonorDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [isImageModalVisible, setImageModalVisible] = useState(false);
+    const [isContactDonorModalVisible, setIsContactDonorModalVisible] = useState(false);
     const openImageModal = () => setImageModalVisible(true);
     const closeImageModal = () => setImageModalVisible(false);
     const dispatch = useDispatch();
@@ -167,7 +168,46 @@ const MyReservationDetails = ({route}) => {
             <Text style={styles.detailText}>
                 {reservation?.pickupLocationText}
             </Text>
-            <Text style={styles.sectionTitle}>Donor</Text>
+            <View style={styles.donorSection}>
+              <Text style={styles.sectionTitle}>Donor</Text>
+              <TouchableOpacity
+                style={styles.donorSectionChatIcon}
+                onPress={() => {
+                  // Future functionality
+                  setIsContactDonorModalVisible(true)
+                }}
+                accessibilityLabel="Contact donor"
+              >
+              <Text>💬</Text>
+              </TouchableOpacity>
+              <Modal visible={isContactDonorModalVisible} transparent={true}>
+                <TouchableWithoutFeedback onPress={() => setIsContactDonorModalVisible(false)}>
+                  <View style={styles.modalOverlay}>
+                    <TouchableWithoutFeedback>
+                    <View style={styles.modalContentContactDonor}>
+                      <Text style={styles.modalTitleContactDonor}>Contact the Donor</Text>
+                      <Divider style={{marginBottom: 20}}/>
+                      <Divider style={{marginBottom: 20}}/>
+                      <Text style={styles.modalText}>
+                        Concerns about your reservation? Contact your donor at: 
+                      </Text>
+                      <Text style={styles.modalTextDonorEmail}>
+                        {`${donorInfo?.email}`} 
+                      </Text>
+                      <TouchableOpacity
+                        style={styles.confirmButton}
+                        onPress={() => {setIsContactDonorModalVisible(false)}} // Close modal on confirmation
+                      >
+                        <Text style={styles.confirmButtonText}>
+                          Close
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    </TouchableWithoutFeedback>
+                  </View>
+                </TouchableWithoutFeedback>
+              </Modal>
+            </View>
             <Text style={styles.detailText}>
                 {`${donorInfo?.firstName} ${donorInfo?.lastName} ${donorInfo?.rating !== 0 ? `(${donorInfo?.rating}/5⭐)` : ''} `}
             </Text>
@@ -460,6 +500,38 @@ const styles = StyleSheet.create({
       fontSize: 15,
       fontWeight: "400",
       textAlign: 'center',
+    },
+    donorSection: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center"
+    }, 
+    donorSectionChatIcon: {
+      marginLeft: 5
+    },
+    modalTextDonorEmail: {
+      color: "#6B6BE1",
+      fontWeight: "600",
+      fontSize: 20,
+    },
+    modalContentContactDonor: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      width: "90%",
+      height: "40%",
+      backgroundColor: "#fff",
+      borderRadius: 8,
+      alignItems: "center"
+    },
+    modalTitleContactDonor: {
+      fontSize: 20,
+      fontWeight: "bold",
+      marginTop: 50,
+      textAlign: "center",
+      marginLeft: 30,
+      marginRight: 30,
     },
 });
 

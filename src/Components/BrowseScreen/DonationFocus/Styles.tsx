@@ -280,6 +280,52 @@ const styles = StyleSheet.create({
   disabledDateText: {
     color: "white", // Dark grey text
   },
+  modalTextDonorEmail: {
+    color: "#6B6BE1",
+    fontWeight: "600",
+    fontSize: 20,
+  },
+  modalContentContactDonor: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    width: "90%",
+    height: "40%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    alignItems: "center"
+  },
+  modalTitleContactDonor: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 50,
+    textAlign: "center",
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  confirmButton: {
+    backgroundColor: "#6B6BE1",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginLeft: 30,
+    marginRight: 30,
+    marginBottom: 50,
+    marginTop: 40,
+    width: "80%"
+  },
+  confirmButtonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "400",
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 20,
+    marginBottom: 20,
+    marginLeft: 30,
+    marginRight: 30,
+  },
 
   // =========================================================
   // Time Options Styles
