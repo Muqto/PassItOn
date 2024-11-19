@@ -140,49 +140,49 @@ const DonatePage = () => {
 
   const addPickupTime = () => {
     const startDateTime = dayjs(`${date.format('YYYY-MM-DD')} ${selectedStartTime}`, 'YYYY-MM-DD HH:mm');
-    const endDateTime = dayjs(`${date.format('YYYY-MM-DD')} ${selectedEndTime}`, 'YYYY-MM-DD HH:mm');
+    let endDateTime = dayjs(`${date.format('YYYY-MM-DD')} ${selectedEndTime}`, 'YYYY-MM-DD HH:mm');
+  
+    if (selectedEndTime === '00:00') {
+      endDateTime = endDateTime.add(1, 'day');
+    }
 
     // Validation: End time must be after start time
     if (!endDateTime.isAfter(startDateTime)) {
       Alert.alert("Invalid Time Range", "End time must be after start time.");
       return;
     }
-
+  
     // Validation: Difference must be a multiple of 15 minutes
     const diffMinutes = endDateTime.diff(startDateTime, 'minute');
     if (diffMinutes % 15 !== 0) {
       Alert.alert("Invalid Time Range", "The time range must be in increments of 15 minutes.");
       return;
     }
-
+  
     // Generate pickup times in 15-minute increments
     const times = [];
     let current = startDateTime;
-
+  
     while (true) {
-      current = current.add(15, 'minute');
-      if (current.isBefore(endDateTime) || current.isSame(endDateTime)) {
+      if (current.isBefore(endDateTime)) {
         const formattedTime = current.format('YYYY-MM-DD HH:mm');
         times.push(formattedTime);
+        current = current.add(15, 'minute');
       } else {
         break;
       }
     }
-
-    // Check for duplicates
-    const isDuplicate = times.some(t => pickupTimes.includes(t));
-    if (isDuplicate) {
-      // Alert.alert("Duplicate Pickup Time", "Some of the selected pickup times have already been added.");
-      closeModal(); // This will reset date and time selections
-      return;
+  
+    // Filter out times that already exist
+    const newTimes = times.filter(t => !pickupTimes.includes(t));
+  
+    if (newTimes.length > 0) {
+      setPickupTimes([...pickupTimes, ...newTimes]);
     }
-
-    // Add new times to pickupTimes
-    setPickupTimes([...pickupTimes, ...times]);
-
+  
     // Close the modal and reset selected times
-    closeModal(); // This will reset date and time selections
-  };
+    closeModal();
+  };  
 
   const groupPickupTimesByDate = () => {
     const sortedPickupTimes = [...pickupTimes].sort((a, b) => dayjs(a, 'YYYY-MM-DD HH:mm').diff(dayjs(b, 'YYYY-MM-DD HH:mm')));

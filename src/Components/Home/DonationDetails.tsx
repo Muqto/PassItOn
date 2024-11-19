@@ -101,12 +101,11 @@ const DonationDetails = ({ route }) => {
           <MaterialIcons name="arrow-back-ios" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{fromHistory ? '' : 'Your donation'}</Text>
-
       </View>
+
       <ScrollView style={styles.container}>
-        {/* Image Placeholder */}
         <View>
-        {/* Main Image Container */}
+        {/* Image */}
         <TouchableOpacity onPress={openImageModal} disabled={!imageDownloadUrl}>
           <View style={styles.imageContainer}>
             {imageDownloadUrl ? (

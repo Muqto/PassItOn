@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   pickupDateLabel: {
     fontSize: 16,
     color: '#333333',
-    paddingLeft: 20,
+    paddingLeft: 10,
     marginBottom: 10, 
   },
   // pickupTimeText: {
@@ -93,11 +93,17 @@ const styles = StyleSheet.create({
   // },
   pickupTimeText: {
     color: '#FFFFFF',
-    fontSize: 14, // Reduced font size
+    fontSize: 16,
     textAlign: "right",
     // flex: 1, // Allow text to take available space
     // width: 100,
-    width: '70%',
+    width: '75%',
+    // paddingLeft: 10,
+    // backgroundColor: "#A9A9A9",
+  },
+  deletePickupTimeButton: {
+    width: '23%',
+    // backgroundColor: "#A9A9A9",
   },
   noPickupTimesText: {
     color: '#4A454E',
@@ -205,11 +211,6 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 5,
   },
-  deletePickupTimeButton: {
-    // height: 40,
-    // width: 35,
-    width: '30%',
-  },
   modalButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 20, // Reduced padding to allow more space
+    paddingHorizontal: 15, // Reduced padding to allow more space
   },
   // pickupTimeItem: {
   //   backgroundColor: '#6B6BE1',
