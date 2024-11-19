@@ -61,74 +61,86 @@ const DonationCard = ({
     }
   };
 
+
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.bodyContainer}>
-        <View>
-          {imageDownloadUrl !== undefined ? (
-            <Image
-              source={{ uri: imageDownloadUrl }}
-              style={styles.cardImage}
-            />
-          ) : (
-            <View style={styles.cardImagePlaceholder}></View>
-          )}
-        </View>
-        <View style={styles.cardDesc}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("DonationDetails", {
+          itemId,
+          itemName,
+          expirationTime,
+          itemType,
+          description,
+          userId,
+          itemStatus,
+          imageDownloadUrl,
+          pickupLocationText,
+          reservationInfo,
+        })
+      }
+    >
+      <View style={styles.cardContainer}>
+        <View style={styles.bodyContainer}>
           <View>
+            {imageDownloadUrl ? (
+              <Image
+                source={{ uri: imageDownloadUrl }}
+                style={styles.cardImage}
+              />
+            ) : (
+              <View
+                style={[styles.cardImage, { backgroundColor: "#6B6BE1" }]}
+              ></View>
+            )}
+          </View>
+
+          <View style={styles.cardDesc}>
+            {/* Title Row */}
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "space-between", // Aligns title and icon horizontally
+                width: "100%",
               }}
             >
-              <Text style={styles.itemNameText}>{itemName}</Text>
+              <Text
+                style={styles.itemNameText}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {itemName}
+              </Text>
               <View style={styles.statusIcon}>
                 {getIconForTransactionStatus(
                   Number(reservationInfo.transactionStatus)
                 )}
               </View>
             </View>
-            <Text style={styles.pickUpText}>
-              {reservationInfo.transactionStatus === 0 ? (
-                "Awaiting Reservation"
-              ) : (
-                <Text>
-                  <Text>Pickup:</Text>{" "}
-                  <Text style={styles.pickUpTimeText}>
-                    {formatDateWithTime(expirationTime)}
+
+            {/* Transaction Status Row */}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.pickUpText}>
+                {reservationInfo.transactionStatus === 0 ? (
+                  "Awaiting Reservation"
+                ) : (
+                  <Text>
+                    <Text style={styles.pickUpText}>Pickup:</Text>{" "}
+                    <Text style={styles.pickUpTimeText}>
+                      {formatDateWithTime(expirationTime)}
+                    </Text>
                   </Text>
-                </Text>
-              )}
-            </Text>
+                )}
+              </Text>
+            </View>
+
+            {/* Item Type */}
             <Text style={styles.categoryText}>{itemType}</Text>
           </View>
-          <View style={styles.details}>
-            <TouchableOpacity
-              style={styles.detailsButton}
-              onPress={() =>
-                navigation.navigate("DonationDetails", {
-                  itemId,
-                  itemName,
-                  expirationTime,
-                  itemType,
-                  description,
-                  userId,
-                  itemStatus,
-                  imageDownloadUrl,
-                  pickupLocationText,
-                  reservationInfo,
-                })
-              }
-            >
-              <Text style={styles.detailsText}>Details</Text>
-            </TouchableOpacity>
-          </View>
         </View>
-        {/* Icon for transaction status */}
       </View>
-    </View>
-  );
+    </TouchableOpacity>
+  );  
 };
 
 export default DonationCard;

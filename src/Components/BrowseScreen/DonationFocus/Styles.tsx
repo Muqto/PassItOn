@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     color: "black",
     flex: 1, // Allows the text to take available space
